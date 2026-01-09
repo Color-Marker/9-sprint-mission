@@ -16,18 +16,36 @@ public class JCFUserService implements UserService{
 
     @Override
     public boolean addUser(User user) {
+        System.out.println("id: " + user.getId() + " displayName: " + user.getDisplayName() + " added");
         return data.add(user);
     }
 
     @Override
     public User getUser(String displayName) {
+        for(User p : data){
+            if(p.getDisplayName().equals(displayName)){
+                return p;
+            }
+        }
         return null;
     }
 
-//    @Override
-//    public User getUser(String displayName) {
-//        return data;
-//    }
+    @Override
+    public List<User> getUsers(String ... displayName){
+        List<User> buffer = new ArrayList<>();
+        for(User p : data){
+            for(String d : displayName){
+                if(p.getDisplayName().equals(d)){
+                    buffer.add(p);
+                }
+            }
+        }
+        if(!buffer.isEmpty()){
+            return buffer;
+        }else{
+            return null;
+        }
+    }
 
     @Override
     public List<User> getAllUser() {
@@ -36,11 +54,27 @@ public class JCFUserService implements UserService{
 
     @Override
     public User updateUser(User user, String displayName, String email, String phoneNumber) {
+        for(User p : data){
+            if(p.equals(user)){
+                p.setDisplayName(displayName);
+                p.setEmail(email);
+                p.setPhoneNumber(phoneNumber);
+                System.out.println("id: " + p.getId() + " new name: " + p.getDisplayName() + " new email: " + p.getEmail() + " new number: " + p.getPhoneNumber());
+                return p;
+            }
+        }
         return null;
     }
 
     @Override
-    public boolean deletedUser(String displayName) {
+    public boolean deleteUser(String displayName) {
+        for(User p: data){
+            if(p.getDisplayName().equals(displayName)){
+                System.out.println("Delete: " + p.getId() + " name: " + p.getDisplayName());
+                data.remove(p);
+                return true;
+            }
+        }
         return false;
     }
 }
