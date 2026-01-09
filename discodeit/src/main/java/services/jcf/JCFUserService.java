@@ -59,6 +59,7 @@ public class JCFUserService implements UserService{
                 p.setDisplayName(displayName);
                 p.setEmail(email);
                 p.setPhoneNumber(phoneNumber);
+                p.setUpdatedAt(System.currentTimeMillis());
                 System.out.println("id: " + p.getId() + " new name: " + p.getDisplayName() + " new email: " + p.getEmail() + " new number: " + p.getPhoneNumber());
                 return p;
             }

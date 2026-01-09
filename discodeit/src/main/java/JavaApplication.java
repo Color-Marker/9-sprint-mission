@@ -1,4 +1,6 @@
+import entity.Message;
 import entity.User;
+import services.jcf.JCFMessageService;
 import services.jcf.JCFUserService;
 
 import java.util.ArrayList;
@@ -49,7 +51,27 @@ public class JavaApplication {
         // 조회 통해 삭제 확인
         System.out.println(userService.getAllUser());
 
+        System.out.println("----------------------------------");
+
         // --- message ---
+        Message msg1 = new Message("Hello!!!!", user2);
+        Message msg2 = new Message("Hi!", user2);
+        Message msg3 = new Message("Bye", user3);
+        JCFMessageService messageService = new JCFMessageService();
+
+        messageService.addMessage(msg1);
+        messageService.addMessage(msg2);
+        messageService.addMessage(msg3);
+
+        System.out.println(messageService.getMessageFromThatUser(user2));
+        System.out.println(messageService.getMessageFromThatUser(user3));
+        System.out.println(messageService.getAllMessage());
+
+        System.out.println(messageService.updateMessage(msg1, "Sorry..."));
+
+        messageService.deleteMessage(msg3);
+
+        System.out.println(messageService.getAllMessage());
 
 
         // --- channel ---
