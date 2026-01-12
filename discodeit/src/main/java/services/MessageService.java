@@ -17,9 +17,6 @@ public interface MessageService {
     List<Message> getAllMessage();
     // 특정 String 내용 가진 메시지만 가져오기
     List<Message> getMessageByContent(String messageContent);
-    // uuid id로 메시지 하나 가져오기
-    Message getMessageById(UUID id);
-
     // 메시지 수정 - 대상 메시지는 get 방식들로 가져와서 써먹기
     boolean updateMessage(Message message, String messageContent);
 

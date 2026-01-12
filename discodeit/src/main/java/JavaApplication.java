@@ -58,8 +58,10 @@ public class JavaApplication {
             System.out.println(m.getSender().getDisplayName() + " sent '" + m.getMessageContent() + "'");
         }
 
-
+        System.out.println();
         System.out.println("-----------------------------------------------------------");
+        System.out.println("-----------------------------------------------------------");
+        System.out.println();
         // --- 서버 테스팅 외 기본 작동 테스트 ---
 
         List<User> getUser1 = jcfUserService.getUserByName("Alice");
@@ -76,10 +78,39 @@ public class JavaApplication {
 
         jcfUserService.getAllUser();
 
+        System.out.println();
+        System.out.println("-----------------------------------------------------------");
+        System.out.println();
+
         // ----- message ------
-        // 음. 할 거 정리 좀 하자.
+        Message message1 = new Message("Mike Test", user1);
+        Message message2 = new Message("Hellooooooo", user3);
+        Message message3 = new Message("Hello World", user4);
+        Message message4 = new Message("Bye Bye", user4);
 
+        jcfMessageService.addMessage(message1);
+        jcfMessageService.addMessage(message2);
+        jcfMessageService.addMessage(message3);
+        jcfMessageService.addMessage(message4);
 
+        jcfMessageService.getMessageFromUser(user1);
+        jcfMessageService.getMessageFromUser(user4);
+        jcfMessageService.getMessageByContent("Hel");
+        jcfMessageService.getAllMessage();
+
+        jcfMessageService.updateMessage(message2, "Hi");
+
+        jcfMessageService.getAllMessage();
+
+        jcfMessageService.deleteMessage(message3);
+
+        jcfMessageService.getAllMessage();
+
+        System.out.println();
+        System.out.println("-----------------------------------------------------------");
+        System.out.println();
+
+        // -------- channel ---------
 
     }
 }

@@ -18,11 +18,31 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public boolean addChannel(Channel channel) {
+        System.out.println("Channel add complete: " + channel.getChannelName());
         return data.add(channel);
     }
 
     @Override
+    public List<Channel> getChannelByName(String channelName){
+        List<Channel> buffer = new ArrayList<>();
+        for(Channel c: data){
+            if(c.getChannelName().equals(channelName)){
+                System.out.println("Find channel by name: " + c.getChannelName());
+                System.out.println("Extra information");
+                System.out.println("id: " + c.getId() + " channel type: " + c.getChanneltype());
+                buffer.add(c);
+            }
+        }
+        return buffer;
+    }
+
+    @Override
     public List<Channel> getAllChannel() {
+        System.out.println("All channel information: ");
+        for(Channel c: data){
+            System.out.println("id: " + c.getId() + " name: " + c.getChannelName());
+            System.out.println("type: " + c.getChanneltype());
+        }
         return data;
     }
 
@@ -31,6 +51,8 @@ public class JCFChannelService implements ChannelService {
         for(Channel c:data){
             if(c.equals(channel)){
                 c.setChannelName(channelName);
+                System.out.println("Updated channel name");
+                System.out.println("Channel id " + c.getId() + " changed name to " + c.getChannelName());
                 return true;
             }
         }
@@ -42,6 +64,8 @@ public class JCFChannelService implements ChannelService {
         for(Channel c: data){
             if(c.equals(channel)){
                 c.setChanneltype(channelType);
+                System.out.println("Updated channel type");
+                System.out.println("Channel id " + c.getId() + " which name is " + c.getChannelName() +  " changed type to " + c.getChanneltype());
                 return true;
             }
         }
@@ -53,6 +77,7 @@ public class JCFChannelService implements ChannelService {
         for(Channel c: data){
             if(c.equals(channel)){
                 c.getMessages().add(message);
+                System.out.println("In " + c.getChannelName() + " new message '" + message.getMessageContent() + "' added");
                 return true;
             }
         }
@@ -64,8 +89,10 @@ public class JCFChannelService implements ChannelService {
         List<Message> buffer = new ArrayList<>();
         for(Channel c: data){
             if(c.equals(channel)){
+                System.out.println("In channel " + c.getChannelName() + " user " + user.getDisplayName() + " sent ");
                 for(Message m : c.getMessages()){
                     if(m.getSender().equals(user)){
+                        System.out.println(m.getMessageContent());
                         buffer.add(m);
                     }
                 }
@@ -75,20 +102,10 @@ public class JCFChannelService implements ChannelService {
     }
 
     @Override
-    public boolean updateChannel(Channel channel, String channelName) {
-        for(Channel c : data){
-            if(c.equals(channel)){
-                c.setChannelName(channelName);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public boolean deleteChannel(Channel channel) {
         for(Channel c:data){
             if(c.equals(channel)){
+                System.out.println("Deleted channel " + c.getChannelName());
                 data.remove(c);
                 return true;
             }

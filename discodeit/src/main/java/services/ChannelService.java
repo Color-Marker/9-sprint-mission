@@ -12,6 +12,9 @@ public interface ChannelService {
     // 채널을 서버에 추가하기
     boolean addChannel(Channel channel);
 
+    // 이름으로 채널 찾기
+    List<Channel> getChannelByName(String name);
+
     // 모든 채널 보기
     List<Channel> getAllChannel();
 
@@ -27,8 +30,6 @@ public interface ChannelService {
     // 채널에서 특정 유저 메시지만 보기
     List<Message> getAllMessageFromThatUser(Channel channel, User user);
 
-    // 채널 수정하기 - 이름 수정
-    boolean updateChannel(Channel channel, String channelName);
     // 채널 삭제하기
     boolean deleteChannel(Channel channel);
 
