@@ -1,7 +1,9 @@
 package services.jcf;
 
+import entity.Channel;
 import entity.ServerRoom;
 import entity.User;
+import services.ChannelService;
 import services.ServerRoomService;
 
 import java.util.ArrayList;
@@ -10,13 +12,28 @@ import java.util.UUID;
 
 public class JCFServerRoomService implements ServerRoomService {
     private final List<ServerRoom> data;
-    public JCFServerRoomService(){
+    private final JCFChannelService jcfChannelService;
+
+    public JCFServerRoomService(JCFChannelService jcfchannelService){
         data = new ArrayList<>() {};
+        this.jcfChannelService = jcfchannelService;
     }
 
     @Override
     public boolean addServerRoom(ServerRoom serverRoom) {
+
         return data.add(serverRoom);
+    }
+
+    @Override
+    public boolean addChannelToServer(ServerRoom serverRoom, Channel channel) {
+        serverRoom.getChannel().add(channel);
+        return jcfChannelService.addChannel(channel);
+    }
+
+    @Override
+    public boolean addMemberToServer(ServerRoom serverRoom, User user) {
+        return serverRoom.getMember().add(user);
     }
 
     @Override

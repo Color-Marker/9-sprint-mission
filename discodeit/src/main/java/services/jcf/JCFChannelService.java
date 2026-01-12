@@ -11,9 +11,11 @@ import java.util.List;
 
 public class JCFChannelService implements ChannelService {
     private final List<Channel> data;
+    private final JCFMessageService jcfMessageService;
 
-    public JCFChannelService(){
+    public JCFChannelService(JCFMessageService jcfMessageService){
         data = new ArrayList<>() {};
+        this.jcfMessageService = jcfMessageService;
     }
 
     @Override
@@ -78,7 +80,7 @@ public class JCFChannelService implements ChannelService {
             if(c.equals(channel)){
                 c.getMessages().add(message);
                 System.out.println("In " + c.getChannelName() + " new message '" + message.getMessageContent() + "' added");
-                return true;
+                return jcfMessageService.addMessage(message);
             }
         }
         return false;

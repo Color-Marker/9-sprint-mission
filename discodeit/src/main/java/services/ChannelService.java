@@ -24,7 +24,7 @@ public interface ChannelService {
     // 채널 타입 바꾸기
     boolean changeChannelType(Channel channel, ChannelType channelType);
 
-    // 채널에서 메시지 보내기
+    // 채널에서 메시지 보내기 - 사실 상 의존성
     boolean sendMessageToChannel(Channel channel, Message message);
 
     // 채널에서 특정 유저 메시지만 보기

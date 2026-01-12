@@ -1,6 +1,7 @@
 package services;
 
 import entity.Channel;
+import entity.ChannelType;
 import entity.ServerRoom;
 import entity.User;
 
@@ -9,6 +10,10 @@ import java.util.UUID;
 
 public interface ServerRoomService {
     boolean addServerRoom(ServerRoom serverRoom);
+
+    // 의존성 취한 추가
+    boolean addChannelToServer(ServerRoom serverRoom, Channel channel);
+    boolean addMemberToServer(ServerRoom server, User user);
 
     List<ServerRoom> getServerByName(String serverName);
     ServerRoom getServerRoomByID(UUID id);
