@@ -54,14 +54,15 @@ public class JavaApplication {
         System.out.println("Server owner: " + serverRoom.getOwner().getDisplayName());
         System.out.println("Server member: " + serverRoom.getMember().get(0).getDisplayName());
         System.out.println("Server channel msg");
-        for(Message m: serverRoom.getChannel().get(0).getMessages()){
-            System.out.println(m.getSender().getDisplayName() + " sent '" + m.getMessageContent() + "'");
+        for(User p: serverRoom.getMember()){
+            jcfChannelService.getAllMessageFromThatUser(channel1, p);
         }
 
         System.out.println();
         System.out.println("-----------------------------------------------------------");
         System.out.println("-----------------------------------------------------------");
         System.out.println();
+
         // --- 서버 테스팅 외 기본 작동 테스트 ---
 
         List<User> getUser1 = jcfUserService.getUserByName("Alice");
@@ -111,6 +112,22 @@ public class JavaApplication {
         System.out.println();
 
         // -------- channel ---------
+        Channel channel2 = new Channel(ChannelType.CHAT, "Study Room");
+        Channel channel3 = new Channel(ChannelType.CHAT, "Play Room");
+        Channel channel4 = new Channel(ChannelType.VOICE, "Speach Room");
 
+        jcfChannelService.addChannel(channel2);
+        jcfChannelService.addChannel(channel3);
+        jcfChannelService.addChannel(channel4);
+
+        jcfChannelService.getChannelByName("Study Room");
+        jcfChannelService.getAllChannel();
+
+        jcfChannelService.updateChannelName(channel3, "Work Room");
+        jcfChannelService.changeChannelType(channel4, ChannelType.CHAT);
+        jcfChannelService.getAllChannel();
+
+        jcfChannelService.deleteChannel(channel2);
+        jcfChannelService.getAllChannel();
     }
 }

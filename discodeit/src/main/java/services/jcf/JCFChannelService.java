@@ -92,7 +92,7 @@ public class JCFChannelService implements ChannelService {
                 System.out.println("In channel " + c.getChannelName() + " user " + user.getDisplayName() + " sent ");
                 for(Message m : c.getMessages()){
                     if(m.getSender().equals(user)){
-                        System.out.println(m.getMessageContent());
+                        System.out.println("'" + m.getMessageContent() + "'");
                         buffer.add(m);
                     }
                 }
