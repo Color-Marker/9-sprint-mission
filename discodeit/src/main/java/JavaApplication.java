@@ -11,10 +11,15 @@ import java.util.Objects;
 public class JavaApplication {
     public static void main(String[] args) {
         // ---- services ----
-        JCFUserService jcfUserService = new JCFUserService();
-        JCFServerRoomService jcfServerRoomService = new JCFServerRoomService();
-        JCFChannelService jcfChannelService = new JCFChannelService();
+        // 일단 맨 아래에 들어가는 msg -> channel -> server순으로 생성
+        // 그래야 server에 입력 가능...
         JCFMessageService jcfMessageService = new JCFMessageService();
+        JCFChannelService jcfChannelService = new JCFChannelService(jcfMessageService);
+        JCFServerRoomService jcfServerRoomService = new JCFServerRoomService(jcfChannelService);
+
+        // 유저는 서버 종속 아니니 따로
+        JCFUserService jcfUserService = new JCFUserService();
+
         // --- user ----
         User user1 = new User("Alice", "alice@codeit.com", "01000000000");
         User user2 = new User("Bob", "bob@codeit.com", "01012345678");
@@ -31,29 +36,26 @@ public class JavaApplication {
         jcfServerRoomService.addServerRoom(serverRoom);
 
         // 유저 3이 해당 서버에 참가
-        serverRoom.getMember().add(user3);
+        jcfServerRoomService.addMemberToServer(serverRoom, user3);
 
         // 채널 하나 서버에 추가해줌
         Channel channel1 = new Channel(ChannelType.CHAT, "Test");
-        serverRoom.getChannel().add(channel1);
-
-        // 서비스에서 관리 위해 채널 등록
-        jcfChannelService.addChannel(channel1);
+        jcfServerRoomService.addChannelToServer(serverRoom, channel1);
 
         // 해당 채널(channel1)에 메시지 전송
         Message channelMsg1 = new Message("Connection Check", serverRoom.getOwner());
         Message channelMsg2 = new Message("Accepted", serverRoom.getMember().get(0));
-        jcfMessageService.addMessage(channelMsg1);
-        jcfMessageService.addMessage(channelMsg2);
+        Message channelMsg3 = new Message("This is fun", serverRoom.getMember().get(0));
         jcfChannelService.sendMessageToChannel(channel1, channelMsg1);
         jcfChannelService.sendMessageToChannel(channel1, channelMsg2);
+        jcfChannelService.sendMessageToChannel(channel1, channelMsg3);
 
-        // 등록 확인용
+        // 등록 확인용 - 일단 오너 한 명 멤버 한 명 뿐이라 get(0)이랑 getowner로 처리
         System.out.println("Server name: " + serverRoom.getServerName());
         System.out.println("Server channel: " + serverRoom.getChannel().get(0).getChannelName());
         System.out.println("Server owner: " + serverRoom.getOwner().getDisplayName());
         System.out.println("Server member: " + serverRoom.getMember().get(0).getDisplayName());
-        System.out.println("Server channel msg");
+        System.out.println("Server channel's msg");
         for(User p: serverRoom.getMember()){
             jcfChannelService.getAllMessageFromThatUser(channel1, p);
         }
