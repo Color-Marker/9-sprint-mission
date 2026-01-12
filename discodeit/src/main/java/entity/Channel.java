@@ -8,15 +8,17 @@ public class Channel {
     private Long createdAt;
     private Long updatedAt;
 
-    private User leader;
-    private List<User> members;
+    private List<Message> messages;
+    private ChannelType channeltype;
+    private String channelName;
 
-    public Channel(User leader) {
+    public Channel(ChannelType channelType, String channelName) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis();
-        this.leader = leader;
-        this.members = null;
+        this.messages = null;
+        this.channeltype = channelType;
+        this.channelName = channelName;
     }
 
     public UUID getId() {
@@ -29,5 +31,41 @@ public class Channel {
 
     public Long getUpdatedAt() {
         return updatedAt;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public ChannelType getChanneltype() {
+        return channeltype;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(Long updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    public void setChanneltype(ChannelType channeltype) {
+        this.channeltype = channeltype;
+    }
+
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
     }
 }
