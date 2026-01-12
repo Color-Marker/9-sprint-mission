@@ -1,79 +1,85 @@
-import entity.Message;
-import entity.User;
+import entity.*;
+import services.jcf.JCFChannelService;
 import services.jcf.JCFMessageService;
+import services.jcf.JCFServerRoomService;
 import services.jcf.JCFUserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class JavaApplication {
     public static void main(String[] args) {
+        // ---- services ----
+        JCFUserService jcfUserService = new JCFUserService();
+        JCFServerRoomService jcfServerRoomService = new JCFServerRoomService();
+        JCFChannelService jcfChannelService = new JCFChannelService();
+        JCFMessageService jcfMessageService = new JCFMessageService();
+        // --- user ----
+        User user1 = new User("Alice", "alice@codeit.com", "01000000000");
+        User user2 = new User("Bob", "bob@codeit.com", "01012345678");
+        User user3 = new User("Charlie", "charlie@codeit.com", "01099999999");
+        User user4 = new User("Charlie", "charlie2@codeit.com", "01088888888");
 
-        // --- user ---
-        User user1 = new User("abc", "abc@codeit.com", "01099999999");
-        User user2 = new User("asdf", "asdf@codeit.com", "01000000000");
-        User user3 = new User("abcf", "abcf@codeit.com", "01055555555");
-        JCFUserService userService = new JCFUserService();
+        jcfUserService.addUser(user1);
+        jcfUserService.addUser(user2);
+        jcfUserService.addUser(user3);
+        jcfUserService.addUser(user4);
 
-        // 등록
-        userService.addUser(user1);
-        userService.addUser(user2);
-        userService.addUser(user3);
+        // 유저1이 서버 생성
+        ServerRoom serverRoom = new ServerRoom(user1, "Alice Server");
+        jcfServerRoomService.addServerRoom(serverRoom);
 
-        System.out.println(); // 구분용
+        // 유저 3이 해당 서버에 참가
+        serverRoom.getMember().add(user3);
 
-        // 조회 (한 건)
-        System.out.println(userService.getUser("abc"));
-        System.out.println(userService.getUser("asdf"));
-        System.out.println(userService.getUser("abcf"));
+        // 채널 하나 서버에 추가해줌
+        Channel channel1 = new Channel(ChannelType.CHAT, "Test");
+        serverRoom.getChannel().add(channel1);
 
-        System.out.println();
+        // 서비스에서 관리 위해 채널 등록
+        jcfChannelService.addChannel(channel1);
 
-        // 여러 개 조회 (다건)
-        System.out.println(userService.getUsers("abc", "asdf"));
+        // 해당 채널(channel1)에 메시지 전송
+        Message channelMsg1 = new Message("Connection Check", serverRoom.getOwner());
+        Message channelMsg2 = new Message("Accepted", serverRoom.getMember().get(0));
+        jcfMessageService.addMessage(channelMsg1);
+        jcfMessageService.addMessage(channelMsg2);
+        jcfChannelService.sendMessageToChannel(channel1, channelMsg1);
+        jcfChannelService.sendMessageToChannel(channel1, channelMsg2);
 
-        System.out.println();
-
-        // 전체 조회 (다건)
-        System.out.println(userService.getAllUser());
-
-        System.out.println();
-
-        // 수정 데이터 조회
-        System.out.println(userService.updateUser(user3, "alice", "alice@codeit.com", "01088888888"));
-
-        System.out.println();
-
-        // 삭제
-        userService.deleteUser("abc");
-
-
-        // 조회 통해 삭제 확인
-        System.out.println(userService.getAllUser());
-
-        System.out.println("----------------------------------");
-
-        // --- message ---
-        Message msg1 = new Message("Hello!!!!", user2);
-        Message msg2 = new Message("Hi!", user2);
-        Message msg3 = new Message("Bye", user3);
-        JCFMessageService messageService = new JCFMessageService();
-
-        messageService.addMessage(msg1);
-        messageService.addMessage(msg2);
-        messageService.addMessage(msg3);
-
-        System.out.println(messageService.getMessageFromThatUser(user2));
-        System.out.println(messageService.getMessageFromThatUser(user3));
-        System.out.println(messageService.getAllMessage());
-
-        System.out.println(messageService.updateMessage(msg1, "Sorry..."));
-
-        messageService.deleteMessage(msg3);
-
-        System.out.println(messageService.getAllMessage());
+        // 등록 확인용
+        System.out.println("Server name: " + serverRoom.getServerName());
+        System.out.println("Server channel: " + serverRoom.getChannel().get(0).getChannelName());
+        System.out.println("Server owner: " + serverRoom.getOwner().getDisplayName());
+        System.out.println("Server member: " + serverRoom.getMember().get(0).getDisplayName());
+        System.out.println("Server channel msg");
+        for(Message m: serverRoom.getChannel().get(0).getMessages()){
+            System.out.println(m.getSender().getDisplayName() + " sent '" + m.getMessageContent() + "'");
+        }
 
 
-        // --- channel ---
+        System.out.println("-----------------------------------------------------------");
+        // --- 서버 테스팅 외 기본 작동 테스트 ---
+
+        List<User> getUser1 = jcfUserService.getUserByName("Alice");
+        List<User> getSameNameUsers = jcfUserService.getUserByName("Charlie");
+        List<User> getAllUser = jcfUserService.getAllUser();
+
+        jcfUserService.updateUserByName(user4, "Lucy");
+        jcfUserService.updateUserByEmail(user4, "lucy@codeit.com");
+        jcfUserService.updateUserByNumber(user4, "01055555555");
+
+        jcfUserService.getAllUser();
+
+        jcfUserService.deleteUser(user2);
+
+        jcfUserService.getAllUser();
+
+        // ----- message ------
+
+
+
+
     }
 }

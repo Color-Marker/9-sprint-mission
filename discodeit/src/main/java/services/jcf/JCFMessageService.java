@@ -6,6 +6,7 @@ import services.MessageService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class JCFMessageService implements MessageService {
     private final List<Message> data;
@@ -14,27 +15,21 @@ public class JCFMessageService implements MessageService {
         data = new ArrayList<>() {};
     }
 
+
     @Override
     public boolean addMessage(Message message) {
-        data.add(message);
-        System.out.println("New message: " + message.getSender().getDisplayName() + " sent " + message);
-        return true;
+        return data.add(message);
     }
 
     @Override
-    public List<Message> getMessageFromThatUser(User user) {
+    public List<Message> getMessageFromUser(User user) {
         List<Message> buffer = new ArrayList<>();
         for(Message m : data){
             if(m.getSender().equals(user)){
                 buffer.add(m);
             }
         }
-        if(!buffer.isEmpty()){
-            return buffer;
-        }
-        else{
-            return null;
-        }
+        return buffer;
     }
 
     @Override
@@ -43,12 +38,20 @@ public class JCFMessageService implements MessageService {
     }
 
     @Override
-    public Message updateMessage(Message message, String messageContent) {
+    public List<Message> getMessageByContent(String messageContent) {
+        List<Message> buffer = new ArrayList<>();
         for(Message m : data){
-            if(m.equals(message)){
-                m.setUpdatedAt( System.currentTimeMillis());
-                m.setMessageContent(messageContent);
-                System.out.println("Message Edited at " + m.getUpdatedAt() + " to " + m.getMessageContent());
+            if(m.getMessageContent().contains(messageContent)){
+                buffer.add(m);
+            }
+        }
+        return buffer;
+    }
+
+    @Override
+    public Message getMessageById(UUID id) {
+        for(Message m : data){
+            if(m.getId().equals(id)){
                 return m;
             }
         }
@@ -56,14 +59,25 @@ public class JCFMessageService implements MessageService {
     }
 
     @Override
-    public boolean deleteMessage(Message message) {
-        for(Message m : data){
+    public boolean updateMessage(Message message, String messageContent) {
+        for(Message m: data){
             if(m.equals(message)){
-                System.out.println("Message deleted: " + m);
+                m.setMessageContent(messageContent);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteMessage(Message message) {
+        for(Message m: data){
+            if(m.equals(message)){
                 data.remove(m);
                 return true;
             }
         }
         return false;
     }
+
 }

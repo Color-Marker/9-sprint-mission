@@ -1,5 +1,6 @@
 package entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,9 +15,9 @@ public class ServerRoom {
     public ServerRoom(User owner, String serverName) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
-        this.channel = null;
+        this.channel = new ArrayList<>();
         this.owner = owner;
-        this.member = null;
+        this.member = new ArrayList<>();
         this.serverName = serverName;
     }
 
