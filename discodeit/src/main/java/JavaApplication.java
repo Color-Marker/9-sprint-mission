@@ -30,11 +30,13 @@ public class JavaApplication {
         User user2 = new User("Bob", "bob@codeit.com", "01012345678");
         User user3 = new User("Charlie", "charlie@codeit.com", "01099999999");
         User user4 = new User("Charlie", "charlie2@codeit.com", "01088888888");
+        User user5 = new User("Harry", "harry@codeit.com", "01043214321");
 
         jcfUserService.addUser(user1);
         jcfUserService.addUser(user2);
         jcfUserService.addUser(user3);
         jcfUserService.addUser(user4);
+        jcfUserService.addUser(user5);
 
         System.out.println();
 
@@ -42,8 +44,9 @@ public class JavaApplication {
         ServerRoom serverRoom = new ServerRoom(user1, "Alice Server");
         jcfServerRoomService.addServerRoom(serverRoom);
 
-        // 유저 3이 해당 서버에 참가
+        // 유저 3,5가 해당 서버에 참가
         jcfServerRoomService.addMemberToServer(serverRoom, user3);
+        jcfServerRoomService.addMemberToServer(serverRoom, user5);
 
         // 채널 하나 서버에 추가해줌
         Channel channel1 = new Channel(ChannelType.CHAT, "Test");
@@ -53,7 +56,7 @@ public class JavaApplication {
         // 해당 채널(channel1)에 메시지 전송
         Message channelMsg1 = new Message("Connection Check", serverRoom.getOwner());
         Message channelMsg2 = new Message("Accepted", serverRoom.getMember().get(0));
-        Message channelMsg3 = new Message("This is fun", serverRoom.getMember().get(0));
+        Message channelMsg3 = new Message("This is fun", serverRoom.getMember().get(1));
         jcfChannelService.sendMessageToChannel(channel1, channelMsg1);
         jcfChannelService.sendMessageToChannel(channel1, channelMsg2);
         jcfChannelService.sendMessageToChannel(channel1, channelMsg3);
@@ -62,7 +65,8 @@ public class JavaApplication {
         System.out.println("Server name: " + serverRoom.getServerName());
         System.out.println("Server channel: " + serverRoom.getChannel().get(0).getChannelName());
         System.out.println("Server owner: " + serverRoom.getOwner().getDisplayName());
-        System.out.println("Server member: " + serverRoom.getMember().get(0).getDisplayName());
+        System.out.println("Server member1: " + serverRoom.getMember().get(0).getDisplayName());
+        System.out.println("Server member2: " + serverRoom.getMember().get(1).getDisplayName());
         System.out.println("Server channel's msg");
         for(User p: serverRoom.getMember()){
             jcfChannelService.getAllMessageFromThatUser(channel1, p);
