@@ -10,6 +10,11 @@ import java.util.Objects;
 
 public class JavaApplication {
     public static void main(String[] args) {
+        // 서버 쪽은 작동 동안 print 굳이 안 함.
+        // 기능 작동 여부 마지막에 따로 확인 정도만 진행.
+        System.out.println();
+        System.out.println("============= ... SErVeR TeSTinG ... =============");
+        System.out.println();
         // ---- services ----
         // 일단 맨 아래에 들어가는 msg -> channel -> server순으로 생성
         // 그래야 server에 입력 가능...
@@ -31,6 +36,8 @@ public class JavaApplication {
         jcfUserService.addUser(user3);
         jcfUserService.addUser(user4);
 
+        System.out.println();
+
         // 유저1이 서버 생성
         ServerRoom serverRoom = new ServerRoom(user1, "Alice Server");
         jcfServerRoomService.addServerRoom(serverRoom);
@@ -41,6 +48,7 @@ public class JavaApplication {
         // 채널 하나 서버에 추가해줌
         Channel channel1 = new Channel(ChannelType.CHAT, "Test");
         jcfServerRoomService.addChannelToServer(serverRoom, channel1);
+        System.out.println();
 
         // 해당 채널(channel1)에 메시지 전송
         Message channelMsg1 = new Message("Connection Check", serverRoom.getOwner());
@@ -61,15 +69,22 @@ public class JavaApplication {
         }
 
         System.out.println();
-        System.out.println("-----------------------------------------------------------");
-        System.out.println("-----------------------------------------------------------");
+        System.out.println("============= ... UsER TeSTinG ... =============");
         System.out.println();
 
         // --- 서버 테스팅 외 기본 작동 테스트 ---
-
+        // user에서는 다 list로 받았지만 message, channel 부분에서는 안 받는 부분들 있음.
+        // 받는 게 맞긴 한데, 출력만 확인할 용도다 보니 생략함.
         List<User> getUser1 = jcfUserService.getUserByName("Alice");
         List<User> getSameNameUsers = jcfUserService.getUserByName("Charlie");
         List<User> getAllUser = jcfUserService.getAllUser();
+
+        // 위에 이용해서 아이디 빼내서 따로 꺼내기 가능.
+        // 사실 굳이 위에 꺼 안 써도 되긴 하지만 아무래도 위에는 리스트니까
+        // 이런 방식으로 단일로 빼낼 수 있다고 표현하려고..
+        User getUser1ById = jcfUserService.getUserById(getUser1.get(0).getId());
+        User getSameNameUser1ById = jcfUserService.getUserById(getSameNameUsers.get(0).getId());
+        User getSameNameUser2ById = jcfUserService.getUserById(getSameNameUsers.get(1).getId());
 
         jcfUserService.updateUserByName(user4, "Lucy");
         jcfUserService.updateUserByEmail(user4, "lucy@codeit.com");
@@ -82,7 +97,7 @@ public class JavaApplication {
         jcfUserService.getAllUser();
 
         System.out.println();
-        System.out.println("-----------------------------------------------------------");
+        System.out.println("============= ... MeSSAge TeSTinG ... =============");
         System.out.println();
 
         // ----- message ------
@@ -96,9 +111,11 @@ public class JavaApplication {
         jcfMessageService.addMessage(message3);
         jcfMessageService.addMessage(message4);
 
-        jcfMessageService.getMessageFromUser(user1);
+        // 출력만 볼거면 굳이 use1Message 필요업긴 하지만, id 로 확인하는 거에 쓰기 위해 받음
+        List<Message> user1Message = jcfMessageService.getMessageFromUser(user1);
         jcfMessageService.getMessageFromUser(user4);
         jcfMessageService.getMessageByContent("Hel");
+        jcfMessageService.getMessageById(user1Message.get(0).getId());
         jcfMessageService.getAllMessage();
 
         jcfMessageService.updateMessage(message2, "Hi");
@@ -110,7 +127,7 @@ public class JavaApplication {
         jcfMessageService.getAllMessage();
 
         System.out.println();
-        System.out.println("-----------------------------------------------------------");
+        System.out.println("============= ... ChANnel TeSTinG ... =============");
         System.out.println();
 
         // -------- channel ---------
@@ -121,8 +138,10 @@ public class JavaApplication {
         jcfChannelService.addChannel(channel2);
         jcfChannelService.addChannel(channel3);
         jcfChannelService.addChannel(channel4);
+        System.out.println();
 
-        jcfChannelService.getChannelByName("Study Room");
+        List<Channel> studyRoom = jcfChannelService.getChannelByName("Study Room");
+        jcfChannelService.getChannelById(studyRoom.get(0).getId());
         jcfChannelService.getAllChannel();
 
         jcfChannelService.updateChannelName(channel3, "Work Room");

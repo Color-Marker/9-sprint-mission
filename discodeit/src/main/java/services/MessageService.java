@@ -11,6 +11,7 @@ public interface MessageService {
     // 현재 구조 상 채널 별로 메시지 리스트가 있는 구조.
     boolean addMessage(Message message);    // 메시지 추가
 
+    Message getMessageById(UUID id);
     // 특정 유저의 메시지만 가져오기 - user 쪽에서 이름이나 id로 찾아서 유저 받아오고, 그거 이용해서 메시지 가져오기
     List<Message> getMessageFromUser(User user);
     // 모든 유저 메시지 받기

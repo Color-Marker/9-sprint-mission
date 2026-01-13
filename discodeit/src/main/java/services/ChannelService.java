@@ -6,11 +6,14 @@ import entity.Message;
 import entity.User;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ChannelService {
 
     // 채널을 서버에 추가하기
     boolean addChannel(Channel channel);
+
+    Channel getChannelById(UUID id);
 
     // 이름으로 채널 찾기
     List<Channel> getChannelByName(String name);

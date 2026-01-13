@@ -18,29 +18,48 @@ public class JCFMessageService implements MessageService {
 
     @Override
     public boolean addMessage(Message message) {
-        System.out.println("Message add complete: " + message.getMessageContent());
+        System.out.println("-- Message sent by " + message.getSender().getDisplayName() + " --");
+        System.out.println("'" + message.getMessageContent() + "'");
+        System.out.println();
         return data.add(message);
+    }
+
+    @Override
+    public Message getMessageById(UUID id) {
+        for(Message m: data){
+            if(m.getId().equals(id)){
+                System.out.println("-- Searching message by id: " + id + " --");
+                System.out.println("sender: " + m.getSender().getDisplayName());
+                System.out.println("'" + m.getMessageContent() + "'");
+                System.out.println();
+                return m;
+            }
+        }
+        return null;
     }
 
     @Override
     public List<Message> getMessageFromUser(User user) {
         List<Message> buffer = new ArrayList<>();
-        System.out.println("User " + user.getDisplayName() + " sent ");
+        System.out.println("-- All Message that " + user.getDisplayName() + " sent --");
         for(Message m : data){
             if(m.getSender().equals(user)){
                 System.out.println("'" + m.getMessageContent() + "'");
                 buffer.add(m);
             }
         }
+        System.out.println();
         return buffer;
     }
 
     @Override
     public List<Message> getAllMessage() {
-        System.out.println("All message sent: ");
+        System.out.println(" -- All message information --");
         for(Message m: data){
-            System.out.println("id: " + m.getId() + " sender: " + m.getSender().getDisplayName());
+            System.out.println("id: " + m.getId());
+            System.out.println("sender: " + m.getSender().getDisplayName());
             System.out.println("'" + m.getMessageContent() + "'");
+            System.out.println();
         }
         return data;
     }
@@ -48,13 +67,14 @@ public class JCFMessageService implements MessageService {
     @Override
     public List<Message> getMessageByContent(String messageContent) {
         List<Message> buffer = new ArrayList<>();
-        System.out.println("Searching message...");
+        System.out.println("-- Searching message by content: " + messageContent + " --");
         for(Message m : data){
             if(m.getMessageContent().contains(messageContent)){
                 System.out.println("'" + m.getMessageContent() + "' from " + m.getSender().getDisplayName());
                 buffer.add(m);
             }
         }
+        System.out.println();
         return buffer;
     }
 
@@ -63,8 +83,13 @@ public class JCFMessageService implements MessageService {
     public boolean updateMessage(Message message, String messageContent) {
         for(Message m: data){
             if(m.equals(message)){
+                System.out.println("-- Update message --");
+                System.out.println("id: " + m.getId());
+                System.out.println("sender: " + m.getSender());
+                System.out.print("'" + m.getMessageContent() + "' -> '");
                 m.setMessageContent(messageContent);
-                System.out.println("Update message " + m.getId()+ " content to '" + m.getMessageContent() +"'");
+                System.out.println(m.getMessageContent() +"'");
+                System.out.println();
                 return true;
             }
         }
@@ -75,8 +100,9 @@ public class JCFMessageService implements MessageService {
     public boolean deleteMessage(Message message) {
         for(Message m: data){
             if(m.equals(message)){
-                System.out.println("Deleted message '" + m.getMessageContent() + "'");
+                System.out.println("-- Deleted message '" + m.getMessageContent() + "' by user " + m.getSender().getDisplayName() + " --");
                 data.remove(m);
+                System.out.println();
                 return true;
             }
         }
