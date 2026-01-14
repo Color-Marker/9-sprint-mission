@@ -5,6 +5,7 @@ import entity.ChannelType;
 import entity.Message;
 import entity.User;
 import services.ChannelService;
+import services.MessageService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +13,11 @@ import java.util.UUID;
 
 public class JCFChannelService implements ChannelService {
     private final List<Channel> data;
-    private final JCFMessageService jcfMessageService;
+    private final MessageService messageService;
 
-    public JCFChannelService(JCFMessageService jcfMessageService){
+    public JCFChannelService(MessageService messageService){
         data = new ArrayList<>() {};
-        this.jcfMessageService = jcfMessageService;
+        this.messageService = messageService;
     }
 
     @Override
@@ -109,7 +110,7 @@ public class JCFChannelService implements ChannelService {
                 System.out.println("sender: " + message.getSender().getDisplayName());
                 System.out.println("new message: " + message.getMessageContent());
                 System.out.println();
-                return jcfMessageService.addMessage(message);
+                return messageService.addMessage(message);
             }
         }
         return false;

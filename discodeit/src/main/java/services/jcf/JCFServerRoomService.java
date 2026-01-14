@@ -12,11 +12,11 @@ import java.util.UUID;
 
 public class JCFServerRoomService implements ServerRoomService {
     private final List<ServerRoom> data;
-    private final JCFChannelService jcfChannelService;
+    private final ChannelService channelService;
 
-    public JCFServerRoomService(JCFChannelService jcfchannelService){
+    public JCFServerRoomService(ChannelService channelService){
         data = new ArrayList<>() {};
-        this.jcfChannelService = jcfchannelService;
+        this.channelService = channelService;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class JCFServerRoomService implements ServerRoomService {
     public boolean addChannelToServer(ServerRoom serverRoom, Channel channel) {
         System.out.println("--- In server(" + serverRoom.getServerName() + ") channel (" + channel.getChannelName() +") added ---");
         serverRoom.getChannel().add(channel);
-        return jcfChannelService.addChannel(channel);
+        return channelService.addChannel(channel);
     }
 
     @Override

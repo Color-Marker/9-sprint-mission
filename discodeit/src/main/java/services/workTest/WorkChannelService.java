@@ -5,6 +5,7 @@ import entity.ChannelType;
 import entity.Message;
 import entity.User;
 import services.ChannelService;
+import services.MessageService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +13,11 @@ import java.util.UUID;
 
 public class WorkChannelService implements ChannelService {
     private final List<Channel> data;
-    private final WorkMessageService jcfMessageService;
+    private final MessageService messageService;
 
-    public WorkChannelService(WorkMessageService jcfMessageService){
+    public WorkChannelService(MessageService messageService){
         data = new ArrayList<>() {};
-        this.jcfMessageService = jcfMessageService;
+        this.messageService = messageService;
     }
 
     @Override
@@ -79,7 +80,7 @@ public class WorkChannelService implements ChannelService {
         for(Channel c: data){
             if(c.equals(channel)){
                 c.getMessages().add(message);
-                return jcfMessageService.addMessage(message);
+                return messageService.addMessage(message);
             }
         }
         return false;

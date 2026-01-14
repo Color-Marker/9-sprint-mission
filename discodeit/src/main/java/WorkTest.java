@@ -1,5 +1,8 @@
-// /***
 import entity.User;
+import services.ChannelService;
+import services.MessageService;
+import services.ServerRoomService;
+import services.UserService;
 import services.jcf.JCFChannelService;
 import services.jcf.JCFMessageService;
 import services.jcf.JCFServerRoomService;
@@ -15,10 +18,10 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class WorkTest {
-    static WorkMessageService workMessageService = new WorkMessageService();
-    static WorkChannelService workChannelService = new WorkChannelService(workMessageService);
-    static WorkServerRoomService workServerRoomService = new WorkServerRoomService(workChannelService);
-    static WorkUserService workUserService = new WorkUserService();
+    static MessageService messageService = new WorkMessageService();
+    static ChannelService channelService = new WorkChannelService(messageService);
+    static ServerRoomService workServerRoomService = new WorkServerRoomService(channelService);
+    static UserService userService = new WorkUserService();
 
     static User currentUser = null;
     static User admin = new User("admin","admin", "admin@codeit.com","01000000000");
@@ -32,10 +35,10 @@ public class WorkTest {
     static Scanner sc = new Scanner(System.in);
 
     static {
-        workUserService.addUser(admin);
-        workUserService.addUser(user1);
-        workUserService.addUser(user2);
-        workUserService.addUser(user2_2);
+        userService.addUser(admin);
+        userService.addUser(user1);
+        userService.addUser(user2);
+        userService.addUser(user2_2);
     }
 
     public static boolean myInfoEdit(){
@@ -47,7 +50,7 @@ public class WorkTest {
                 case 1:
                     System.out.print("Name: " + currentUser.getDisplayName() + " -> ");
                     String newName = sc.next();
-                    workUserService.updateUserByName(currentUser,newName);
+                    userService.updateUserByName(currentUser,newName);
                     System.out.println(currentUser.getDisplayName());
                     return true;
                 case 2:
@@ -56,7 +59,7 @@ public class WorkTest {
                     if(currentUser.getPassword().equals(pwCheck)){
                         System.out.print("Type new password: ");
                         String newPw = sc.next();
-                        workUserService.updateUserByPassword(currentUser,newPw);
+                        userService.updateUserByPassword(currentUser,newPw);
                         System.out.println("! Password changed !");
                         return true;
                     }
@@ -67,13 +70,13 @@ public class WorkTest {
                 case 3:
                     System.out.print("Email: " + currentUser.getEmail() + " -> ");
                     String newEmail = sc.next();
-                    workUserService.updateUserByName(currentUser,newEmail);
+                    userService.updateUserByName(currentUser,newEmail);
                     System.out.println(currentUser.getEmail());
                     return true;
                 case 4:
                     System.out.print("Phone Number: " + currentUser.getPhoneNumber() + " -> ");
                     String newNumber = sc.next();
-                    workUserService.updateUserByNumber(currentUser,newNumber);
+                    userService.updateUserByNumber(currentUser,newNumber);
                     System.out.println(currentUser.getPhoneNumber());
                     return true;
                 case 5:
@@ -146,7 +149,7 @@ public class WorkTest {
                 case 1:
                     System.out.print("Type name of user: ");
                     String name = sc.next();
-                    List<User> findUser = workUserService.getUserByName(name);
+                    List<User> findUser = userService.getUserByName(name);
                     for(User p: findUser){
                         System.out.println("Name: " + p.getDisplayName());
                         System.out.println("ID: " + p.getId());
@@ -154,7 +157,7 @@ public class WorkTest {
                     }
                     break;
                 case 2:
-                    List<User> allUser = workUserService.getAllUser();
+                    List<User> allUser = userService.getAllUser();
                     System.out.println(".... All Users ....");
                     for(User p: allUser){
                         if(p.equals(admin) && !currentUser.equals(admin))
@@ -181,7 +184,7 @@ public class WorkTest {
                             System.out.println("Admin can't be deleted");
                         }
                         else {
-                            List<User> findTarget = workUserService.getUserByName(delName);
+                            List<User> findTarget = userService.getUserByName(delName);
                             if(findTarget.isEmpty()){
                                 System.out.println("Can't find target...");
                                 break;
@@ -196,13 +199,13 @@ public class WorkTest {
                                 System.out.println();
                                 System.out.print("Type ID: ");
                                 UUID delId = UUID.fromString((String)sc.next());
-                                User delTarget = workUserService.getUserById(delId);
+                                User delTarget = userService.getUserById(delId);
                                 System.out.println("Delete user " + delTarget.getDisplayName());
-                                workUserService.deleteUser(delTarget);
+                                userService.deleteUser(delTarget);
                             }
                             else{
                                 System.out.println("Delete " + findTarget.get(0).getDisplayName());
-                                workUserService.deleteUser(findTarget.get(0));
+                                userService.deleteUser(findTarget.get(0));
                             }
                         }
                     }
@@ -224,7 +227,7 @@ public class WorkTest {
         String name = sc.next();
         System.out.print("Password: ");
         String password = sc.next();
-        List<User> buffer = workUserService.getUserByName(name);
+        List<User> buffer = userService.getUserByName(name);
         for(User p: buffer){
             if(p.getPassword().equals(password)){
                 System.out.println("Welcome! " + p.getDisplayName());
@@ -251,7 +254,7 @@ public class WorkTest {
         System.out.print("Phone number: ");
         String number = sc.next();
         User newUser = new User(name, password,email,number);
-        workUserService.addUser(newUser);
+        userService.addUser(newUser);
     }
 
     public static User whoAreYou(){
@@ -330,4 +333,3 @@ public class WorkTest {
         }
     }
 }
-// ***/

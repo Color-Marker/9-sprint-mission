@@ -3,6 +3,7 @@ package services.workTest;
 import entity.Channel;
 import entity.ServerRoom;
 import entity.User;
+import services.ChannelService;
 import services.ServerRoomService;
 
 import java.util.ArrayList;
@@ -11,29 +12,26 @@ import java.util.UUID;
 
 public class WorkServerRoomService implements ServerRoomService {
     private final List<ServerRoom> data;
-    private final WorkChannelService jcfChannelService;
+    private final ChannelService channelService;
 
-    public WorkServerRoomService(WorkChannelService jcfchannelService){
+    public WorkServerRoomService(ChannelService channelService){
         data = new ArrayList<>() {};
-        this.jcfChannelService = jcfchannelService;
+        this.channelService = channelService;
     }
 
     @Override
     public boolean addServerRoom(ServerRoom serverRoom) {
-//        System.out.println("--- New Server (" +serverRoom.getServerName() + ") added by user(" + serverRoom.getOwner().getDisplayName() +") ---");
         return data.add(serverRoom);
     }
 
     @Override
     public boolean addChannelToServer(ServerRoom serverRoom, Channel channel) {
-//        System.out.println("--- In server(" + serverRoom.getServerName() + ") channel (" + channel.getChannelName() +") added ---");
         serverRoom.getChannel().add(channel);
-        return jcfChannelService.addChannel(channel);
+        return channelService.addChannel(channel);
     }
 
     @Override
     public boolean addMemberToServer(ServerRoom serverRoom, User user) {
-//        System.out.println("--- In server(" + serverRoom.getServerName() + ") user(" + user.getDisplayName() + ") joined ---");
         return serverRoom.getMember().add(user);
     }
 
@@ -67,9 +65,7 @@ public class WorkServerRoomService implements ServerRoomService {
     public boolean updateServerRoom(ServerRoom serverRoom, String serverName) {
         for(ServerRoom s: data){
             if(s.equals(serverRoom)){
-//                System.out.print("--- Server " + s.getServerName() + " chaned name to ");
                 s.setServerName(serverName);
-//                System.out.println(serverName + " ---");
                 s.setUpdatedAt();
                 return true;
             }
@@ -81,7 +77,6 @@ public class WorkServerRoomService implements ServerRoomService {
     public boolean deleteServerRoom(ServerRoom serverRoom) {
         for(ServerRoom s: data){
             if(s.equals(serverRoom)){
-//                System.out.println("--- Deleted server " + serverRoom.getServerName() + " ---");
                 data.remove(s);
                 return true;
             }
