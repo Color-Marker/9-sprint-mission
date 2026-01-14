@@ -15,6 +15,7 @@ public interface UserService {
     boolean updateUserByName(User user, String displayName);
     boolean updateUserByEmail(User user,String email);
     boolean updateUserByNumber(User user, String phoneNumber);
+    boolean updateUserByPassword(User user, String password);
 
     boolean deleteUser(User user); //
 

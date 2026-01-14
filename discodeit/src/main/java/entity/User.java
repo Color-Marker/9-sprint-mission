@@ -9,12 +9,14 @@ public class User {
     private Long updatedAt;
 
     private String displayName;
+    private String password;
     private String email;
     private String phoneNumber;
 
 
-    public User(String displayName, String email, String phoneNumber) {
+    public User(String displayName, String password, String email, String phoneNumber) {
         this.id = UUID.randomUUID();
+        this.password = password;
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis();
         this.displayName = displayName;
@@ -36,6 +38,10 @@ public class User {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getEmail() {
@@ -60,6 +66,10 @@ public class User {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setEmail(String email) {

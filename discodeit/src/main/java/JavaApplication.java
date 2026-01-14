@@ -26,11 +26,11 @@ public class JavaApplication {
         JCFUserService jcfUserService = new JCFUserService();
 
         // --- user ----
-        User user1 = new User("Alice", "alice@codeit.com", "01000000000");
-        User user2 = new User("Bob", "bob@codeit.com", "01012345678");
-        User user3 = new User("Charlie", "charlie@codeit.com", "01099999999");
-        User user4 = new User("Charlie", "charlie2@codeit.com", "01088888888");
-        User user5 = new User("Harry", "harry@codeit.com", "01043214321");
+        User user1 = new User("Alice", "alice", "alice@codeit.com", "01000000000");
+        User user2 = new User("Bob", "bob","bob@codeit.com", "01012345678");
+        User user3 = new User("Charlie", "charlie","charlie@codeit.com", "01099999999");
+        User user4 = new User("Charlie", "charlie","charlie2@codeit.com", "01088888888");
+        User user5 = new User("Harry", "harry","harry@codeit.com", "01043214321");
 
         jcfUserService.addUser(user1);
         jcfUserService.addUser(user2);
