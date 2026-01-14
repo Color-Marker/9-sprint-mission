@@ -67,7 +67,7 @@ public class JavaApplication {
         System.out.println("Server owner: " + serverRoom.getOwner().getDisplayName());
         System.out.println("Server member1: " + serverRoom.getMember().get(0).getDisplayName());
         System.out.println("Server member2: " + serverRoom.getMember().get(1).getDisplayName());
-        System.out.println("Server channel's msg");
+        System.out.println("Server user's msg in channel Test");
         for(User p: serverRoom.getMember()){
             jcfChannelService.getAllMessageFromThatUser(channel1, p);
         }
