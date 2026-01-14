@@ -25,6 +25,9 @@ public class WorkTest {
     static User user1 = new User("user1","user1", "user1@codeit.com","01011111111");
     static User user2 = new User("user2","user2", "user2@codeit.com","01022222222");
     static User user2_2 = new User("user2","user2_2", "user22@codeit.com","01033333333");
+    // 살짝 고민 중인 게 이름이랑 비번이 둘다 같은 경우...
+    // 중복을 id로만 구별하다보니 곤란한 부분. 생각해봐야 함.
+
 
     static Scanner sc = new Scanner(System.in);
 
@@ -95,7 +98,7 @@ public class WorkTest {
 
             int type = sc.nextInt();
             switch (type) {
-                case 1:
+                case 1: // 나중에 toString으로 바꿀 생각..
                     System.out.println("... My Information ...");
                     System.out.println("Name: " + currentUser.getDisplayName());
                     System.out.println("Id: " + currentUser.getId());
@@ -154,6 +157,8 @@ public class WorkTest {
                     List<User> allUser = workUserService.getAllUser();
                     System.out.println(".... All Users ....");
                     for(User p: allUser){
+                        if(p.equals(admin) && !currentUser.equals(admin))
+                            continue;
                         System.out.println("Name: " + p.getDisplayName());
                         System.out.println("ID: " + p.getId());
                         System.out.println();
@@ -210,7 +215,7 @@ public class WorkTest {
     }
 
     public static void workServers(){
-
+        // 아직 안 함
     }
 
     public static User doLogin(){
@@ -235,6 +240,10 @@ public class WorkTest {
         System.out.println("--- Join process ---");
         System.out.print("Name: ");
         String name = sc.next();
+        if(name.equals(admin.getDisplayName())){
+            System.out.println("Sorry. That is not allowed name!");
+            return;
+        }
         System.out.print("Password: ");
         String password = sc.next();
         System.out.print("Email: ");
