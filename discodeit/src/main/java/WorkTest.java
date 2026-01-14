@@ -35,6 +35,96 @@ public class WorkTest {
         workUserService.addUser(user2_2);
     }
 
+    public static boolean myInfoEdit(){
+        while(true) {
+            System.out.println("!! Which one to edit? !!");
+            System.out.println("1. Name / 2. Password / 3. Email / 4. Phone Number / 5. Back");
+            int type = sc.nextInt();
+            switch (type) {
+                case 1:
+                    System.out.print("Name: " + currentUser.getDisplayName() + " -> ");
+                    String newName = sc.next();
+                    workUserService.updateUserByName(currentUser,newName);
+                    System.out.println(currentUser.getDisplayName());
+                    return true;
+                case 2:
+                    System.out.print("Type current password: ");
+                    String pwCheck = sc.next();
+                    if(currentUser.getPassword().equals(pwCheck)){
+                        System.out.print("Type new password: ");
+                        String newPw = sc.next();
+                        workUserService.updateUserByPassword(currentUser,newPw);
+                        System.out.println("! Password changed !");
+                        return true;
+                    }
+                    else{
+                        System.out.println("Wrong password!");
+                        break;
+                    }
+                case 3:
+                    System.out.print("Email: " + currentUser.getEmail() + " -> ");
+                    String newEmail = sc.next();
+                    workUserService.updateUserByName(currentUser,newEmail);
+                    System.out.println(currentUser.getEmail());
+                    return true;
+                case 4:
+                    System.out.print("Phone Number: " + currentUser.getPhoneNumber() + " -> ");
+                    String newNumber = sc.next();
+                    workUserService.updateUserByNumber(currentUser,newNumber);
+                    System.out.println(currentUser.getPhoneNumber());
+                    return true;
+                case 5:
+                    return false;
+                default:
+                    System.out.println("Warning: Only type right numbers");
+                    break;
+
+            }
+        }
+    }
+
+    public static void myInformation(){
+        System.out.println("--- My Information ---");
+        while(true){
+            System.out.println("Type number to work");
+            System.out.println("-----------------------------------");
+
+            System.out.println("1. View my information detail");
+            System.out.println("2. Edit my information");
+            System.out.println("3. Back to user");
+
+            int type = sc.nextInt();
+            switch (type) {
+                case 1:
+                    System.out.println("... My Information ...");
+                    System.out.println("Name: " + currentUser.getDisplayName());
+                    System.out.println("Id: " + currentUser.getId());
+                    System.out.println("Password: [CENSORED]");
+                    System.out.println("Email: " + currentUser.getEmail());
+                    System.out.println("Phone number: " + currentUser.getPhoneNumber());
+                    System.out.println("Created time: " + currentUser.getCreatedAt());
+                    System.out.println("Edited time: " + currentUser.getUpdatedAt());
+                    System.out.println();
+                    break;
+                case 2:
+                    boolean isedited = myInfoEdit();
+                    if(isedited){
+                        System.out.println("My information is edited!");
+                    }
+                    else{
+                        System.out.println("Nothing is changed...");
+                    }
+                    break;
+                case 3:
+                    System.out.println("Back to user menu...");
+                    return;
+                default:
+                    System.out.println("Warning: Only type right numbers");
+                    break;
+            }
+        }
+    }
+
     public static void workUsers(){
         System.out.println("--- User menu ---");
 
@@ -44,8 +134,9 @@ public class WorkTest {
 
             System.out.println("1. Search for user");
             System.out.println("2. View all users");
-            System.out.println("3. Back to main");
-            System.out.println("4. (DANGER) Delete user");
+            System.out.println("3. My information");
+            System.out.println("4. Back to main");
+            System.out.println("5. (DANGER) Delete user");
 
             int type = sc.nextInt();
             switch (type) {
@@ -69,9 +160,12 @@ public class WorkTest {
                     }
                     break;
                 case 3:
+                    myInformation();
+                    break;
+                case 4:
                     System.out.println("Back to main menu...");
                     return;
-                case 4:
+                case 5:
                     if(!currentUser.getId().equals(admin.getId())){
                         System.out.println("!!! Sorry! Only admin can use this! !!!");
                     }
@@ -83,23 +177,23 @@ public class WorkTest {
                         }
                         else {
                             List<User> findTarget = workUserService.getUserByName(delName);
-
+                            if(findTarget.isEmpty()){
+                                System.out.println("Can't find target...");
+                                break;
+                            }
                             if (findTarget.size() > 1) {
-                                System.out.println("Many targets are found...");
+                                System.out.println("Many targets are found!");
                                 System.out.println("Which one to delete?");
                                 System.out.println();
                                 for (User p : findTarget) {
                                     System.out.println(p.getDisplayName() + " " + p.getId() + " " + p.getEmail() + " " + p.getPhoneNumber());
                                 }
                                 System.out.println();
-                                System.out.print("Type phone number: ");
-                                String delNumber = sc.next();
-                                for( User p: findTarget){
-                                    if(p.getPhoneNumber().equals(delNumber)){
-                                        System.out.println("Delete " + p.getDisplayName());
-                                        workUserService.deleteUser(p);
-                                    }
-                                }
+                                System.out.print("Type ID: ");
+                                UUID delId = UUID.fromString((String)sc.next());
+                                User delTarget = workUserService.getUserById(delId);
+                                System.out.println("Delete user " + delTarget.getDisplayName());
+                                workUserService.deleteUser(delTarget);
                             }
                             else{
                                 System.out.println("Delete " + findTarget.get(0).getDisplayName());
@@ -225,7 +319,6 @@ public class WorkTest {
 
 
         }
-
     }
 }
 // ***/

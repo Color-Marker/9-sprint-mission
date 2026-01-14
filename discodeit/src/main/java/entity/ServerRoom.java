@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class ServerRoom {
-    private UUID id;
-    private Long createdAt;
+    private final UUID id;
+    private final Long createdAt;
+    private Long updatedAt;
     private List<Channel> channel;
     private User owner;
     private List<User> member;
@@ -15,6 +16,7 @@ public class ServerRoom {
     public ServerRoom(User owner, String serverName) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
+        this.updatedAt = System.currentTimeMillis();
         this.channel = new ArrayList<>();
         this.owner = owner;
         this.member = new ArrayList<>();
@@ -27,6 +29,10 @@ public class ServerRoom {
 
     public Long getCreatedAt() {
         return createdAt;
+    }
+
+    public Long getUpdatedAt() {
+        return updatedAt;
     }
 
     public List<Channel> getChannel() {
@@ -45,12 +51,8 @@ public class ServerRoom {
         return serverName;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public void setCreatedAt(Long createdAt) {
-        this.createdAt = createdAt;
+    public void setUpdatedAt() {
+        this.updatedAt = System.currentTimeMillis();
     }
 
     public void setChannel(List<Channel> channel) {

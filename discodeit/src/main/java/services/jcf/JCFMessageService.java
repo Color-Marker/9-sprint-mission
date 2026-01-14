@@ -90,6 +90,7 @@ public class JCFMessageService implements MessageService {
                 m.setMessageContent(messageContent);
                 System.out.println(m.getMessageContent() +"'");
                 System.out.println();
+                m.setUpdatedAt();
                 return true;
             }
         }

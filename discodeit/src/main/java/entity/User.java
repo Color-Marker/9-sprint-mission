@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class User {
-    private UUID id;
-    private Long createdAt;
+    private final UUID id;
+    private final Long createdAt;
     private Long updatedAt;
 
     private String displayName;
@@ -52,16 +52,8 @@ public class User {
         return phoneNumber;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public void setCreatedAt(Long createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(Long updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedAt() {
+        this.updatedAt = System.currentTimeMillis();;
     }
 
     public void setDisplayName(String displayName) {

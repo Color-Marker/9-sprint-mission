@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class Channel {
-    private UUID id;
-    private Long createdAt;
+    private final UUID id;
+    private final Long createdAt;
     private Long updatedAt;
 
     private List<Message> messages;
@@ -46,16 +46,8 @@ public class Channel {
         return channelName;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public void setCreatedAt(Long createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(Long updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedAt() {
+        this.updatedAt =System.currentTimeMillis();
     }
 
     public void setMessages(List<Message> messages) {

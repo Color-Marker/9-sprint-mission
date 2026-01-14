@@ -76,6 +76,7 @@ public class JCFChannelService implements ChannelService {
                 c.setChannelName(channelName);
                 System.out.println(c.getChannelName());
                 System.out.println();
+                c.setUpdatedAt();
                 return true;
             }
         }
@@ -92,6 +93,7 @@ public class JCFChannelService implements ChannelService {
                 c.setChanneltype(channelType);
                 System.out.println(c.getChanneltype());
                 System.out.println();
+                c.setUpdatedAt();
                 return true;
             }
         }
