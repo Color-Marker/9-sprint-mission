@@ -60,8 +60,21 @@ public class JCFServerRoomService implements ServerRoomService {
     }
 
     @Override
+    public List<ServerRoom> getInvitedServer(User user) {
+        return getAllServerRoom()
+                .stream()
+                .filter(s->s.getMember().stream()
+                        .anyMatch(m->m.getId().equals(user.getId())))
+                .toList();
+    }
+
+    @Override
     public List<ServerRoom> getAllServerRoom() {
-        return data;
+        return new ArrayList<>(data);
+    }
+    @Override
+    public List<Channel> getAllChannel(ServerRoom serverRoom) {
+        return channelService.getAllChannelByServer(serverRoom);
     }
 
     @Override

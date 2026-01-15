@@ -20,6 +20,7 @@ public class ServerRoom {
         this.channel = new ArrayList<>();
         this.owner = owner;
         this.member = new ArrayList<>();
+        this.member.add(owner);
         this.serverName = serverName;
     }
 

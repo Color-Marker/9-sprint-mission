@@ -1,4 +1,4 @@
-import entity.User;
+import entity.*;
 import services.ChannelService;
 import services.MessageService;
 import services.ServerRoomService;
@@ -11,26 +11,40 @@ import services.workTest.WorkChannelService;
 import services.workTest.WorkMessageService;
 import services.workTest.WorkServerRoomService;
 import services.workTest.WorkUserService;
+import util.PrintUtil;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
+
+import static util.AdminUtil.isAdmin;
+import static util.PrintUtil.*;
 
 public class WorkTest {
     static MessageService messageService = new WorkMessageService();
     static ChannelService channelService = new WorkChannelService(messageService);
-    static ServerRoomService workServerRoomService = new WorkServerRoomService(channelService);
+    static ServerRoomService serverRoomService = new WorkServerRoomService(channelService);
     static UserService userService = new WorkUserService();
 
     static User currentUser = null;
     static User admin = new User("admin","admin", "admin@codeit.com","01000000000");
     static User user1 = new User("user1","user1", "user1@codeit.com","01011111111");
     static User user2 = new User("user2","user2", "user2@codeit.com","01022222222");
-    static User user2_2 = new User("user2","user2_2", "user22@codeit.com","01033333333");
+    static User user22 = new User("user2","user2_2", "user22@codeit.com","01033333333");
     // 살짝 고민 중인 게 이름이랑 비번이 둘다 같은 경우...
     // 중복을 id로만 구별하다보니 곤란한 부분. 생각해봐야 함.
 
+    static ServerRoom serverRoom1 = new ServerRoom(admin, "AdminServer");
+    static ServerRoom serverRoom2 = new ServerRoom(user1, "WorkingServer");
+
+    static Channel channel1 = new Channel(ChannelType.CHAT, "AdminTest", serverRoom1);
+    static Channel channel11 = new Channel(ChannelType.CHAT, "Chat", serverRoom2);
+    static Channel channel22 = new Channel(ChannelType.VOICE, "Meeting", serverRoom2);
+
+    static Message adminMssage1 = new Message("This is Admin.", admin, channel1);
+    static Message user1Mssage = new Message("This is user1.", user1, channel11);
+    static Message user2Mssage1 = new Message("This is user2.", user2, channel11);
+    static Message user2Mssage2 = new Message("HeHe I am user2.", user2, channel22);
+    static Message user22Mssage = new Message("This is user22.", user22, channel11);
+    static Message adminMssage2 = new Message("Work checking complete.", admin, channel1);
 
     static Scanner sc = new Scanner(System.in);
 
@@ -38,27 +52,44 @@ public class WorkTest {
         userService.addUser(admin);
         userService.addUser(user1);
         userService.addUser(user2);
-        userService.addUser(user2_2);
+        userService.addUser(user22);
+        serverRoomService.addServerRoom(serverRoom1);
+        serverRoomService.addServerRoom(serverRoom2);
+        serverRoomService.addChannelToServer(serverRoom1, channel1);
+        serverRoomService.addChannelToServer(serverRoom2, channel11);
+        serverRoomService.addChannelToServer(serverRoom2, channel22);
+        serverRoomService.addMemberToServer(serverRoom1, admin);
+        serverRoomService.addMemberToServer(serverRoom2, user1);
+        serverRoomService.addMemberToServer(serverRoom2, user2);
+        serverRoomService.addMemberToServer(serverRoom2, user22);
+        channelService.sendMessageToChannel(channel1, adminMssage1);
+        channelService.sendMessageToChannel(channel1, adminMssage2);
+        channelService.sendMessageToChannel(channel11, user1Mssage);
+        channelService.sendMessageToChannel(channel11, user2Mssage1);
+        channelService.sendMessageToChannel(channel22, user2Mssage2);
+        channelService.sendMessageToChannel(channel11, user22Mssage);
+
     }
 
     public static boolean myInfoEdit(){
         while(true) {
-            System.out.println("!! Which one to edit? !!");
-            System.out.println("1. Name / 2. Password / 3. Email / 4. Phone Number / 5. Back");
-            int type = sc.nextInt();
+            printMenu("!! Which one to edit? !!");
+            printTypeNum("Name", "Password", "Email", "Phone Number", "Back");
+
+            int type = Integer.parseInt(sc.nextLine().trim());
             switch (type) {
                 case 1:
                     System.out.print("Name: " + currentUser.getDisplayName() + " -> ");
-                    String newName = sc.next();
+                    String newName = sc.nextLine().trim();
                     userService.updateUserByName(currentUser,newName);
                     System.out.println(currentUser.getDisplayName());
                     return true;
                 case 2:
                     System.out.print("Type current password: ");
-                    String pwCheck = sc.next();
+                    String pwCheck = sc.nextLine().trim();
                     if(currentUser.getPassword().equals(pwCheck)){
                         System.out.print("Type new password: ");
-                        String newPw = sc.next();
+                        String newPw = sc.nextLine().trim();
                         userService.updateUserByPassword(currentUser,newPw);
                         System.out.println("! Password changed !");
                         return true;
@@ -69,20 +100,20 @@ public class WorkTest {
                     }
                 case 3:
                     System.out.print("Email: " + currentUser.getEmail() + " -> ");
-                    String newEmail = sc.next();
-                    userService.updateUserByName(currentUser,newEmail);
+                    String newEmail = sc.nextLine().trim();
+                    userService.updateUserByEmail(currentUser,newEmail);
                     System.out.println(currentUser.getEmail());
                     return true;
                 case 4:
                     System.out.print("Phone Number: " + currentUser.getPhoneNumber() + " -> ");
-                    String newNumber = sc.next();
+                    String newNumber = sc.nextLine().trim();
                     userService.updateUserByNumber(currentUser,newNumber);
                     System.out.println(currentUser.getPhoneNumber());
                     return true;
                 case 5:
                     return false;
                 default:
-                    System.out.println("Warning: Only type right numbers");
+                    typeRightNum();
                     break;
 
             }
@@ -90,31 +121,18 @@ public class WorkTest {
     }
 
     public static void myInformation(){
-        System.out.println("--- My Information ---");
+        printMenu("My information");
         while(true){
-            System.out.println("Type number to work");
-            System.out.println("-----------------------------------");
+            printTypeNum("View my information detail", "Edit my information", "Back to user");
 
-            System.out.println("1. View my information detail");
-            System.out.println("2. Edit my information");
-            System.out.println("3. Back to user");
-
-            int type = sc.nextInt();
+            int type = Integer.parseInt(sc.nextLine().trim());
             switch (type) {
-                case 1: // 나중에 toString으로 바꿀 생각..
-                    System.out.println("... My Information ...");
-                    System.out.println("Name: " + currentUser.getDisplayName());
-                    System.out.println("Id: " + currentUser.getId());
-                    System.out.println("Password: [CENSORED]");
-                    System.out.println("Email: " + currentUser.getEmail());
-                    System.out.println("Phone number: " + currentUser.getPhoneNumber());
-                    System.out.println("Created time: " + currentUser.getCreatedAt());
-                    System.out.println("Edited time: " + currentUser.getUpdatedAt());
-                    System.out.println();
+                case 1:
+                    System.out.println(currentUser.toString());
                     break;
                 case 2:
-                    boolean isedited = myInfoEdit();
-                    if(isedited){
+                    boolean isEdited = myInfoEdit();
+                    if(isEdited){
                         System.out.println("My information is edited!");
                     }
                     else{
@@ -122,64 +140,51 @@ public class WorkTest {
                     }
                     break;
                 case 3:
-                    System.out.println("Back to user menu...");
+                    printBack("user menu");
                     return;
                 default:
-                    System.out.println("Warning: Only type right numbers");
+                    typeRightNum();
                     break;
             }
         }
     }
 
     public static void workUsers(){
-        System.out.println("--- User menu ---");
+        printMenu("User menu");
 
         while(true) {
-            System.out.println("Type number to work");
-            System.out.println("-----------------------------------");
+            printTypeNum("Search for user", "View all users", "My information", "Back to main", "(DANGER) Delete user");
 
-            System.out.println("1. Search for user");
-            System.out.println("2. View all users");
-            System.out.println("3. My information");
-            System.out.println("4. Back to main");
-            System.out.println("5. (DANGER) Delete user");
-
-            int type = sc.nextInt();
+            int type = Integer.parseInt(sc.nextLine().trim());
             switch (type) {
                 case 1:
                     System.out.print("Type name of user: ");
-                    String name = sc.next();
+                    String name = sc.nextLine().trim();
                     List<User> findUser = userService.getUserByName(name);
-                    findUser.forEach(p->{
-                        System.out.println("Name: " + p.getDisplayName());
-                        System.out.println("ID: " + p.getId());
-                        System.out.println();
-                    });
+                    findUser.forEach(PrintUtil::printUserInfo);
                     break;
                 case 2:
                     List<User> allUser = userService.getAllUser();
                     System.out.println(".... All Users ....");
                     for(User p: allUser){
-                        if(p.equals(admin) && !currentUser.equals(admin))
+                        if(p.equals(admin) && !isAdmin(currentUser,admin))
                             continue;
-                        System.out.println("Name: " + p.getDisplayName());
-                        System.out.println("ID: " + p.getId());
-                        System.out.println();
+                        printUserInfo(p);
                     }
                     break;
                 case 3:
                     myInformation();
                     break;
                 case 4:
-                    System.out.println("Back to main menu...");
+                    printBack("main menu");
                     return;
                 case 5:
-                    if(!currentUser.getId().equals(admin.getId())){
-                        System.out.println("!!! Sorry! Only admin can use this! !!!");
+                    if(!isAdmin(currentUser, admin)){
+                        onlyAdminCanWarning();
                     }
                     else{
                         System.out.print("Type name of user: ");
-                        String delName = sc.next();
+                        String delName = sc.nextLine().trim();
                         if(delName.equals(admin.getDisplayName())){
                             System.out.println("Admin can't be deleted");
                         }
@@ -198,7 +203,7 @@ public class WorkTest {
                                 }
                                 System.out.println();
                                 System.out.print("Type ID: ");
-                                UUID delId = UUID.fromString((String)sc.next());
+                                UUID delId = UUID.fromString((String)sc.nextLine().trim());
                                 User delTarget = userService.getUserById(delId);
                                 System.out.println("Delete user " + delTarget.getDisplayName());
                                 userService.deleteUser(delTarget);
@@ -211,22 +216,216 @@ public class WorkTest {
                     }
                     break;
                 default:
-                    System.out.println("Warning: Only type right numbers");
+                    typeRightNum();
                     break;
             }
         }
     }
 
     public static void workServers(){
-        // 아직 안 함
+        printMenu("Server menu");
+        List<ServerRoom> serverList = new ArrayList<>();
+
+        while(true) {
+            if(isAdmin(currentUser, admin)){
+                System.out.println("- All server list -");
+                serverList = serverRoomService.getAllServerRoom();
+            }else{
+                System.out.println("- Invited server list -");
+                serverList = serverRoomService.getInvitedServer(currentUser);
+            }
+            printServerList(serverList);
+            System.out.println();
+            printTypeNum( "Enter to server", "Add new server", "Back to main", "(DANGER) Delete server");
+
+            int type = Integer.parseInt(sc.nextLine().trim());
+            switch (type) {
+                case 1:
+                    serverSelect();
+                    break;
+                case 2:
+                    System.out.print("Type new server name: ");
+                    String newName = sc.nextLine().trim();
+                    serverRoomService.addServerRoom(new ServerRoom(currentUser, newName));
+                    System.out.println("New server added!");
+                    System.out.println();
+                    break;
+                case 3:
+                    printBack("main menu");
+                    return;
+                case 4:
+                    serverDel();
+                    break;
+                default:
+                    typeRightNum();
+                    break;
+            }
+        }
+    }
+
+    private static void serverDel() {
+        System.out.print("Type server name: ");
+        String serverName = sc.nextLine().trim();
+        // 중복 이름 없다고 가정..
+        List<ServerRoom> selectedServers = serverRoomService.getServerByName(serverName);
+        if (selectedServers.isEmpty()) {
+            System.out.println("Can't find target...");
+        } else {
+            if (selectedServers.get(0).getOwner().equals(currentUser) || isAdmin(currentUser, admin)) {
+                System.out.println("Delete " + serverName);
+                serverRoomService.deleteServerRoom(selectedServers.get(0));
+            } else {
+                notAllowedWarning();
+            }
+        }
+    }
+
+    private static void serverSelect() {
+            System.out.print("Type server name: ");
+            String serverName = sc.nextLine().trim();
+            // 중복 이름 없다고 가정..
+            List<ServerRoom> selectedServers = serverRoomService.getServerByName(serverName);
+            if(selectedServers.isEmpty()){
+                System.out.println("Can't find target...");
+            }
+            else{
+                serverEnter(selectedServers.get(0));
+            }
+    }
+
+    private static void serverEnter(ServerRoom server) {
+        printMenu("Welcome to " + server.getServerName() + "!");
+        while(true) {
+            printServerChannel(serverRoomService, server);
+            printTypeNum("Enter to channel", "View users", "Back to server menu", "(DANGER) Delete channel");
+            int type = Integer.parseInt(sc.nextLine().trim());
+            switch (type) {
+                case 1:
+                    channelSelect(server);
+                    break;
+                case 2:
+                    printServerMember(server);
+                    break;
+                case 3:
+                    printBack("server menu");
+                    return;
+                case 4:
+                    channelDel(server);
+                    break;
+                default:
+                    typeRightNum();
+                    break;
+            }
+        }
+    }
+
+    private static void channelDel(ServerRoom server) {
+        System.out.print("Type channel name: ");
+        String channelName = sc.nextLine().trim();
+        // 중복 이름 없다고 가정..
+        List<Channel> selectedChannels = channelService.getChannelByName(channelName);
+        if (selectedChannels.isEmpty()) {
+            System.out.println("Can't find target...");
+        } else {
+            if (server.getOwner().equals(currentUser) || isAdmin(currentUser, admin)) {
+                System.out.println("Delete " + channelName);
+                channelService.deleteChannel(selectedChannels.get(0));
+            } else {
+                notAllowedWarning();
+            }
+        }
+    }
+
+    private static void channelSelect(ServerRoom server) {
+        System.out.print("Type channel name: ");
+        String channelName = sc.nextLine().trim();
+        // 중복 이름 없다고 가정..
+        List<Channel> selectedChannels = channelService.getChannelByName(channelName);
+        if(selectedChannels.isEmpty()){
+            System.out.println("Can't find target...");
+        }
+        else{
+            channelEnter(selectedChannels.get(0), server);
+        }
+    }
+
+    private static void channelEnter(Channel channel, ServerRoom server) {
+        printMenu("Entered to " + channel.getChannelName());
+        while(true) {
+            printAllMsgInChannel(channelService,channel, currentUser);
+            printTypeNum("Send Message", "Edit Message", "Delete Message", "Back to channel menu");
+            int type = Integer.parseInt(sc.nextLine().trim());
+            switch (type) {
+                case 1:
+                    sendMsg(channel);
+                    break;
+                case 2:
+                    editMsg(channel);
+                    break;
+                case 3:
+                    delMsg(channel,server);
+                    break;
+                case 4:
+                    printBack("channel menu");
+                    return;
+                default:
+                    typeRightNum();
+                    break;
+            }
+        }
+    }
+
+    private static void delMsg(Channel channel, ServerRoom server) {
+        List<Message> msgs = channelService.getAllMessage(channel);
+        System.out.print("Type msg number to delete: ");
+        int index = Integer.parseInt(sc.nextLine().trim());
+
+        if (index >= 0 && index < msgs.size()) {
+            Message target = msgs.get(index);
+            if (target.getSender().equals(currentUser) || server.getOwner().equals(currentUser) || isAdmin(currentUser, admin)) {
+                messageService.deleteMessage(target);
+                System.out.println("Deleted!");
+            } else {
+                notAllowedWarning();
+            }
+        } else {
+            typeRightNum();
+        }
+    }
+
+    private static void editMsg(Channel channel) {
+        List<Message> msgs = channelService.getAllMessage(channel);
+        System.out.print("Type msg number to edit: ");
+        int index = Integer.parseInt(sc.nextLine().trim());
+
+        if (index >= 0 && index < msgs.size()) {
+            Message target = msgs.get(index);
+            if (target.getSender().equals(currentUser) || isAdmin(currentUser, admin)) {
+                System.out.print("Type new msg content: ");
+                String newContent = sc.nextLine().trim();
+                messageService.updateMessage(target, newContent);
+                System.out.println("Message is edited!");
+            } else {
+                notAllowedWarning();
+            }
+        } else {
+            typeRightNum();
+        }
+    }
+
+    private static void sendMsg(Channel channel) {
+        System.out.print("Type msg: ");
+        String msgContent = sc.nextLine().trim();
+        channelService.sendMessageToChannel(channel, new Message(msgContent, currentUser, channel));
+        System.out.println("Message is sent!");
     }
 
     public static User doLogin(){
-        System.out.println("--- Login process ---");
+        printMenu("Login process");
         System.out.print("Name: ");
-        String name = sc.next();
+        String name = sc.nextLine().trim();
         System.out.print("Password: ");
-        String password = sc.next();
+        String password = sc.nextLine().trim();
         List<User> buffer = userService.getUserByName(name);
         for(User p: buffer){
             if(p.getPassword().equals(password)){
@@ -240,32 +439,28 @@ public class WorkTest {
     }
 
     public static void doJoin(){
-        System.out.println("--- Join process ---");
+        printMenu("Join process");
         System.out.print("Name: ");
-        String name = sc.next();
+        String name = sc.nextLine().trim();
         if(name.equals(admin.getDisplayName())){
             System.out.println("Sorry. That is not allowed name!");
             return;
         }
         System.out.print("Password: ");
-        String password = sc.next();
+        String password = sc.nextLine().trim();
         System.out.print("Email: ");
-        String email = sc.next();
+        String email = sc.nextLine().trim();
         System.out.print("Phone number: ");
-        String number = sc.next();
+        String number = sc.nextLine().trim();
         User newUser = new User(name, password,email,number);
         userService.addUser(newUser);
     }
 
     public static User whoAreYou(){
-        System.out.println("Type number to work");
-        System.out.println("-----------------------------------");
+        printMenu("Please login");
+        printTypeNum("Login", "Join", "Exit");
 
-        System.out.println("1. Login");
-        System.out.println("2. Join");
-        System.out.println("3. Exit");
-
-        int type = sc.nextInt();
+        int type = Integer.parseInt(sc.nextLine().trim());
         switch(type){
             case 1:
                 return doLogin();
@@ -277,23 +472,16 @@ public class WorkTest {
                 System.exit(0);
                 return null;
             default:
-                System.out.println("Warning: Only type right numbers");
+                typeRightNum();
                 return null;
         }
     }
 
     public static User workList(){
-        System.out.println("--- Main menu ---");
+        printMenu("Main menu");
+        printTypeNum("Users", "Servers", "Logout", "Exit");
 
-        System.out.println("Type number to work");
-        System.out.println("-----------------------------------");
-
-        System.out.println("1. Users");
-        System.out.println("2. Servers");
-        System.out.println("3. Logout");
-        System.out.println("4. Exit");
-
-        int type = sc.nextInt();
+        int type = Integer.parseInt(sc.nextLine().trim());
         switch (type) {
             case 1:
                 workUsers();
@@ -309,7 +497,7 @@ public class WorkTest {
                 System.exit(0);
                 return null;
             default:
-                System.out.println("Warning: Only type right numbers");
+                typeRightNum();
                 return currentUser;
         }
 
@@ -328,8 +516,6 @@ public class WorkTest {
             else {
                 currentUser = workList();
             }
-
-
         }
     }
 }

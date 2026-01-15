@@ -1,9 +1,6 @@
 package services;
 
-import entity.Channel;
-import entity.ChannelType;
-import entity.Message;
-import entity.User;
+import entity.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +17,7 @@ public interface ChannelService {
 
     // 모든 채널 보기
     List<Channel> getAllChannel();
-
+    List<Channel> getAllChannelByServer(ServerRoom server);
     // 채널 이름 바꾸기
     boolean updateChannelName(Channel channel, String channelName);
 
@@ -32,7 +29,7 @@ public interface ChannelService {
 
     // 채널에서 특정 유저 메시지만 보기
     List<Message> getAllMessageFromThatUser(Channel channel, User user);
-
+    List<Message> getAllMessage(Channel channel);
     // 채널 삭제하기
     boolean deleteChannel(Channel channel);
 

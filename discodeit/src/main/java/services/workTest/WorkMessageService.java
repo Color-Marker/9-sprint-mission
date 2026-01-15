@@ -1,5 +1,6 @@
 package services.workTest;
 
+import entity.Channel;
 import entity.Message;
 import entity.User;
 import services.MessageService;
@@ -45,6 +46,13 @@ public class WorkMessageService implements MessageService {
     public List<Message> getMessageByContent(String messageContent) {
         return data.stream()
                 .filter(m->m.getMessageContent().contains(messageContent))
+                .toList();
+    }
+
+    @Override
+    public List<Message> getMessageByChannel(Channel channel) {
+        return data.stream()
+                .filter(m->m.getChannel().equals(channel))
                 .toList();
     }
 

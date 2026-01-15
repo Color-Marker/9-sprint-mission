@@ -1,9 +1,6 @@
 package services.workTest;
 
-import entity.Channel;
-import entity.ChannelType;
-import entity.Message;
-import entity.User;
+import entity.*;
 import services.ChannelService;
 import services.MessageService;
 
@@ -46,6 +43,13 @@ public class WorkChannelService implements ChannelService {
     }
 
     @Override
+    public List<Channel> getAllChannelByServer(ServerRoom server) {
+        return data.stream()
+                .filter(c->c.getServerRoom().equals(server))
+                .toList();
+    }
+
+    @Override
     public boolean updateChannelName(Channel channel, String channelName) {
         return data.stream()
                 .filter(c->c.equals(channel))
@@ -85,7 +89,16 @@ public class WorkChannelService implements ChannelService {
     }
 
     @Override
+    public List<Message> getAllMessage(Channel channel) {
+        return messageService.getMessageByChannel(channel);
+    }
+
+
+    @Override
     public boolean deleteChannel(Channel channel) {
+        for(Message m: channel.getMessages()){
+            messageService.deleteMessage(m);
+        }
         return data.removeIf(c->c.equals(channel));
     }
 }

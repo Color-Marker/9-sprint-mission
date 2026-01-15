@@ -51,8 +51,23 @@ public class WorkServerRoomService implements ServerRoomService {
     }
 
     @Override
+    public List<ServerRoom> getInvitedServer(User user) {
+        return getAllServerRoom()
+                .stream()
+                .filter(s -> s.getMember().stream()
+                        .anyMatch(m -> m.getId().equals(user.getId())))
+                .toList();
+
+    }
+
+    @Override
     public List<ServerRoom> getAllServerRoom() {
         return new ArrayList<>(data);
+    }
+
+    @Override
+    public List<Channel> getAllChannel(ServerRoom serverRoom) {
+        return channelService.getAllChannelByServer(serverRoom);
     }
 
     @Override
@@ -66,6 +81,9 @@ public class WorkServerRoomService implements ServerRoomService {
 
     @Override
     public boolean deleteServerRoom(ServerRoom serverRoom) {
+        for(Channel c: serverRoom.getChannel()) {
+            channelService.deleteChannel(c);
+        }
         return data.removeIf(s->s.equals(serverRoom));
     }
 }

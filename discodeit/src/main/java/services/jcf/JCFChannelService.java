@@ -1,9 +1,6 @@
 package services.jcf;
 
-import entity.Channel;
-import entity.ChannelType;
-import entity.Message;
-import entity.User;
+import entity.*;
 import services.ChannelService;
 import services.MessageService;
 
@@ -67,6 +64,12 @@ public class JCFChannelService implements ChannelService {
         return data;
     }
 
+    @Override
+    public List<Channel> getAllChannelByServer(ServerRoom server) {
+        return data.stream()
+                .filter(c->c.getServerRoom().equals(server))
+                .toList();
+    }
     @Override
     public boolean updateChannelName(Channel channel, String channelName) {
         for(Channel c:data){
@@ -144,4 +147,9 @@ public class JCFChannelService implements ChannelService {
         }
         return false;
     }
+    @Override
+    public List<Message> getAllMessage(Channel channel) {
+        return messageService.getMessageByChannel(channel);
+    }
+
 }

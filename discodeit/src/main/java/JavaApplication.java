@@ -56,14 +56,14 @@ public class JavaApplication {
         serverRoomService.addMemberToServer(serverRoom, user5);
 
         // 채널 하나 서버에 추가해줌
-        Channel channel1 = new Channel(ChannelType.CHAT, "Test");
+        Channel channel1 = new Channel(ChannelType.CHAT, "Test", serverRoom);
         serverRoomService.addChannelToServer(serverRoom, channel1);
         System.out.println();
 
         // 해당 채널(channel1)에 메시지 전송
-        Message channelMsg1 = new Message("Connection Check", serverRoom.getOwner());
-        Message channelMsg2 = new Message("Accepted", serverRoom.getMember().get(0));
-        Message channelMsg3 = new Message("This is fun", serverRoom.getMember().get(1));
+        Message channelMsg1 = new Message("Connection Check", serverRoom.getOwner(), channel1);
+        Message channelMsg2 = new Message("Accepted", serverRoom.getMember().get(0), channel1);
+        Message channelMsg3 = new Message("This is fun", serverRoom.getMember().get(1), channel1);
         channelService.sendMessageToChannel(channel1, channelMsg1);
         channelService.sendMessageToChannel(channel1, channelMsg2);
         channelService.sendMessageToChannel(channel1, channelMsg3);
@@ -112,10 +112,10 @@ public class JavaApplication {
         System.out.println();
 
         // ----- message ------
-        Message message1 = new Message("Mike Test", user1);
-        Message message2 = new Message("Hellooooooo", user3);
-        Message message3 = new Message("Hello World", user4);
-        Message message4 = new Message("Bye Bye", user4);
+        Message message1 = new Message("Mike Test", user1, channel1);
+        Message message2 = new Message("Hellooooooo", user3, channel1);
+        Message message3 = new Message("Hello World", user4, channel1);
+        Message message4 = new Message("Bye Bye", user4, channel1);
 
         messageService.addMessage(message1);
         messageService.addMessage(message2);
@@ -142,9 +142,9 @@ public class JavaApplication {
         System.out.println();
 
         // -------- channel ---------
-        Channel channel2 = new Channel(ChannelType.CHAT, "Study Room");
-        Channel channel3 = new Channel(ChannelType.CHAT, "Play Room");
-        Channel channel4 = new Channel(ChannelType.VOICE, "Speach Room");
+        Channel channel2 = new Channel(ChannelType.CHAT, "Study Room", serverRoom);
+        Channel channel3 = new Channel(ChannelType.CHAT, "Play Room", serverRoom);
+        Channel channel4 = new Channel(ChannelType.VOICE, "Speach Room", serverRoom);
 
         channelService.addChannel(channel2);
         channelService.addChannel(channel3);

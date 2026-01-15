@@ -1,5 +1,6 @@
 package services.jcf;
 
+import entity.Channel;
 import entity.Message;
 import entity.User;
 import services.MessageService;
@@ -76,6 +77,13 @@ public class JCFMessageService implements MessageService {
         }
         System.out.println();
         return buffer;
+    }
+
+    @Override
+    public List<Message> getMessageByChannel(Channel channel) {
+        return data.stream()
+                .filter(m->m.getChannel().equals(channel))
+                .toList();
     }
 
 

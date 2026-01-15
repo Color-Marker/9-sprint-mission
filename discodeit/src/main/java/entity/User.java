@@ -92,4 +92,17 @@ public class User {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return """
+                ... My Information ...
+                Name: %s
+                Id: %s
+                Password: [CENSORED]
+                Email: %s
+                Phone number: %s
+                Created time: %d
+                Updated time: %d
+                """.formatted(displayName, id, email, phoneNumber, createdAt, updatedAt);
+    }
 }

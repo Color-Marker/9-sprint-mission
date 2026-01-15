@@ -12,14 +12,16 @@ public class Channel {
     private List<Message> messages;
     private ChannelType channeltype;
     private String channelName;
+    private final ServerRoom serverRoom;
 
-    public Channel(ChannelType channelType, String channelName) {
+    public Channel(ChannelType channelType, String channelName, ServerRoom serverRoom) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis();
         this.messages = new ArrayList<>();
         this.channeltype = channelType;
         this.channelName = channelName;
+        this.serverRoom = serverRoom;
     }
 
     public UUID getId() {
@@ -44,6 +46,10 @@ public class Channel {
 
     public String getChannelName() {
         return channelName;
+    }
+
+    public ServerRoom getServerRoom() {
+        return serverRoom;
     }
 
     private void setUpdatedAt() {

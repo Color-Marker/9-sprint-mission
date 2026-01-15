@@ -9,13 +9,15 @@ public class Message {
 
     private String messageContent;
     private User sender;
+    private final Channel channel;
 
-    public Message(String messageContent, User sender) {
+    public Message(String messageContent, User sender, Channel channel) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis();
         this.messageContent = messageContent;
         this.sender = sender;
+        this.channel = channel;
     }
 
     public UUID getId() {
@@ -30,6 +32,9 @@ public class Message {
         return updatedAt;
     }
 
+    public Channel getChannel() {
+        return channel;
+    }
 
     public String getMessageContent() {
         return messageContent;
@@ -62,4 +67,5 @@ public class Message {
         this.sender = sender;
         return true;
     }
+
 }
