@@ -38,8 +38,12 @@ public class PrintUtil {
         System.out.println();
     }
 
-    public static void printServerList(List<ServerRoom> serverRoom){
-        serverRoom.forEach(s->System.out.println(s.getServerName()));
+    public static void printServerList(List<ServerRoom> serverRooms){
+        for (int i = 0; i < serverRooms.size(); i++) {
+            ServerRoom s = serverRooms.get(i);
+            System.out.println(String.format("[%d] %s", i, s.getServerName()));
+        }
+        System.out.println();
     }
 
     public static void printServerMember(ServerRoom server){
@@ -51,8 +55,11 @@ public class PrintUtil {
 
     public static void printServerChannel(ServerRoomService serverRoomService, ServerRoom server){
         System.out.println("- Server channels -");
-        serverRoomService.getAllChannel(server)
-            .forEach(c -> System.out.println(c.getChannelName()));
+        List<Channel> channels = serverRoomService.getAllChannel(server);
+        for (int i = 0; i < channels.size(); i++) {
+            Channel c = channels.get(i);
+            System.out.println(String.format("[%d] %s", i, c.getChannelName()));
+        }
         System.out.println();
     }
 

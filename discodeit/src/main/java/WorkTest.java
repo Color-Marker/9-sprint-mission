@@ -264,33 +264,49 @@ public class WorkTest {
     }
 
     private static void serverDel() {
-        System.out.print("Type server name: ");
-        String serverName = sc.nextLine().trim();
-        // 중복 이름 없다고 가정..
-        List<ServerRoom> selectedServers = serverRoomService.getServerByName(serverName);
-        if (selectedServers.isEmpty()) {
-            System.out.println("Can't find target...");
-        } else {
-            if (selectedServers.get(0).getOwner().equals(currentUser) || isAdmin(currentUser, admin)) {
-                System.out.println("Delete " + serverName);
-                serverRoomService.deleteServerRoom(selectedServers.get(0));
+        List<ServerRoom> selectedServers = serverRoomService.getAllServerRoom().stream()
+                .filter(s -> s.getMember().stream()
+                        .anyMatch(p -> p.getId().equals(currentUser.getId())))
+                .toList();
+        System.out.print("Type server number to enter: ");
+        int index = Integer.parseInt(sc.nextLine().trim());
+
+        if (index >= 0 && index < selectedServers.size()) {
+            ServerRoom target = selectedServers.get(index);
+            if (target != null) {
+                if(target.getOwner().equals(currentUser) || isAdmin(currentUser, admin)){
+                    System.out.println("Delete " + target.getServerName());
+                    serverRoomService.deleteServerRoom(target);
+                }
+                else{
+                    notAllowedWarning();
+                }
             } else {
-                notAllowedWarning();
+                System.out.println("Can't find target...");
             }
+        } else {
+            typeRightNum();
         }
     }
 
     private static void serverSelect() {
-            System.out.print("Type server name: ");
-            String serverName = sc.nextLine().trim();
-            // 중복 이름 없다고 가정..
-            List<ServerRoom> selectedServers = serverRoomService.getServerByName(serverName);
-            if(selectedServers.isEmpty()){
+        List<ServerRoom> selectedServers = serverRoomService.getAllServerRoom().stream()
+                .filter(s -> s.getMember().stream()
+                        .anyMatch(p -> p.getId().equals(currentUser.getId())))
+                .toList();
+        System.out.print("Type server number to enter: ");
+        int index = Integer.parseInt(sc.nextLine().trim());
+
+        if (index >= 0 && index < selectedServers.size()) {
+            ServerRoom target = selectedServers.get(index);
+            if (target != null) {
+                serverEnter(target);
+            } else {
                 System.out.println("Can't find target...");
             }
-            else{
-                serverEnter(selectedServers.get(0));
-            }
+        } else {
+            typeRightNum();
+        }
     }
 
     private static void serverEnter(ServerRoom server) {
@@ -320,32 +336,42 @@ public class WorkTest {
     }
 
     private static void channelDel(ServerRoom server) {
-        System.out.print("Type channel name: ");
-        String channelName = sc.nextLine().trim();
-        // 중복 이름 없다고 가정..
-        List<Channel> selectedChannels = channelService.getChannelByName(channelName);
-        if (selectedChannels.isEmpty()) {
-            System.out.println("Can't find target...");
-        } else {
-            if (server.getOwner().equals(currentUser) || isAdmin(currentUser, admin)) {
-                System.out.println("Delete " + channelName);
-                channelService.deleteChannel(selectedChannels.get(0));
+        List<Channel> channels = channelService.getAllChannelByServer(server);
+        System.out.print("Type channel number to enter: ");
+        int index = Integer.parseInt(sc.nextLine().trim());
+
+        if (index >= 0 && index < channels.size()) {
+            Channel target = channels.get(index);
+            if (target != null) {
+                if(server.getOwner().equals(currentUser) || isAdmin(currentUser, admin)){
+                    System.out.println("Delete " + target.getChannelName());
+                    channelService.deleteChannel(target);
+                }
+                else{
+                    notAllowedWarning();
+                }
             } else {
-                notAllowedWarning();
+                System.out.println("Can't find target...");
             }
+        } else {
+            typeRightNum();
         }
     }
 
     private static void channelSelect(ServerRoom server) {
-        System.out.print("Type channel name: ");
-        String channelName = sc.nextLine().trim();
-        // 중복 이름 없다고 가정..
-        List<Channel> selectedChannels = channelService.getChannelByName(channelName);
-        if(selectedChannels.isEmpty()){
-            System.out.println("Can't find target...");
-        }
-        else{
-            channelEnter(selectedChannels.get(0), server);
+        List<Channel> channels = channelService.getAllChannelByServer(server);
+        System.out.print("Type channel number to enter: ");
+        int index = Integer.parseInt(sc.nextLine().trim());
+
+        if (index >= 0 && index < channels.size()) {
+            Channel target = channels.get(index);
+            if (target != null) {
+                channelEnter(target, server);
+            } else {
+                System.out.println("Can't find target...");
+            }
+        } else {
+            typeRightNum();
         }
     }
 
