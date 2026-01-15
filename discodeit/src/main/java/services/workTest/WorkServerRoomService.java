@@ -37,50 +37,35 @@ public class WorkServerRoomService implements ServerRoomService {
 
     @Override
     public List<ServerRoom> getServerByName(String serverName) {
-        List<ServerRoom> buffer = new ArrayList<>();
-        for(ServerRoom s: data){
-            if(s.getServerName().equals(serverName)){
-                buffer.add(s);
-            }
-        }
-        return buffer;
+        return data.stream()
+                .filter(s->s.getServerName().equals(serverName))
+                .toList();
     }
 
     @Override
     public ServerRoom getServerRoomByID(UUID id) {
-        for(ServerRoom s: data){
-            if(s.getId().equals(id)){
-                return s;
-            }
-        }
-        return null;
+        return data.stream()
+                .filter(s->s.getId().equals(id))
+                .findAny()
+                .orElse(null);
     }
 
     @Override
     public List<ServerRoom> getAllServerRoom() {
-        return data;
+        return new ArrayList<>(data);
     }
 
     @Override
     public boolean updateServerRoom(ServerRoom serverRoom, String serverName) {
-        for(ServerRoom s: data){
-            if(s.equals(serverRoom)){
-                s.setServerName(serverName);
-                s.setUpdatedAt();
-                return true;
-            }
-        }
-        return false;
+        return data.stream()
+                .filter(s->s.equals(serverRoom))
+                .findAny()
+                .map(s-> s.setServerName(serverName))
+                .orElse(false);
     }
 
     @Override
     public boolean deleteServerRoom(ServerRoom serverRoom) {
-        for(ServerRoom s: data){
-            if(s.equals(serverRoom)){
-                data.remove(s);
-                return true;
-            }
-        }
-        return false;
+        return data.removeIf(s->s.equals(serverRoom));
     }
 }

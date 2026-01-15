@@ -150,11 +150,11 @@ public class WorkTest {
                     System.out.print("Type name of user: ");
                     String name = sc.next();
                     List<User> findUser = userService.getUserByName(name);
-                    for(User p: findUser){
+                    findUser.forEach(p->{
                         System.out.println("Name: " + p.getDisplayName());
                         System.out.println("ID: " + p.getId());
                         System.out.println();
-                    }
+                    });
                     break;
                 case 2:
                     List<User> allUser = userService.getAllUser();

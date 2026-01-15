@@ -71,7 +71,6 @@ public class JCFServerRoomService implements ServerRoomService {
                 System.out.print("--- Server " + s.getServerName() + " chaned name to ");
                 s.setServerName(serverName);
                 System.out.println(serverName + " ---");
-                s.setUpdatedAt();
                 return true;
             }
         }

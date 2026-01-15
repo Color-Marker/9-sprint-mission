@@ -46,19 +46,34 @@ public class Channel {
         return channelName;
     }
 
-    public void setUpdatedAt() {
+    private void setUpdatedAt() {
         this.updatedAt =System.currentTimeMillis();
     }
 
-    public void setMessages(List<Message> messages) {
+    public boolean setMessages(List<Message> messages) {
+        if (messages == null || messages.isEmpty()) {
+            return false;
+        }
+        setUpdatedAt();
         this.messages = messages;
+        return true;
     }
 
-    public void setChanneltype(ChannelType channeltype) {
+    public boolean setChannelType(ChannelType channeltype) {
+        if (channeltype == null) {
+            return false;
+        }
+        setUpdatedAt();
         this.channeltype = channeltype;
+        return true;
     }
 
-    public void setChannelName(String channelName) {
+    public boolean setChannelName(String channelName) {
+        if (channelName == null) {
+            return false;
+        }
+        setUpdatedAt();
         this.channelName = channelName;
+        return true;
     }
 }

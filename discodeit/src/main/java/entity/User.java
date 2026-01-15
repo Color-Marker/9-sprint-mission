@@ -52,24 +52,44 @@ public class User {
         return phoneNumber;
     }
 
-    public void setUpdatedAt() {
+    private void setUpdatedAt() {
         this.updatedAt = System.currentTimeMillis();;
     }
 
-    public void setDisplayName(String displayName) {
+    public boolean setDisplayName(String displayName) {
+        if (displayName == null) {
+            return false;
+        }
+        setUpdatedAt();
         this.displayName = displayName;
+        return true;
     }
 
-    public void setPassword(String password) {
+    public boolean setPassword(String password) {
+        if (password == null) {
+            return false;
+        }
+        setUpdatedAt();
         this.password = password;
+        return true;
     }
 
-    public void setEmail(String email) {
+    public boolean setEmail(String email) {
+        if (email == null) {
+            return false;
+        }
+        setUpdatedAt();
         this.email = email;
+        return true;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public boolean setPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null) {
+            return false;
+        }
+        setUpdatedAt();
         this.phoneNumber = phoneNumber;
+        return true;
     }
 
 }

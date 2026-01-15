@@ -40,16 +40,26 @@ public class Message {
     }
 
 
-    public void setUpdatedAt() {
+    private void setUpdatedAt() {
         this.updatedAt = System.currentTimeMillis();;
     }
 
 
-    public void setMessageContent(String messageContent) {
+    public boolean setMessageContent(String messageContent) {
+        if (messageContent == null) {
+            return false;
+        }
+        setUpdatedAt();
         this.messageContent = messageContent;
+        return true;
     }
 
-    public void setSender(User sender) {
+    public boolean setSender(User sender) {
+        if (sender == null) {
+            return false;
+        }
+        setUpdatedAt();
         this.sender = sender;
+        return true;
     }
 }

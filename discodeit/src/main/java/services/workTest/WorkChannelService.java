@@ -27,88 +27,65 @@ public class WorkChannelService implements ChannelService {
 
     @Override
     public Channel getChannelById(UUID id) {
-        for(Channel c : data){
-            if(c.getId().equals(id)){
-                return c;
-            }
-        }
-        return null;
+        return data.stream()
+                .filter(c->c.getId().equals(id))
+                .findAny()
+                .orElse(null);
     }
 
     @Override
     public List<Channel> getChannelByName(String channelName){
-        List<Channel> buffer = new ArrayList<>();
-        for(Channel c: data){
-            if(c.getChannelName().equals(channelName)){
-                buffer.add(c);
-            }
-        }
-        return buffer;
+        return data.stream()
+                .filter(c->c.getChannelName().equals(channelName))
+                .toList();
     }
 
     @Override
     public List<Channel> getAllChannel() {
-        return data;
+        return new ArrayList<>(data);
     }
 
     @Override
     public boolean updateChannelName(Channel channel, String channelName) {
-        for(Channel c:data){
-            if(c.equals(channel)){
-                c.setChannelName(channelName);
-                c.setUpdatedAt();
-                return true;
-            }
-        }
-        return false;
+        return data.stream()
+                .filter(c->c.equals(channel))
+                .findAny()
+                .map(c-> c.setChannelName(channelName))
+                .orElse(false);
     }
 
     @Override
     public boolean changeChannelType(Channel channel, ChannelType channelType) {
-        for(Channel c: data){
-            if(c.equals(channel)){
-                c.setChanneltype(channelType);
-                c.setUpdatedAt();
-                return true;
-            }
-        }
-        return false;
+        return data.stream()
+                .filter(c->c.equals(channel))
+                .findAny()
+                .map(c-> c.setChannelType(channelType))
+                .orElse(false);
     }
 
     @Override
     public boolean sendMessageToChannel(Channel channel, Message message) {
-        for(Channel c: data){
-            if(c.equals(channel)){
-                c.getMessages().add(message);
-                return messageService.addMessage(message);
-            }
-        }
-        return false;
+        return data.stream()
+                .filter(c->c.equals(channel))
+                .findAny()
+                .map(c->{
+                    c.getMessages().add(message);
+                    return messageService.addMessage(message);
+                })
+                .orElse(false);
     }
 
     @Override
     public List<Message> getAllMessageFromThatUser(Channel channel, User user) {
-        List<Message> buffer = new ArrayList<>();
-        for(Channel c: data){
-            if(c.equals(channel)){
-                for(Message m : c.getMessages()){
-                    if(m.getSender().equals(user)){
-                        buffer.add(m);
-                    }
-                }
-            }
-        }
-        return buffer;
+        return data.stream()
+                .filter(c->c.equals(channel))
+                .flatMap(c->c.getMessages().stream())
+                .filter(m->m.getSender().equals(user))
+                .toList();
     }
 
     @Override
     public boolean deleteChannel(Channel channel) {
-        for(Channel c:data){
-            if(c.equals(channel)){
-                data.remove(c);
-                return true;
-            }
-        }
-        return false;
+        return data.removeIf(c->c.equals(channel));
     }
 }

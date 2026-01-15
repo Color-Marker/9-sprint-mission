@@ -76,7 +76,6 @@ public class JCFUserService implements UserService {
                 p.setDisplayName(displayName);
                 System.out.println(" changed name to " + p.getDisplayName());
                 System.out.println();
-                p.setUpdatedAt();
                 return true;
             }
         }
@@ -90,7 +89,6 @@ public class JCFUserService implements UserService {
                 System.out.println("-- Updated user email --");
                 System.out.println("User id " + p.getId() + " whose name is " + p.getDisplayName() + " changed email to " + p.getEmail() );
                 System.out.println();
-                p.setUpdatedAt();
                 return true;
             }
         }
@@ -105,7 +103,6 @@ public class JCFUserService implements UserService {
                 System.out.println("-- Updated user number --");
                 System.out.println("User id " + p.getId() + " whose name is " + p.getDisplayName() + " changed number to " + p.getPhoneNumber());
                 System.out.println();
-                p.setUpdatedAt();
                 return true;
             }
         }
@@ -117,7 +114,6 @@ public class JCFUserService implements UserService {
         for(User p : data){
             if(p.equals(user)){
                 p.setPassword(password);
-                p.setUpdatedAt();
                 return true;
             }
         }

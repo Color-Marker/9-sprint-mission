@@ -51,23 +51,43 @@ public class ServerRoom {
         return serverName;
     }
 
-    public void setUpdatedAt() {
+    private void setUpdatedAt() {
         this.updatedAt = System.currentTimeMillis();
     }
 
-    public void setChannel(List<Channel> channel) {
+    public boolean setChannel(List<Channel> channel) {
+        if (channel == null || channel.isEmpty()) {
+            return false;
+        }
+        setUpdatedAt();
         this.channel = channel;
+        return true;
     }
 
-    public void setOwner(User owner) {
+    public boolean setOwner(User owner) {
+        if (owner == null) {
+            return false;
+        }
+        setUpdatedAt();
         this.owner = owner;
+        return true;
     }
 
-    public void setMember(List<User> member) {
+    public boolean setMember(List<User> member) {
+        if (member == null) {
+            return false;
+        }
+        setUpdatedAt();
         this.member = member;
+        return true;
     }
 
-    public void setServerName(String serverName) {
+    public boolean setServerName(String serverName) {
+        if (serverName == null) {
+            return false;
+        }
+        setUpdatedAt();
         this.serverName = serverName;
+        return true;
     }
 }
