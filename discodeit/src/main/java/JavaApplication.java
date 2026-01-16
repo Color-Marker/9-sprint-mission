@@ -8,12 +8,9 @@ import services.jcf.JCFChannelService;
 import services.jcf.JCFMessageService;
 import services.jcf.JCFServerRoomService;
 import services.jcf.JCFUserService;
-import services.jcf.JCFServerRoomService;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class JavaApplication {
     public static void main(String[] args) {
@@ -30,20 +27,22 @@ public class JavaApplication {
         ServerRoomService serverRoomService = new JCFServerRoomService(channelService);
 
         // 유저는 서버 종속 아니니 따로
-        UserService userService = new JCFUserService();
+        UserService userService = new JCFUserService(serverRoomService);
 
         // --- user ----
         User user1 = new User("Alice", "alice", "alice@codeit.com", "01000000000");
         User user2 = new User("Bob", "bob","bob@codeit.com", "01012345678");
         User user3 = new User("Charlie", "charlie","charlie@codeit.com", "01099999999");
-        User user4 = new User("Charlie", "charlie","charlie2@codeit.com", "01088888888");
+        User user4 = new User("Selly", "selly","selly2@codeit.com", "01088888888");
         User user5 = new User("Harry", "harry","harry@codeit.com", "01043214321");
+        User user6 = new User("Harry", "harry","harry@codeit.com", "01043214321");
 
         userService.addUser(user1);
         userService.addUser(user2);
         userService.addUser(user3);
         userService.addUser(user4);
         userService.addUser(user5);
+        userService.addUser(user6); // 중복 이름 추가 시도
 
         System.out.println();
 
@@ -84,18 +83,14 @@ public class JavaApplication {
         System.out.println();
 
         // --- 서버 테스팅 외 기본 작동 테스트 ---
-        // user에서는 다 list로 받았지만 message, channel 부분에서는 안 받는 부분들 있음.
-        // 받는 게 맞긴 한데, 출력만 확인할 용도다 보니 생략함.
-        List<User> getUser1 = userService.getUserByName("Alice");
-        List<User> getSameNameUsers = userService.getUserByName("Charlie");
+        // 이름 중복 애초에 막음
+        User getUser1 = userService.getUserByName("Alice");
+        User getSameNameUsers = userService.getUserByName("Charlie");
         List<User> getAllUser = userService.getAllUser();
 
-        // 위에 이용해서 아이디 빼내서 따로 꺼내기 가능.
-        // 사실 굳이 위에 꺼 안 써도 되긴 하지만 아무래도 위에는 리스트니까
-        // 이런 방식으로 단일로 빼낼 수 있다고 표현하려고..
-        User getUser1ById = userService.getUserById(getUser1.get(0).getId());
-        User getSameNameUser1ById = userService.getUserById(getSameNameUsers.get(0).getId());
-        User getSameNameUser2ById = userService.getUserById(getSameNameUsers.get(1).getId());
+        // 위에 이용해서 아이디 빼내서 따로 꺼내기도 추가..
+        User getUser1ById = userService.getUserById(getUser1.getId());
+        User getSameNameUser1ById = userService.getUserById(getSameNameUsers.getId());
 
         userService.updateUserByName(user4, "Lucy");
         userService.updateUserByEmail(user4, "lucy@codeit.com");

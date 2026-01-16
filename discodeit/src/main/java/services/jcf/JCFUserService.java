@@ -1,6 +1,8 @@
 package services.jcf;
 
+import entity.ServerRoom;
 import entity.User;
+import services.ServerRoomService;
 import services.UserService;
 
 import java.util.ArrayList;
@@ -10,16 +12,27 @@ import java.util.UUID;
 public class JCFUserService implements UserService {
 
     private final List<User> data;
+    private final ServerRoomService serverRoomService;
 
-    public JCFUserService() {
+    public JCFUserService(ServerRoomService serverRoomService) {
+        this.serverRoomService = serverRoomService;
         this.data = new ArrayList<>();
     }
 
+
     @Override
-    public boolean addUser(User user) {
-        System.out.println("-- User add complete: " + user.getDisplayName() + " --");
-        return data.add(user);
+    public void addUser(User user) {
+        boolean dupCheck;
+        dupCheck = data.stream().noneMatch(p->p.getDisplayName().equals(user.getDisplayName()));
+        if(dupCheck){
+            System.out.println("-- User add complete: " + user.getDisplayName() + " --");
+            data.add(user);
+        }
+        else {
+            System.out.println("-- Unallowed username. Try another name. --");
+        }
     }
+
 
     @Override
     public User getUserById(UUID id) {
@@ -37,19 +50,18 @@ public class JCFUserService implements UserService {
     }
 
     @Override
-    public List<User> getUserByName(String displayName) {
-        List<User> buffer = new ArrayList<>();
-        for(User p : data){
+    public User getUserByName(String displayName) {
+        for(User p: data){
             if(p.getDisplayName().equals(displayName)){
                 System.out.println("-- Find user by name: " + p.getDisplayName() + " --");
                 System.out.println("id: " + p.getId());
                 System.out.println("email: " + p.getEmail());
                 System.out.println("number: " + p.getPhoneNumber());
                 System.out.println();
-                buffer.add(p);
+                return p;
             }
         }
-        return buffer;
+        return null;
     }
 
 
@@ -68,7 +80,7 @@ public class JCFUserService implements UserService {
     }
 
     @Override
-    public boolean updateUserByName(User user, String displayName) {
+    public void updateUserByName(User user, String displayName) {
         for(User p : data){
             if(p.equals(user)){
                 System.out.println("-- Updated user name --");
@@ -76,60 +88,64 @@ public class JCFUserService implements UserService {
                 p.setDisplayName(displayName);
                 System.out.println(" changed name to " + p.getDisplayName());
                 System.out.println();
-                return true;
+                return;
             }
         }
-        return false;
     }
     @Override
-    public boolean updateUserByEmail(User user,String email){
+    public void updateUserByEmail(User user, String email){
         for(User p : data){
             if(p.equals(user)){
                 p.setEmail(email);
                 System.out.println("-- Updated user email --");
                 System.out.println("User id " + p.getId() + " whose name is " + p.getDisplayName() + " changed email to " + p.getEmail() );
                 System.out.println();
-                return true;
+                return;
             }
         }
-        return false;
     }
 
     @Override
-    public boolean updateUserByNumber(User user, String phoneNumber){
+    public void updateUserByNumber(User user, String phoneNumber){
         for(User p : data){
             if(p.equals(user)){
                 p.setPhoneNumber(phoneNumber);
                 System.out.println("-- Updated user number --");
                 System.out.println("User id " + p.getId() + " whose name is " + p.getDisplayName() + " changed number to " + p.getPhoneNumber());
                 System.out.println();
-                return true;
+                return;
             }
         }
-        return false;
     }
 
     @Override
-    public boolean updateUserByPassword(User user, String password) {
+    public void updateUserByPassword(User user, String password) {
         for(User p : data){
             if(p.equals(user)){
                 p.setPassword(password);
-                return true;
+                return;
             }
         }
-        return false;
     }
 
     @Override
-    public boolean deleteUser(User user) {
+    public void deleteUser(User user) {
+        List<ServerRoom> myServers = serverRoomService.getOwningServer(user);
+        for(ServerRoom s: serverRoomService.getOwningServer(user)){
+            serverRoomService.deleteServerRoom(s);
+        }
+        List<ServerRoom> memberServers = serverRoomService.getInvitedServer(user);
+        for(ServerRoom s: memberServers){
+            serverRoomService.delMemberInServer(s, user);
+        }
         for(User p: data){
             if(p.equals(user)){
                 System.out.println("-- Deleted user: " + p.getDisplayName() + " --");
                 data.remove(p);
                 System.out.println();
-                return true;
+                return;
             }
         }
-        return false;
     }
+
 }

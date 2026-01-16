@@ -18,23 +18,22 @@ public class JCFChannelService implements ChannelService {
     }
 
     @Override
-    public boolean addChannel(Channel channel) {
+    public void addChannel(Channel channel) {
         System.out.println("-- Channel add complete: " + channel.getChannelName() + " --");
-        return data.add(channel);
+        data.add(channel);
     }
 
     @Override
-    public Channel getChannelById(UUID id) {
+    public void getChannelById(UUID id) {
         for(Channel c : data){
             if(c.getId().equals(id)){
                 System.out.println("-- Find channel by id: " + id + " --");
                 System.out.println("name: " + c.getChannelName());
                 System.out.println("channel type: " + c.getChanneltype());
                 System.out.println();
-                return c;
+                return;
             }
         }
-        return null;
     }
 
     @Override
@@ -53,7 +52,7 @@ public class JCFChannelService implements ChannelService {
     }
 
     @Override
-    public List<Channel> getAllChannel() {
+    public void getAllChannel() {
         System.out.println("-- All channel information --");
         for(Channel c: data){
             System.out.println("id: " + c.getId());
@@ -61,7 +60,6 @@ public class JCFChannelService implements ChannelService {
             System.out.println("type: " + c.getChanneltype());
             System.out.println();
         }
-        return data;
     }
 
     @Override
@@ -71,7 +69,7 @@ public class JCFChannelService implements ChannelService {
                 .toList();
     }
     @Override
-    public boolean updateChannelName(Channel channel, String channelName) {
+    public void updateChannelName(Channel channel, String channelName) {
         for(Channel c:data){
             if(c.equals(channel)){
                 System.out.println("-- Updated channel name --");
@@ -80,14 +78,13 @@ public class JCFChannelService implements ChannelService {
                 c.setChannelName(channelName);
                 System.out.println(c.getChannelName());
                 System.out.println();
-                return true;
+                return;
             }
         }
-        return false;
     }
 
     @Override
-    public boolean changeChannelType(Channel channel, ChannelType channelType) {
+    public void changeChannelType(Channel channel, ChannelType channelType) {
         for(Channel c: data){
             if(c.equals(channel)){
                 System.out.println("-- Updated channel type --");
@@ -96,14 +93,13 @@ public class JCFChannelService implements ChannelService {
                 c.setChannelType(channelType);
                 System.out.println(c.getChanneltype());
                 System.out.println();
-                return true;
+                return;
             }
         }
-        return false;
     }
 
     @Override
-    public boolean sendMessageToChannel(Channel channel, Message message) {
+    public void sendMessageToChannel(Channel channel, Message message) {
         for(Channel c: data){
             if(c.equals(channel)){
                 System.out.println("-- Send message in channel " + c.getChannelName() + " --");
@@ -111,14 +107,14 @@ public class JCFChannelService implements ChannelService {
                 System.out.println("sender: " + message.getSender().getDisplayName());
                 System.out.println("new message: " + message.getMessageContent());
                 System.out.println();
-                return messageService.addMessage(message);
+                messageService.addMessage(message);
+                return;
             }
         }
-        return false;
     }
 
     @Override
-    public List<Message> getAllMessageFromThatUser(Channel channel, User user) {
+    public void getAllMessageFromThatUser(Channel channel, User user) {
         List<Message> buffer = new ArrayList<>();
         for(Channel c: data){
             if(c.equals(channel)){
@@ -132,20 +128,18 @@ public class JCFChannelService implements ChannelService {
             }
         }
         System.out.println();
-        return buffer;
     }
 
     @Override
-    public boolean deleteChannel(Channel channel) {
+    public void deleteChannel(Channel channel) {
         for(Channel c:data){
             if(c.equals(channel)){
                 System.out.println("-- Deleted channel " + c.getChannelName() + " --");
                 data.remove(c);
                 System.out.println();
-                return true;
+                return;
             }
         }
-        return false;
     }
     @Override
     public List<Message> getAllMessage(Channel channel) {

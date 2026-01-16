@@ -20,22 +20,27 @@ public class JCFServerRoomService implements ServerRoomService {
     }
 
     @Override
-    public boolean addServerRoom(ServerRoom serverRoom) {
+    public void addServerRoom(ServerRoom serverRoom) {
         System.out.println("--- New Server (" +serverRoom.getServerName() + ") added by user(" + serverRoom.getOwner().getDisplayName() +") ---");
-        return data.add(serverRoom);
+        data.add(serverRoom);
     }
 
     @Override
-    public boolean addChannelToServer(ServerRoom serverRoom, Channel channel) {
+    public void addChannelToServer(ServerRoom serverRoom, Channel channel) {
         System.out.println("--- In server(" + serverRoom.getServerName() + ") channel (" + channel.getChannelName() +") added ---");
         serverRoom.getChannel().add(channel);
-        return channelService.addChannel(channel);
+        channelService.addChannel(channel);
     }
 
     @Override
-    public boolean addMemberToServer(ServerRoom serverRoom, User user) {
+    public void addMemberToServer(ServerRoom serverRoom, User user) {
         System.out.println("--- In server(" + serverRoom.getServerName() + ") user(" + user.getDisplayName() + ") joined ---");
-        return serverRoom.getMember().add(user);
+        serverRoom.getMember().add(user);
+    }
+
+    @Override
+    public void delMemberInServer(ServerRoom serverRoom, User user) {
+        serverRoom.getMember().removeIf(p->p.equals(user));
     }
 
     @Override
@@ -91,14 +96,21 @@ public class JCFServerRoomService implements ServerRoomService {
     }
 
     @Override
-    public boolean deleteServerRoom(ServerRoom serverRoom) {
+    public List<ServerRoom> getOwningServer(User user) {
+        return getAllServerRoom()
+                .stream()
+                .filter(s -> s.getOwner().equals(user))
+                .toList();
+    }
+
+    @Override
+    public void deleteServerRoom(ServerRoom serverRoom) {
         for(ServerRoom s: data){
             if(s.equals(serverRoom)){
                 System.out.println("--- Deleted server " + serverRoom.getServerName() + " ---");
                 data.remove(s);
-                return true;
+                return;
             }
         }
-        return false;
     }
 }

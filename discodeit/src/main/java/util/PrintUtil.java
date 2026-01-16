@@ -6,8 +6,6 @@ import entity.ServerRoom;
 import entity.User;
 import services.ChannelService;
 import services.ServerRoomService;
-
-import java.util.Arrays;
 import java.util.List;
 
 public class PrintUtil {
@@ -41,15 +39,15 @@ public class PrintUtil {
     public static void printServerList(List<ServerRoom> serverRooms){
         for (int i = 0; i < serverRooms.size(); i++) {
             ServerRoom s = serverRooms.get(i);
-            System.out.println(String.format("[%d] %s", i, s.getServerName()));
+            System.out.printf("[%d] %s%n", i, s.getServerName());
         }
         System.out.println();
     }
 
     public static void printServerMember(ServerRoom server){
-        System.out.println("- Server Owner: " + server.getOwner().getDisplayName() + " -");
+        System.out.println("- Server Owner: " + server.getOwner().getDisplayName() + " (" +  server.getOwner().getId() + ") -");
         System.out.println("- Server members -");
-        server.getMember().forEach(p -> System.out.println(p.getDisplayName()));
+        server.getMember().forEach(p -> System.out.println(p.getDisplayName() + " (" + p.getId() + ")"));
         System.out.println();
     }
 
@@ -58,7 +56,7 @@ public class PrintUtil {
         List<Channel> channels = serverRoomService.getAllChannel(server);
         for (int i = 0; i < channels.size(); i++) {
             Channel c = channels.get(i);
-            System.out.println(String.format("[%d] %s", i, c.getChannelName()));
+            System.out.printf("[%d] %s%n", i, c.getChannelName());
         }
         System.out.println();
     }
@@ -69,7 +67,7 @@ public class PrintUtil {
         for (int i = 0; i < msgs.size(); i++) {
             Message m = msgs.get(i);
             String direction = m.getSender().getId().equals(user.getId()) ? " <- " : " -> ";
-            System.out.println(String.format("%s [%d] %s: %s", direction, i, m.getSender().getDisplayName(), m.getMessageContent()));
+            System.out.printf("%s [%d] %s: %s%n", direction, i, m.getSender().getDisplayName(), m.getMessageContent());
         }
     }
 

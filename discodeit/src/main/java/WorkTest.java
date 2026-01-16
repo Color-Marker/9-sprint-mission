@@ -1,17 +1,13 @@
+
 import entity.*;
 import services.ChannelService;
 import services.MessageService;
 import services.ServerRoomService;
 import services.UserService;
-import services.jcf.JCFChannelService;
-import services.jcf.JCFMessageService;
-import services.jcf.JCFServerRoomService;
-import services.jcf.JCFUserService;
 import services.workTest.WorkChannelService;
 import services.workTest.WorkMessageService;
 import services.workTest.WorkServerRoomService;
 import services.workTest.WorkUserService;
-import util.PrintUtil;
 
 import java.util.*;
 
@@ -22,15 +18,13 @@ public class WorkTest {
     static MessageService messageService = new WorkMessageService();
     static ChannelService channelService = new WorkChannelService(messageService);
     static ServerRoomService serverRoomService = new WorkServerRoomService(channelService);
-    static UserService userService = new WorkUserService();
+    static UserService userService = new WorkUserService(serverRoomService);
 
     static User currentUser = null;
     static User admin = new User("admin","admin", "admin@codeit.com","01000000000");
     static User user1 = new User("user1","user1", "user1@codeit.com","01011111111");
     static User user2 = new User("user2","user2", "user2@codeit.com","01022222222");
-    static User user22 = new User("user2","user2_2", "user22@codeit.com","01033333333");
-    // 살짝 고민 중인 게 이름이랑 비번이 둘다 같은 경우...
-    // 중복을 id로만 구별하다보니 곤란한 부분. 생각해봐야 함.
+    static User user3 = new User("user3","user3", "user3@codeit.com","01033333333");
 
     static ServerRoom serverRoom1 = new ServerRoom(admin, "AdminServer");
     static ServerRoom serverRoom2 = new ServerRoom(user1, "WorkingServer");
@@ -43,7 +37,7 @@ public class WorkTest {
     static Message user1Mssage = new Message("This is user1.", user1, channel11);
     static Message user2Mssage1 = new Message("This is user2.", user2, channel11);
     static Message user2Mssage2 = new Message("HeHe I am user2.", user2, channel22);
-    static Message user22Mssage = new Message("This is user22.", user22, channel11);
+    static Message user3Mssage = new Message("This is user3.", user3, channel11);
     static Message adminMssage2 = new Message("Work checking complete.", admin, channel1);
 
     static Scanner sc = new Scanner(System.in);
@@ -52,22 +46,20 @@ public class WorkTest {
         userService.addUser(admin);
         userService.addUser(user1);
         userService.addUser(user2);
-        userService.addUser(user22);
+        userService.addUser(user3);
         serverRoomService.addServerRoom(serverRoom1);
         serverRoomService.addServerRoom(serverRoom2);
         serverRoomService.addChannelToServer(serverRoom1, channel1);
         serverRoomService.addChannelToServer(serverRoom2, channel11);
         serverRoomService.addChannelToServer(serverRoom2, channel22);
-        serverRoomService.addMemberToServer(serverRoom1, admin);
-        serverRoomService.addMemberToServer(serverRoom2, user1);
         serverRoomService.addMemberToServer(serverRoom2, user2);
-        serverRoomService.addMemberToServer(serverRoom2, user22);
+        serverRoomService.addMemberToServer(serverRoom2, user3);
         channelService.sendMessageToChannel(channel1, adminMssage1);
         channelService.sendMessageToChannel(channel1, adminMssage2);
         channelService.sendMessageToChannel(channel11, user1Mssage);
         channelService.sendMessageToChannel(channel11, user2Mssage1);
         channelService.sendMessageToChannel(channel22, user2Mssage2);
-        channelService.sendMessageToChannel(channel11, user22Mssage);
+        channelService.sendMessageToChannel(channel11, user3Mssage);
 
     }
 
@@ -160,8 +152,8 @@ public class WorkTest {
                 case 1:
                     System.out.print("Type name of user: ");
                     String name = sc.nextLine().trim();
-                    List<User> findUser = userService.getUserByName(name);
-                    findUser.forEach(PrintUtil::printUserInfo);
+                    User findUser = userService.getUserByName(name);
+                    printUserInfo(findUser);
                     break;
                 case 2:
                     List<User> allUser = userService.getAllUser();
@@ -189,28 +181,14 @@ public class WorkTest {
                             System.out.println("Admin can't be deleted");
                         }
                         else {
-                            List<User> findTarget = userService.getUserByName(delName);
-                            if(findTarget.isEmpty()){
+                            User findTarget = userService.getUserByName(delName);
+                            if(findTarget == null){
                                 System.out.println("Can't find target...");
                                 break;
                             }
-                            if (findTarget.size() > 1) {
-                                System.out.println("Many targets are found!");
-                                System.out.println("Which one to delete?");
-                                System.out.println();
-                                for (User p : findTarget) {
-                                    System.out.println(p.getDisplayName() + " " + p.getId() + " " + p.getEmail() + " " + p.getPhoneNumber());
-                                }
-                                System.out.println();
-                                System.out.print("Type ID: ");
-                                UUID delId = UUID.fromString((String)sc.nextLine().trim());
-                                User delTarget = userService.getUserById(delId);
-                                System.out.println("Delete user " + delTarget.getDisplayName());
-                                userService.deleteUser(delTarget);
-                            }
                             else{
-                                System.out.println("Delete " + findTarget.get(0).getDisplayName());
-                                userService.deleteUser(findTarget.get(0));
+                                System.out.println("Delete " + findTarget.getDisplayName());
+                                userService.deleteUser(findTarget);
                             }
                         }
                     }
@@ -235,7 +213,6 @@ public class WorkTest {
                 serverList = serverRoomService.getInvitedServer(currentUser);
             }
             printServerList(serverList);
-            System.out.println();
             printTypeNum( "Enter to server", "Add new server", "Back to main", "(DANGER) Delete server");
 
             int type = Integer.parseInt(sc.nextLine().trim());
@@ -264,11 +241,17 @@ public class WorkTest {
     }
 
     private static void serverDel() {
-        List<ServerRoom> selectedServers = serverRoomService.getAllServerRoom().stream()
+        List<ServerRoom> selectedServers;
+        if(!isAdmin(currentUser,admin)){
+            selectedServers = serverRoomService.getAllServerRoom().stream()
                 .filter(s -> s.getMember().stream()
                         .anyMatch(p -> p.getId().equals(currentUser.getId())))
                 .toList();
-        System.out.print("Type server number to enter: ");
+        }
+        else{
+            selectedServers = serverRoomService.getAllServerRoom();
+        }
+        System.out.print("Type server number to delete: ");
         int index = Integer.parseInt(sc.nextLine().trim());
 
         if (index >= 0 && index < selectedServers.size()) {
@@ -290,10 +273,17 @@ public class WorkTest {
     }
 
     private static void serverSelect() {
-        List<ServerRoom> selectedServers = serverRoomService.getAllServerRoom().stream()
-                .filter(s -> s.getMember().stream()
-                        .anyMatch(p -> p.getId().equals(currentUser.getId())))
-                .toList();
+        List<ServerRoom> selectedServers;
+        if(!isAdmin(currentUser, admin)) {
+            selectedServers = serverRoomService.getAllServerRoom().stream()
+                    .filter(s -> s.getMember().stream()
+                            .anyMatch(p -> p.getId().equals(currentUser.getId())))
+                    .toList();
+        }
+        else{
+            selectedServers = serverRoomService.getAllServerRoom();
+        }
+
         System.out.print("Type server number to enter: ");
         int index = Integer.parseInt(sc.nextLine().trim());
 
@@ -446,18 +436,16 @@ public class WorkTest {
         System.out.println("Message is sent!");
     }
 
-    public static User doLogin(){
+    public static User doLogin() {
         printMenu("Login process");
         System.out.print("Name: ");
         String name = sc.nextLine().trim();
         System.out.print("Password: ");
         String password = sc.nextLine().trim();
-        List<User> buffer = userService.getUserByName(name);
-        for(User p: buffer){
-            if(p.getPassword().equals(password)){
-                System.out.println("Welcome! " + p.getDisplayName());
-                return p;
-            }
+        User buffer = userService.getUserByName(name);
+        if (buffer.getPassword().equals(password)) {
+            System.out.println("Welcome! " + buffer.getDisplayName());
+            return buffer;
         }
         System.out.println("Check name and password");
         return null;
@@ -468,7 +456,7 @@ public class WorkTest {
         printMenu("Join process");
         System.out.print("Name: ");
         String name = sc.nextLine().trim();
-        if(name.equals(admin.getDisplayName())){
+        if(userService.getUserByName(name) != null){
             System.out.println("Sorry. That is not allowed name!");
             return;
         }

@@ -26,17 +26,16 @@ public class JCFMessageService implements MessageService {
     }
 
     @Override
-    public Message getMessageById(UUID id) {
+    public void getMessageById(UUID id) {
         for(Message m: data){
             if(m.getId().equals(id)){
                 System.out.println("-- Searching message by id: " + id + " --");
                 System.out.println("sender: " + m.getSender().getDisplayName());
                 System.out.println("'" + m.getMessageContent() + "'");
                 System.out.println();
-                return m;
+                return;
             }
         }
-        return null;
     }
 
     @Override
@@ -54,7 +53,7 @@ public class JCFMessageService implements MessageService {
     }
 
     @Override
-    public List<Message> getAllMessage() {
+    public void getAllMessage() {
         System.out.println(" -- All message information --");
         for(Message m: data){
             System.out.println("id: " + m.getId());
@@ -62,11 +61,10 @@ public class JCFMessageService implements MessageService {
             System.out.println("'" + m.getMessageContent() + "'");
             System.out.println();
         }
-        return data;
     }
 
     @Override
-    public List<Message> getMessageByContent(String messageContent) {
+    public void getMessageByContent(String messageContent) {
         List<Message> buffer = new ArrayList<>();
         System.out.println("-- Searching message by content: " + messageContent + " --");
         for(Message m : data){
@@ -76,7 +74,6 @@ public class JCFMessageService implements MessageService {
             }
         }
         System.out.println();
-        return buffer;
     }
 
     @Override
@@ -88,7 +85,7 @@ public class JCFMessageService implements MessageService {
 
 
     @Override
-    public boolean updateMessage(Message message, String messageContent) {
+    public void updateMessage(Message message, String messageContent) {
         for(Message m: data){
             if(m.equals(message)){
                 System.out.println("-- Update message --");
@@ -98,23 +95,21 @@ public class JCFMessageService implements MessageService {
                 m.setMessageContent(messageContent);
                 System.out.println(m.getMessageContent() +"'");
                 System.out.println();
-                return true;
+                return;
             }
         }
-        return false;
     }
 
     @Override
-    public boolean deleteMessage(Message message) {
+    public void deleteMessage(Message message) {
         for(Message m: data){
             if(m.equals(message)){
                 System.out.println("-- Deleted message '" + m.getMessageContent() + "' by user " + m.getSender().getDisplayName() + " --");
                 data.remove(m);
                 System.out.println();
-                return true;
+                return;
             }
         }
-        return false;
     }
 
 }

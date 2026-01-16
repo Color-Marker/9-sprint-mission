@@ -23,11 +23,10 @@ public class WorkMessageService implements MessageService {
     }
 
     @Override
-    public Message getMessageById(UUID id) {
-        return data.stream()
-                .filter(m->m.getId().equals(id))
-                .findAny()
-                .orElse(null);
+    public void getMessageById(UUID id) {
+        data.stream()
+                .filter(m -> m.getId().equals(id))
+                .findAny();
     }
 
     @Override
@@ -38,14 +37,13 @@ public class WorkMessageService implements MessageService {
     }
 
     @Override
-    public List<Message> getAllMessage() {
-        return new ArrayList<>(data);
+    public void getAllMessage() {
     }
 
     @Override
-    public List<Message> getMessageByContent(String messageContent) {
-        return data.stream()
-                .filter(m->m.getMessageContent().contains(messageContent))
+    public void getMessageByContent(String messageContent) {
+        data.stream()
+                .filter(m -> m.getMessageContent().contains(messageContent))
                 .toList();
     }
 
@@ -58,17 +56,16 @@ public class WorkMessageService implements MessageService {
 
 
     @Override
-    public boolean updateMessage(Message message, String messageContent) {
-        return data.stream()
-                .filter(m->m.equals(message))
+    public void updateMessage(Message message, String messageContent) {
+        data.stream()
+                .filter(m -> m.equals(message))
                 .findAny()
-                .map(m-> m.setMessageContent(messageContent))
-                .orElse(false);
+                .map(m -> m.setMessageContent(messageContent));
     }
 
     @Override
-    public boolean deleteMessage(Message message) {
-        return data.removeIf(m->m.equals(message));
+    public void deleteMessage(Message message) {
+        data.removeIf(m -> m.equals(message));
     }
 
 }

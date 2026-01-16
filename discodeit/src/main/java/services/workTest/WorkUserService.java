@@ -1,24 +1,32 @@
 package services.workTest;
 
+import entity.ServerRoom;
 import entity.User;
+import services.ServerRoomService;
 import services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class WorkUserService implements UserService {
 
     private final List<User> data;
+    private final ServerRoomService serverRoomService;
 
-    public WorkUserService() {
+    public WorkUserService(ServerRoomService serverRoomService) {
+        this.serverRoomService = serverRoomService;
         this.data = new ArrayList<>();
     }
 
     @Override
-    public boolean addUser(User user) {
-        return data.add(user);
+    public void addUser(User user) {
+        boolean dupCheck;
+        dupCheck = data.stream().noneMatch(p->p.getDisplayName().equals(user.getDisplayName()));
+        if(dupCheck){
+            data.add(user);
+        }
+
     }
 
     @Override
@@ -30,10 +38,11 @@ public class WorkUserService implements UserService {
     }
 
     @Override
-    public List<User> getUserByName(String displayName) {
+    public User getUserByName(String displayName) {
         return data.stream()
                 .filter(p -> p.getDisplayName().equals(displayName))
-                .toList();
+                .findAny()
+                .orElse(null);
     }
 
 
@@ -43,43 +52,47 @@ public class WorkUserService implements UserService {
     }
 
     @Override
-    public boolean updateUserByName(User user, String displayName) {
-        return data.stream()
+    public void updateUserByName(User user, String displayName) {
+        data.stream()
                 .filter(p -> p.equals(user))
                 .findAny()
-                .map(p ->p.setDisplayName(displayName))
-                .orElse(false);
+                .map(p -> p.setDisplayName(displayName));
     }
 
     @Override
-    public boolean updateUserByEmail(User user, String email) {
-        return data.stream()
+    public void updateUserByEmail(User user, String email) {
+        data.stream()
                 .filter(p -> p.equals(user))
                 .findAny()
-                .map(p -> p.setEmail(email))
-                .orElse(false);
+                .map(p -> p.setEmail(email));
     }
 
     @Override
-    public boolean updateUserByNumber(User user, String phoneNumber) {
-        return data.stream()
+    public void updateUserByNumber(User user, String phoneNumber) {
+        data.stream()
                 .filter(p -> p.equals(user))
                 .findAny()
-                .map(p ->p.setPhoneNumber(phoneNumber))
-                .orElse(false);
+                .map(p -> p.setPhoneNumber(phoneNumber));
     }
 
     @Override
-    public boolean updateUserByPassword(User user, String password) {
-        return data.stream()
+    public void updateUserByPassword(User user, String password) {
+        data.stream()
                 .filter(p -> p.equals(user))
                 .findAny()
-                .map(p -> p.setPassword(password))
-                .orElse(false);
+                .map(p -> p.setPassword(password));
     }
 
     @Override
-    public boolean deleteUser(User user) {
-        return data.removeIf(p -> p.equals(user));
+    public void deleteUser(User user) {
+        List<ServerRoom> myServers = serverRoomService.getOwningServer(user);
+        for(ServerRoom s: myServers){
+            serverRoomService.deleteServerRoom(s);
+        }
+        List<ServerRoom> memberServers = serverRoomService.getInvitedServer(user);
+        for(ServerRoom s: memberServers){
+            serverRoomService.delMemberInServer(s, user);
+        }
+        data.removeIf(p -> p.equals(user));
     }
 }

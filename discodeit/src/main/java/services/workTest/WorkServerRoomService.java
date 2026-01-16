@@ -20,19 +20,24 @@ public class WorkServerRoomService implements ServerRoomService {
     }
 
     @Override
-    public boolean addServerRoom(ServerRoom serverRoom) {
-        return data.add(serverRoom);
+    public void addServerRoom(ServerRoom serverRoom) {
+        data.add(serverRoom);
     }
 
     @Override
-    public boolean addChannelToServer(ServerRoom serverRoom, Channel channel) {
+    public void addChannelToServer(ServerRoom serverRoom, Channel channel) {
         serverRoom.getChannel().add(channel);
-        return channelService.addChannel(channel);
+        channelService.addChannel(channel);
     }
 
     @Override
-    public boolean addMemberToServer(ServerRoom serverRoom, User user) {
-        return serverRoom.getMember().add(user);
+    public void addMemberToServer(ServerRoom serverRoom, User user) {
+        serverRoom.getMember().add(user);
+    }
+
+    @Override
+    public void delMemberInServer(ServerRoom serverRoom, User user) {
+        serverRoom.getMember().removeIf(p->p.equals(user));
     }
 
     @Override
@@ -61,6 +66,14 @@ public class WorkServerRoomService implements ServerRoomService {
     }
 
     @Override
+    public List<ServerRoom> getOwningServer(User user) {
+        return getAllServerRoom()
+                .stream()
+                .filter(s -> s.getOwner().equals(user))
+                .toList();
+    }
+
+    @Override
     public List<ServerRoom> getAllServerRoom() {
         return new ArrayList<>(data);
     }
@@ -80,10 +93,10 @@ public class WorkServerRoomService implements ServerRoomService {
     }
 
     @Override
-    public boolean deleteServerRoom(ServerRoom serverRoom) {
+    public void deleteServerRoom(ServerRoom serverRoom) {
         for(Channel c: serverRoom.getChannel()) {
             channelService.deleteChannel(c);
         }
-        return data.removeIf(s->s.equals(serverRoom));
+        data.removeIf(s -> s.equals(serverRoom));
     }
 }
