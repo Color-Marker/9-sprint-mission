@@ -1,13 +1,13 @@
 import entity.*;
-import services.ChannelService;
-import services.MessageService;
-import services.ServerRoomService;
-import services.UserService;
+import service.ChannelService;
+import service.MessageService;
+import service.ServerRoomService;
+import service.UserService;
 
-import services.jcf.JCFChannelService;
-import services.jcf.JCFMessageService;
-import services.jcf.JCFServerRoomService;
-import services.jcf.JCFUserService;
+import service.jcf.JCFChannelService;
+import service.jcf.JCFMessageService;
+import service.jcf.JCFServerRoomService;
+import service.jcf.JCFUserService;
 
 
 import java.util.List;

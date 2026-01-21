@@ -1,9 +1,11 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final UUID id;
     private final Long createdAt;
     private Long updatedAt;

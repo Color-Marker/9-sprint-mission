@@ -1,5 +1,7 @@
 package entity;
 
-public enum ChannelType {
+import java.io.Serializable;
+
+public enum ChannelType implements Serializable {
     CHAT, VOICE;
 }

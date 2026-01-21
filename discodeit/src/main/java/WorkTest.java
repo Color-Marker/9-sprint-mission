@@ -1,13 +1,17 @@
 
 import entity.*;
-import services.ChannelService;
-import services.MessageService;
-import services.ServerRoomService;
-import services.UserService;
-import services.workTest.WorkChannelService;
-import services.workTest.WorkMessageService;
-import services.workTest.WorkServerRoomService;
-import services.workTest.WorkUserService;
+import service.ChannelService;
+import service.MessageService;
+import service.ServerRoomService;
+import service.UserService;
+import service.file.FileChannelService;
+import service.file.FileMessageService;
+import service.file.FileServerService;
+import service.file.FileUserService;
+import service.workTest.WorkChannelService;
+import service.workTest.WorkMessageService;
+import service.workTest.WorkServerRoomService;
+import service.workTest.WorkUserService;
 
 import java.util.*;
 
@@ -15,51 +19,53 @@ import static util.AdminUtil.isAdmin;
 import static util.PrintUtil.*;
 
 public class WorkTest {
-    static MessageService messageService = new WorkMessageService();
-    static ChannelService channelService = new WorkChannelService(messageService);
-    static ServerRoomService serverRoomService = new WorkServerRoomService(channelService);
-    static UserService userService = new WorkUserService(serverRoomService);
+    static MessageService messageService = new FileMessageService();
+    static ChannelService channelService = new FileChannelService(messageService);
+    static ServerRoomService serverRoomService = new FileServerService(channelService);
+    static UserService userService = new FileUserService(serverRoomService);
 
     static User currentUser = null;
-    static User admin = new User("admin","admin", "admin@codeit.com","01000000000");
-    static User user1 = new User("user1","user1", "user1@codeit.com","01011111111");
-    static User user2 = new User("user2","user2", "user2@codeit.com","01022222222");
-    static User user3 = new User("user3","user3", "user3@codeit.com","01033333333");
+    static User admin;
+//    static User admin = new User("admin","admin", "admin@codeit.com","01000000000");
+//    static User user1 = new User("user1","user1", "user1@codeit.com","01011111111");
+//    static User user2 = new User("user2","user2", "user2@codeit.com","01022222222");
+//    static User user3 = new User("user3","user3", "user3@codeit.com","01033333333");
 
-    static ServerRoom serverRoom1 = new ServerRoom(admin, "AdminServer");
-    static ServerRoom serverRoom2 = new ServerRoom(user1, "WorkingServer");
-
-    static Channel channel1 = new Channel(ChannelType.CHAT, "AdminTest", serverRoom1);
-    static Channel channel11 = new Channel(ChannelType.CHAT, "Chat", serverRoom2);
-    static Channel channel22 = new Channel(ChannelType.VOICE, "Meeting", serverRoom2);
-
-    static Message adminMssage1 = new Message("This is Admin.", admin, channel1);
-    static Message user1Mssage = new Message("This is user1.", user1, channel11);
-    static Message user2Mssage1 = new Message("This is user2.", user2, channel11);
-    static Message user2Mssage2 = new Message("HeHe I am user2.", user2, channel22);
-    static Message user3Mssage = new Message("This is user3.", user3, channel11);
-    static Message adminMssage2 = new Message("Work checking complete.", admin, channel1);
+//    static ServerRoom serverRoom1 = new ServerRoom(admin, "AdminServer");
+//    static ServerRoom serverRoom2 = new ServerRoom(user1, "WorkingServer");
+//
+//    static Channel channel1 = new Channel(ChannelType.CHAT, "AdminTest", serverRoom1);
+//    static Channel channel11 = new Channel(ChannelType.CHAT, "Chat", serverRoom2);
+//    static Channel channel22 = new Channel(ChannelType.VOICE, "Meeting", serverRoom2);
+//
+//    static Message adminMssage1 = new Message("This is Admin.", admin, channel1);
+//    static Message user1Mssage = new Message("This is user1.", user1, channel11);
+//    static Message user2Mssage1 = new Message("This is user2.", user2, channel11);
+//    static Message user2Mssage2 = new Message("HeHe I am user2.", user2, channel22);
+//    static Message user3Mssage = new Message("This is user3.", user3, channel11);
+//    static Message adminMssage2 = new Message("Work checking complete.", admin, channel1);
 
     static Scanner sc = new Scanner(System.in);
 
     static {
-        userService.addUser(admin);
-        userService.addUser(user1);
-        userService.addUser(user2);
-        userService.addUser(user3);
-        serverRoomService.addServerRoom(serverRoom1);
-        serverRoomService.addServerRoom(serverRoom2);
-        serverRoomService.addChannelToServer(serverRoom1, channel1);
-        serverRoomService.addChannelToServer(serverRoom2, channel11);
-        serverRoomService.addChannelToServer(serverRoom2, channel22);
-        serverRoomService.addMemberToServer(serverRoom2, user2);
-        serverRoomService.addMemberToServer(serverRoom2, user3);
-        channelService.sendMessageToChannel(channel1, adminMssage1);
-        channelService.sendMessageToChannel(channel1, adminMssage2);
-        channelService.sendMessageToChannel(channel11, user1Mssage);
-        channelService.sendMessageToChannel(channel11, user2Mssage1);
-        channelService.sendMessageToChannel(channel22, user2Mssage2);
-        channelService.sendMessageToChannel(channel11, user3Mssage);
+        admin = userService.getUserByName("admin");
+//        userService.addUser(admin);
+//        userService.addUser(user1);
+//        userService.addUser(user2);
+//        userService.addUser(user3);
+//        serverRoomService.addServerRoom(serverRoom1);
+//        serverRoomService.addServerRoom(serverRoom2);
+//        serverRoomService.addChannelToServer(serverRoom1, channel1);
+//        serverRoomService.addChannelToServer(serverRoom2, channel11);
+//        serverRoomService.addChannelToServer(serverRoom2, channel22);
+//        serverRoomService.addMemberToServer(serverRoom2, user2);
+//        serverRoomService.addMemberToServer(serverRoom2, user3);
+//        channelService.sendMessageToChannel(channel1, adminMssage1);
+//        channelService.sendMessageToChannel(channel1, adminMssage2);
+//        channelService.sendMessageToChannel(channel11, user1Mssage);
+//        channelService.sendMessageToChannel(channel11, user2Mssage1);
+//        channelService.sendMessageToChannel(channel22, user2Mssage2);
+//        channelService.sendMessageToChannel(channel11, user3Mssage);
 
     }
 
@@ -202,7 +208,7 @@ public class WorkTest {
 
     public static void workServers(){
         printMenu("Server menu");
-        List<ServerRoom> serverList = new ArrayList<>();
+        List<ServerRoom> serverList;
 
         while(true) {
             if(isAdmin(currentUser, admin)){
@@ -257,7 +263,7 @@ public class WorkTest {
         if (index >= 0 && index < selectedServers.size()) {
             ServerRoom target = selectedServers.get(index);
             if (target != null) {
-                if(target.getOwner().equals(currentUser) || isAdmin(currentUser, admin)){
+                if(target.getOwner().getId().equals(currentUser.getId()) || isAdmin(currentUser, admin)){
                     System.out.println("Delete " + target.getServerName());
                     serverRoomService.deleteServerRoom(target);
                 }
@@ -333,7 +339,7 @@ public class WorkTest {
         if (index >= 0 && index < channels.size()) {
             Channel target = channels.get(index);
             if (target != null) {
-                if(server.getOwner().equals(currentUser) || isAdmin(currentUser, admin)){
+                if(server.getOwner().getId().equals(currentUser.getId()) || isAdmin(currentUser, admin)){
                     System.out.println("Delete " + target.getChannelName());
                     channelService.deleteChannel(target);
                 }
@@ -398,7 +404,7 @@ public class WorkTest {
 
         if (index >= 0 && index < msgs.size()) {
             Message target = msgs.get(index);
-            if (target.getSender().equals(currentUser) || server.getOwner().equals(currentUser) || isAdmin(currentUser, admin)) {
+            if (target.getSender().getId().equals(currentUser.getId()) || server.getOwner().equals(currentUser) || isAdmin(currentUser, admin)) {
                 messageService.deleteMessage(target);
                 System.out.println("Deleted!");
             } else {
@@ -416,7 +422,7 @@ public class WorkTest {
 
         if (index >= 0 && index < msgs.size()) {
             Message target = msgs.get(index);
-            if (target.getSender().equals(currentUser) || isAdmin(currentUser, admin)) {
+            if (target.getSender().getId().equals(currentUser.getId()) || isAdmin(currentUser, admin)) {
                 System.out.print("Type new msg content: ");
                 String newContent = sc.nextLine().trim();
                 messageService.updateMessage(target, newContent);

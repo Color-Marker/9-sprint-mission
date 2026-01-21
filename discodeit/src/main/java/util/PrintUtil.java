@@ -4,8 +4,8 @@ import entity.Channel;
 import entity.Message;
 import entity.ServerRoom;
 import entity.User;
-import services.ChannelService;
-import services.ServerRoomService;
+import service.ChannelService;
+import service.ServerRoomService;
 import java.util.List;
 
 public class PrintUtil {
@@ -21,7 +21,11 @@ public class PrintUtil {
     public static void printMenu(String printString){
         System.out.println("--- " + printString + " ---");
     }
-
+    public static void classificationLine(){
+        System.out.println();
+        System.out.println("----------------------------------");
+        System.out.println();
+    }
     public static void typeRightNum(){
         System.out.println("Warning: Only type right numbers");
     }
