@@ -37,7 +37,7 @@ public class FileUserRepository implements UserRepository {
     public User save(User user) {
         List<User> allUser = findAll();
         for(User p: allUser){
-            if(p.getDisplayName().equals(user.getDisplayName())) return null;
+            if(!p.getId().equals(user.getId()) && p.getDisplayName().equals(user.getDisplayName())) return null;
         }
         Path path = resolvePath(user.getId());
         try (
@@ -53,7 +53,7 @@ public class FileUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(UUID id) {
+    public User findById(UUID id) {
         User target = null;
         Path path = resolvePath(id);
         if(Files.exists(path)){
@@ -66,7 +66,7 @@ public class FileUserRepository implements UserRepository {
                 throw new RuntimeException(e);
             }
         }
-        return Optional.ofNullable(target);
+        return target;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class FileUserRepository implements UserRepository {
 
     @Override
     public boolean existsById(UUID id) {
-        return findById(id).isPresent();
+        return Files.exists(resolvePath(id));
     }
 
     @Override

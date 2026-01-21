@@ -38,10 +38,11 @@ public class JCFUserRepository implements UserRepository {
         }}
 
     @Override
-    public Optional<User> findById(UUID id) {
+    public User findById(UUID id) {
         return data.stream()
                 .filter(p -> p.getId().equals(id))
-                .findAny();
+                .findAny()
+                .orElse(null);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class JCFUserRepository implements UserRepository {
 
     @Override
     public boolean existsById(UUID id) {
-        return findById(id).isPresent();
+        return findById(id) != null;
     }
 
     @Override

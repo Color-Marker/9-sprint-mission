@@ -34,10 +34,11 @@ public class JCFMessageRepository implements MessageRepository {
     }
 
     @Override
-    public Optional<Message> findById(UUID id) {
+    public Message findById(UUID id) {
         return data.stream()
                 .filter(m -> m.getId().equals(id))
-                .findAny();
+                .findAny()
+                .orElse(null);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class JCFMessageRepository implements MessageRepository {
 
     @Override
     public boolean existsById(UUID id) {
-        return findById(id).isPresent();
+        return findById(id) != null;
     }
 
     @Override

@@ -39,10 +39,11 @@ public class JCFChannelRepository implements ChannelRepository {
     }
 
     @Override
-    public Optional<Channel> findById(UUID id) {
+    public Channel findById(UUID id) {
         return data.stream()
                 .filter(c -> c.getId().equals(id))
-                .findAny();
+                .findAny()
+                .orElse(null);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class JCFChannelRepository implements ChannelRepository {
 
     @Override
     public boolean existsById(UUID id) {
-        return findById(id).isPresent();
+        return findById(id) != null;
     }
 
     @Override

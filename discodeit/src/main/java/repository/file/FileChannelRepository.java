@@ -51,7 +51,7 @@ public class FileChannelRepository implements ChannelRepository {
     }
 
     @Override
-    public Optional<Channel> findById(UUID id) {
+    public Channel findById(UUID id) {
         Channel target = null;
         Path path = resolvePath(id);
         if(Files.exists(path)){
@@ -64,7 +64,7 @@ public class FileChannelRepository implements ChannelRepository {
                 throw new RuntimeException(e);
             }
         }
-        return Optional.ofNullable(target);
+        return target;
     }
 
     @Override
@@ -90,8 +90,7 @@ public class FileChannelRepository implements ChannelRepository {
 
     @Override
     public boolean existsById(UUID id) {
-        return findById(id).isPresent();
-    }
+        return Files.exists(resolvePath(id));    }
 
     @Override
     public void deleteById(UUID id) {

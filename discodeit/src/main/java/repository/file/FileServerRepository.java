@@ -50,7 +50,7 @@ public class FileServerRepository implements ServerRepository {
     }
 
     @Override
-    public Optional<ServerRoom> findById(UUID id) {
+    public ServerRoom findById(UUID id) {
         ServerRoom target = null;
         Path path = resolvePath(id);
         if(Files.exists(path)){
@@ -63,7 +63,7 @@ public class FileServerRepository implements ServerRepository {
                 throw new RuntimeException(e);
             }
         }
-        return Optional.ofNullable(target);
+        return target;
     }
 
     @Override
@@ -89,8 +89,7 @@ public class FileServerRepository implements ServerRepository {
 
     @Override
     public boolean existsById(UUID id) {
-        return findById(id).isPresent();
-    }
+        return Files.exists(resolvePath(id));    }
 
     @Override
     public void deleteById(UUID id) {

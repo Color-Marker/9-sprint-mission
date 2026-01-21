@@ -42,10 +42,11 @@ public class JCFServerRepository implements ServerRepository {
     }
 
     @Override
-    public Optional<ServerRoom> findById(UUID id) {
+    public ServerRoom findById(UUID id) {
         return data.stream()
                 .filter(s -> s.getId().equals(id))
-                .findAny();
+                .findAny()
+                .orElse(null);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class JCFServerRepository implements ServerRepository {
 
     @Override
     public boolean existsById(UUID id) {
-        return findById(id).isPresent();
+        return findById(id) != null;
     }
 
     @Override

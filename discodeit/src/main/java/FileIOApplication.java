@@ -1,8 +1,20 @@
 import entity.*;
+import repository.ChannelRepository;
+import repository.MessageRepository;
+import repository.ServerRepository;
+import repository.UserRepository;
+import repository.file.FileChannelRepository;
+import repository.file.FileMessageRepository;
+import repository.file.FileServerRepository;
+import repository.file.FileUserRepository;
 import service.ChannelService;
 import service.MessageService;
 import service.ServerRoomService;
 import service.UserService;
+import service.basic.BasicChannelService;
+import service.basic.BasicMessageService;
+import service.basic.BasicServerService;
+import service.basic.BasicUserService;
 import service.file.FileChannelService;
 import service.file.FileMessageService;
 import service.file.FileServerService;
@@ -69,7 +81,7 @@ public class FileIOApplication {
                 .forEach(m -> System.out.println("Find by content: " + m.getId()));
 
         List<Message> allMsgs = messageService.getAllMessage();
-        System.out.println("Number of all users: " + allMsgs.size());
+        System.out.println("Number of all messages: " + allMsgs.size());
         // 수정
         messageService.updateMessage(msg1, "IamAdmin");
         Message updatedMessage = messageService.getMessageById(msg1.getId());
@@ -136,10 +148,15 @@ public class FileIOApplication {
     }
 
     public static void main(String[] args){
-        MessageService messageService = new FileMessageService();
-        ChannelService channelService = new FileChannelService(messageService);
-        ServerRoomService serverRoomService = new FileServerService(channelService);
-        UserService userService = new FileUserService(serverRoomService);
+        MessageRepository messageRepository = new FileMessageRepository();
+        ChannelRepository channelRepository = new FileChannelRepository();
+        ServerRepository serverRepository = new FileServerRepository();
+        UserRepository userRepository = new FileUserRepository();
+
+        MessageService messageService = new BasicMessageService(messageRepository);
+        ChannelService channelService = new BasicChannelService(channelRepository, messageService);
+        ServerRoomService serverRoomService = new BasicServerService(serverRepository, channelService);
+        UserService userService = new BasicUserService(userRepository, serverRoomService);
 
         serverCRUDTest(serverRoomService);
         userCRUDTest(userService);
