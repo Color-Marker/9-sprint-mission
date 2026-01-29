@@ -1,5 +1,8 @@
 package com.sprint.mission.discodeit;
 
+import com.sprint.mission.discodeit.dto.MessageCreateDto;
+import com.sprint.mission.discodeit.dto.PublicChannelDto;
+import com.sprint.mission.discodeit.dto.UseCreaterDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
@@ -15,19 +18,21 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class DiscodeitApplication {
 
 	static User setupUser(UserService userService) {
-		User user = userService.create("woody", "woody@codeit.com", "woody1234");
-		return user;
+		UseCreaterDto useCreaterDto = new UseCreaterDto("woody", "woody@codeit.com", "woody1234", null);
+		return userService.create(useCreaterDto);
 	}
 
 	static Channel setupChannel(ChannelService channelService) {
-		Channel channel = channelService.create(ChannelType.PUBLIC, "공지", "공지 채널입니다.");
-		return channel;
+		PublicChannelDto publicChannelDto = new PublicChannelDto(ChannelType.PUBLIC, "notice", "This is notice channel.");
+		return channelService.createPublicChannel(publicChannelDto);
 	}
 
 	static void messageCreateTest(MessageService messageService, Channel channel, User author) {
-		Message message = messageService.create("안녕하세요.", channel.getId(), author.getId());
-		System.out.println("메시지 생성: " + message.getId());
+		MessageCreateDto messageCreateDto = new MessageCreateDto("Hello World", channel.getId(), author.getId(), null);
+		Message message = messageService.create(messageCreateDto);
+		System.out.println("Message created: " + message.getId());
 	}
+
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(DiscodeitApplication.class, args);
 

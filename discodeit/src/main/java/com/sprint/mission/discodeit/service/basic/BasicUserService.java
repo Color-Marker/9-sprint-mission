@@ -1,7 +1,8 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.UserDto;
+import com.sprint.mission.discodeit.dto.UseCreaterDto;
 import com.sprint.mission.discodeit.dto.UserFindResDto;
+import com.sprint.mission.discodeit.dto.UserUpdateDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -25,26 +26,27 @@ public class BasicUserService implements UserService {
     private final BinaryContentRepository binaryContentRepository;
 
     @Override
-    public User create(UserDto userDto) {
+    public User create(UseCreaterDto useCreaterDto) {
         List<User> allUser = userRepository.findAll();
         allUser.stream()
-                .filter(p -> p.getUsername().equals(userDto.username()))
+                .filter(p -> p.getUsername().equals(useCreaterDto.username()))
                 .findAny()
                 .ifPresent(p->{
-                    throw new IllegalArgumentException("Already existing user name: " + userDto.username());
+                    throw new IllegalArgumentException("Already existing user name: " + useCreaterDto.username());
                 });
         allUser.stream()
-                .filter(p -> p.getEmail().equals(userDto.email()))
+                .filter(p -> p.getEmail().equals(useCreaterDto.email()))
                 .findAny()
                 .ifPresent(p->{
-                    throw new IllegalArgumentException("Already existing email: " + userDto.email());
+                    throw new IllegalArgumentException("Already existing email: " + useCreaterDto.email());
                 });
-        User user = new User(userDto.username(), userDto.email(), userDto.password());
+        User user = new User(useCreaterDto.username(), useCreaterDto.email(), useCreaterDto.password());
         UserStatus userStatus = new UserStatus(user.getId());
-        BinaryContent binaryContent = userDto.profile();
-
+        BinaryContent binaryContent = useCreaterDto.profile();
         userStatusRepository.save(userStatus);
-        binaryContentRepository.save(binaryContent);
+        if(binaryContent!=null){
+            binaryContentRepository.save(binaryContent);
+        }
         return userRepository.save(user);
     }
 
@@ -74,7 +76,7 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public User update(UserDto userDto) {
+    public User update(UserUpdateDto userDto) {
         User user = userRepository.findById(userDto.userId())
                 .orElseThrow(() -> new NoSuchElementException("User with id " + userDto.userId() + " not found"));
         user.update(userDto.username(), userDto.email(), userDto.password());

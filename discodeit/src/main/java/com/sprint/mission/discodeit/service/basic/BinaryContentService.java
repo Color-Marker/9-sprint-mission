@@ -6,10 +6,7 @@ import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +18,7 @@ public class BinaryContentService {
         return binaryContentRepository.save(binaryContent);
     }
 
-    public BinaryContent find(UUID id){
+    public Optional<BinaryContent> find(UUID id){
         return binaryContentRepository.findById(id);
     }
 

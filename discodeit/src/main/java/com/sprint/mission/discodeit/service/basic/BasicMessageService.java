@@ -34,13 +34,17 @@ public class BasicMessageService implements MessageService {
             throw new NoSuchElementException("Author not found with id " + messageCreateDto.authorId());
         }
         List<BinaryContent> binaryContent = messageCreateDto.files();
-        for(BinaryContent b:binaryContent){
-            binaryContentRepository.save(b);
+
+        if(binaryContent != null){
+            for(BinaryContent b:binaryContent){
+                binaryContentRepository.save(b);
+            }
+            List<UUID> binaryContentIdList = binaryContent.stream()
+                    .map(BinaryContent::getId)
+                    .toList();
+            Message message = new Message(messageCreateDto.content(), messageCreateDto.channelId(), messageCreateDto.authorId(), binaryContentIdList);
         }
-        List<UUID> binaryContentIdList = binaryContent.stream()
-                .map(BinaryContent::getId)
-                .toList();
-        Message message = new Message(messageCreateDto.content(), messageCreateDto.channelId(), messageCreateDto.authorId(), binaryContentIdList);
+        Message message = new Message(messageCreateDto.content(), messageCreateDto.channelId(), messageCreateDto.authorId(), null);
 
         return messageRepository.save(message);
     }
