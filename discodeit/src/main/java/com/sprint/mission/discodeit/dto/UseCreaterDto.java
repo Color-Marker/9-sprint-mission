@@ -6,5 +6,5 @@ public record UseCreaterDto(
         String username,
         String email,
         String password,
-        BinaryContent profile
+        BinaryContentCreateDto profile
 ){}

@@ -14,8 +14,7 @@ public class BinaryContentService {
     private final BinaryContentRepository binaryContentRepository;
 
     public BinaryContent create(BinaryContentCreateDto dto){
-        BinaryContent binaryContent = new BinaryContent(dto.fileName(), dto.contentType(), dto.size());
-        return binaryContentRepository.save(binaryContent);
+        return binaryContentRepository.save(dto);
     }
 
     public Optional<BinaryContent> find(UUID id){

@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
 import com.sprint.mission.discodeit.dto.MessageCreateDto;
 import com.sprint.mission.discodeit.dto.MessageUpdateDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
@@ -37,7 +38,8 @@ public class BasicMessageService implements MessageService {
 
         if(binaryContent != null){
             for(BinaryContent b:binaryContent){
-                binaryContentRepository.save(b);
+                BinaryContentCreateDto dto = new BinaryContentCreateDto(b.getFileName(),b.getContentType(),b.getSize());
+                binaryContentRepository.save(dto);
             }
             List<UUID> binaryContentIdList = binaryContent.stream()
                     .map(BinaryContent::getId)

@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.repository.jcf;
 
+import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
-import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +17,8 @@ public class JCFBinaryContentRepository implements BinaryContentRepository {
 
 
     @Override
-    public BinaryContent save(BinaryContent binaryContent) {
+    public BinaryContent save(BinaryContentCreateDto dto) {
+        BinaryContent binaryContent = new BinaryContent(dto.fileName(), dto.contentType(), dto.size());
         this.data.put(binaryContent.getId(), binaryContent);
         return binaryContent;
     }

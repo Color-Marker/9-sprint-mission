@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
 import com.sprint.mission.discodeit.dto.UseCreaterDto;
 import com.sprint.mission.discodeit.dto.UserFindResDto;
 import com.sprint.mission.discodeit.dto.UserUpdateDto;
@@ -42,10 +43,10 @@ public class BasicUserService implements UserService {
                 });
         User user = new User(useCreaterDto.username(), useCreaterDto.email(), useCreaterDto.password());
         UserStatus userStatus = new UserStatus(user.getId());
-        BinaryContent binaryContent = useCreaterDto.profile();
+        BinaryContentCreateDto binaryContentDto = useCreaterDto.profile();
         userStatusRepository.save(userStatus);
-        if(binaryContent!=null){
-            binaryContentRepository.save(binaryContent);
+        if(binaryContentDto!=null){
+            binaryContentRepository.save(binaryContentDto);
         }
         return userRepository.save(user);
     }

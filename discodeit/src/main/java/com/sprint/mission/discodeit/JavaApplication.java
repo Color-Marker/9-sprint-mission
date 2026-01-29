@@ -1,12 +1,7 @@
 package com.sprint.mission.discodeit;
 
-import com.sprint.mission.discodeit.dto.MessageCreateDto;
-import com.sprint.mission.discodeit.dto.PublicChannelDto;
-import com.sprint.mission.discodeit.dto.UseCreaterDto;
-import com.sprint.mission.discodeit.entity.Channel;
-import com.sprint.mission.discodeit.entity.ChannelType;
-import com.sprint.mission.discodeit.entity.Message;
-import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.dto.*;
+import com.sprint.mission.discodeit.entity.*;
 import com.sprint.mission.discodeit.repository.*;
 import com.sprint.mission.discodeit.repository.file.*;
 import com.sprint.mission.discodeit.service.ChannelService;
@@ -16,15 +11,25 @@ import com.sprint.mission.discodeit.service.basic.BasicChannelService;
 import com.sprint.mission.discodeit.service.basic.BasicMessageService;
 import com.sprint.mission.discodeit.service.basic.BasicUserService;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class JavaApplication {
     static User setupUser(UserService userService) {
-        UseCreaterDto useCreaterDto = new UseCreaterDto("woody", "woody@codeit.com", "woody1234", null);
+        BinaryContentCreateDto file = new BinaryContentCreateDto("file","txt",40L);
+        UseCreaterDto useCreaterDto = new UseCreaterDto("woody", "woody@codeit.com", "woody1234", file);
         return userService.create(useCreaterDto);
     }
 
-    static Channel setupChannel(ChannelService channelService) {
+    static Channel setupPublicChannel(ChannelService channelService) {
         PublicChannelDto publicChannelDto = new PublicChannelDto(ChannelType.PUBLIC, "notice", "This is notice channel.");
         return channelService.createPublicChannel(publicChannelDto);
+    }
+
+    static Channel setupPrivateChannel(ChannelService channelService, List<UUID> userIdList) {
+        PrivateChannelDto privateChannelDto = new PrivateChannelDto(ChannelType.PRIVATE, userIdList);
+        return channelService.createPrivateChannel(privateChannelDto);
     }
 
     static void messageCreateTest(MessageService messageService, Channel channel, User author) {
@@ -49,8 +54,15 @@ public class JavaApplication {
 
         // 셋업
         User user = setupUser(userService);
-        Channel channel = setupChannel(channelService);
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user);
+        List<UUID> userIdList = userList.stream()
+                .map(User::getId).toList();
+        Channel publicChannel = setupPublicChannel(channelService);
+        Channel privateChannel = setupPrivateChannel(channelService, userIdList);
         // 테스트
-        messageCreateTest(messageService, channel, user);
+        messageCreateTest(messageService, publicChannel, user);
+        messageCreateTest(messageService, privateChannel, user);
     }
 }
