@@ -46,6 +46,7 @@ public class DiscodeitApplication {
 	static void messageCreateTest(MessageService messageService, Channel channel, User author) {
 		MessageCreateDto messageCreateDto = new MessageCreateDto("Hello World", channel.getId(), author.getId(), null);
 		Message message = messageService.create(messageCreateDto);
+
 		System.out.println("Message created: " + message.getContent());
 		System.out.println("In channel: " + message.getChannelId());
 		System.out.println("By user: " + message.getAuthorId());
@@ -73,6 +74,7 @@ public class DiscodeitApplication {
 		userList.add(user);
 		List<UUID> userIdList = userList.stream()
 				.map(User::getId).toList();
+
 		Channel publicChannel = setupPublicChannel(channelService);
 		System.out.println("Public Channel: " + publicChannel.getName() + "_" + publicChannel.getId());
 		Channel privateChannel = setupPrivateChannel(channelService, userIdList);
