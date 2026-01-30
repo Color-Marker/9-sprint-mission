@@ -1,9 +1,6 @@
 HELP.md
 .gradle
-.gradle/
 build/
-file-data-map/
-.discodeit/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
