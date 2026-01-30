@@ -7,5 +7,7 @@ import java.util.UUID;
 
 public record PrivateChannelDto (
         ChannelType type,
+        String name,
+        String description,
         List<UUID> userIdList
 ){}
