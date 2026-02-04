@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
 import com.sprint.mission.discodeit.dto.UserCreateDto;
 import com.sprint.mission.discodeit.dto.UserFindResDto;
 import com.sprint.mission.discodeit.dto.UserUpdateDto;
+import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
@@ -45,7 +46,8 @@ public class BasicUserService implements UserService {
         BinaryContentCreateDto binaryContentDto = userCreateDto.profile();
         userStatusRepository.save(userStatus);
         if(binaryContentDto!=null){
-            binaryContentRepository.save(binaryContentDto);
+            BinaryContent bc = binaryContentRepository.save(binaryContentDto);
+            user.setProfileId(bc.getId());
         }
         return userRepository.save(user);
     }
