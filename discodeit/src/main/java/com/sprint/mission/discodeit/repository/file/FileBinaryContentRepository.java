@@ -29,7 +29,7 @@ public class FileBinaryContentRepository implements BinaryContentRepository {
     public FileBinaryContentRepository(
             @Value("${discodeit.repository.file-directory}") String envPath
     ) {
-        this.DIRECTORY = Paths.get(envPath,"file-data-map", BinaryContent.class.getSimpleName());
+        this.DIRECTORY = Paths.get(envPath, BinaryContent.class.getSimpleName());
         if (Files.notExists(DIRECTORY)) {
             try {
                 Files.createDirectories(DIRECTORY);

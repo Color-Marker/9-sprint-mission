@@ -24,7 +24,7 @@ public class FileMessageRepository implements MessageRepository {
     private final String EXTENSION = ".ser";
 
     public FileMessageRepository( @Value("${discodeit.repository.file-directory}") String envPath) {
-        this.DIRECTORY = Paths.get(envPath, "file-data-map", Message.class.getSimpleName());
+        this.DIRECTORY = Paths.get(envPath, Message.class.getSimpleName());
         if (Files.notExists(DIRECTORY)) {
             try {
                 Files.createDirectories(DIRECTORY);

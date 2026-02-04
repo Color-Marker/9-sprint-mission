@@ -24,6 +24,7 @@ public class UserStatus implements Serializable {
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
         this.userId = userId;
+        this.isOnline = true;
     }
 
     public boolean stillOnline(){
@@ -36,7 +37,7 @@ public class UserStatus implements Serializable {
         return isOnline;
     }
 
-    public void update(boolean online) {
-        this.isOnline = online;
+    public void update() {
+        this.isOnline = true;
     }
 }

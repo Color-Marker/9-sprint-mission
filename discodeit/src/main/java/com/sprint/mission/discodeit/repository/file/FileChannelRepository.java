@@ -24,7 +24,7 @@ public class FileChannelRepository implements ChannelRepository {
     private final String EXTENSION = ".ser";
 
     public FileChannelRepository( @Value("${discodeit.repository.file-directory}") String envPath) {
-        this.DIRECTORY = Paths.get(envPath, "file-data-map", Channel.class.getSimpleName());
+        this.DIRECTORY = Paths.get(envPath, Channel.class.getSimpleName());
         if (Files.notExists(DIRECTORY)) {
             try {
                 Files.createDirectories(DIRECTORY);

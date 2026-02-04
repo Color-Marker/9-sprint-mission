@@ -1,8 +1,6 @@
 package com.sprint.mission.discodeit.dto;
 
-import com.sprint.mission.discodeit.entity.BinaryContent;
-
-public record UseCreaterDto(
+public record UserCreateDto(
         String username,
         String email,
         String password,

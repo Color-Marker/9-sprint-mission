@@ -22,10 +22,10 @@ public class DiscodeitApplication {
 	static User setupUser(UserService userService) {
 		BinaryContentCreateDto file1 = new BinaryContentCreateDto("file1","txt",40L);
 		BinaryContentCreateDto file2 = new BinaryContentCreateDto("file2","txt",40L);
-		UseCreaterDto useCreaterDto1 = new UseCreaterDto("admin", "admin@codeit.com", "admin1234", file1);
-		UseCreaterDto useCreaterDto2 = new UseCreaterDto("woody", "woody@codeit.com", "woody1234", file2);
-		User user1 = userService.create(useCreaterDto1);
-		User user2 = userService.create(useCreaterDto2);
+		UserCreateDto userCreateDto1 = new UserCreateDto("admin", "admin@codeit.com", "admin1234", file1);
+		UserCreateDto userCreateDto2 = new UserCreateDto("woody", "woody@codeit.com", "woody1234", file2);
+		User user1 = userService.create(userCreateDto1);
+		User user2 = userService.create(userCreateDto2);
 
 		System.out.println("user1: " + user1.getUsername() + "_" + user1.getId());
 		System.out.println("user2: " + user2.getUsername() + "_" + user2.getId());

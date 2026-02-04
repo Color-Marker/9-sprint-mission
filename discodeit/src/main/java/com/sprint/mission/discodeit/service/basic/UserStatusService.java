@@ -42,14 +42,14 @@ public class UserStatusService {
     public UserStatus update(UserStatusUpdateDto dto){
         UserStatus userStatus = userStatusRepository.findById(dto.id())
                 .orElseThrow(() -> new NoSuchElementException("User status with id " + dto.id() + " not found"));
-        userStatus.update(dto.isOnline());
+        userStatus.update();
         return userStatusRepository.save(userStatus);
     }
 
     public UserStatus updateByUserId(UUID userId, UserStatusUpdateDto dto){
         UserStatus userStatus = userStatusRepository.findByUserId(userId)
                 .orElseThrow(() -> new NoSuchElementException("User status with id " + userId + " not found"));
-        userStatus.update(dto.isOnline());
+        userStatus.update();
         return userStatusRepository.save(userStatus);
     }
 

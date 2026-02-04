@@ -24,7 +24,7 @@ public class FileUserRepository implements UserRepository {
     private final String EXTENSION = ".ser";
 
     public FileUserRepository( @Value("${discodeit.repository.file-directory}") String envPath) {
-        this.DIRECTORY = Paths.get(envPath, "file-data-map", User.class.getSimpleName());
+        this.DIRECTORY = Paths.get(envPath, User.class.getSimpleName());
         if (Files.notExists(DIRECTORY)) {
             try {
                 Files.createDirectories(DIRECTORY);

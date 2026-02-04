@@ -25,7 +25,7 @@ public class FileReadStatusRepository implements ReadStatusRepository {
     private final String EXTENSION = ".ser";
 
     public FileReadStatusRepository( @Value("${discodeit.repository.file-directory}") String envPath) {
-        this.DIRECTORY = Paths.get(envPath, "file-data-map", ReadStatus.class.getSimpleName());
+        this.DIRECTORY = Paths.get(envPath, ReadStatus.class.getSimpleName());
         if (Files.notExists(DIRECTORY)) {
             try {
                 Files.createDirectories(DIRECTORY);
