@@ -16,12 +16,6 @@
 * 어노테이션들을 추가하였으며, dto를 통해 파라미터를 받게끔 변경하였습니다.
 * 새로운 기능을 위한 레포지토리들이 추가되었습니다.
 
-## Spring 개념 이해
-JavaApplication과 DiscodeitApplication에서 
-Service를 초기화하는 방식의 차이에 대해 다음 키워드를 중심으로 정리.
-
-**키워드: IoC Container, Dependency Injection, Bean**
-
 ### JavaApplication vs DiscodeitApplication
 현재 JavaApplication에서는, 서비스를 생성자로 새롭게 생성하기 전에, 
 레포지토리들을 먼저 생성자로 모두 생성한 후, 서비스를 new Service()로 직접 호출하는 방식으로 객체를 생성하고 있다.
