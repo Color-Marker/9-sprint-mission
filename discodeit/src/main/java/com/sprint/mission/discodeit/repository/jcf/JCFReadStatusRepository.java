@@ -7,11 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+@ConditionalOnProperty(name = "discodeit.repository.type", havingValue = "jcf", matchIfMissing = true)
 @Repository
-@ConditionalOnProperty(
-        name = "discodeit.repository.type",
-        havingValue = "jcf"
-)
 public class JCFReadStatusRepository implements ReadStatusRepository {
     private final Map<UUID, ReadStatus> data;
 
@@ -31,41 +28,32 @@ public class JCFReadStatusRepository implements ReadStatusRepository {
     }
 
     @Override
-    public List<UUID> findUserIdByChannelId(UUID channelId) {
-        return findAll().stream()
-                .filter(r->r.getChannelId().equals(channelId))
-                .map(ReadStatus::getUserId)
+    public List<ReadStatus> findAllByUserId(UUID userId) {
+        return this.data.values().stream()
+                .filter(readStatus -> readStatus.getUserId().equals(userId))
                 .toList();
     }
 
     @Override
-    public List<UUID> findChannelIdByUserId(UUID userId) {
-        return findAll().stream()
-                .filter(r->r.getUserId().equals(userId))
-                .map(ReadStatus::getChannelId)
+    public List<ReadStatus> findAllByChannelId(UUID channelId) {
+        return this.data.values().stream()
+                .filter(readStatus -> readStatus.getChannelId().equals(channelId))
                 .toList();
     }
 
     @Override
-    public Optional<ReadStatus> findByChannelAndUser(UUID channelId, UUID userId) {
-        return findAll().stream()
-                .filter(r->r.getUserId().equals(userId))
-                .filter(r->r.getChannelId().equals(channelId))
-                .findAny();
-    }
-
-    @Override
-    public List<ReadStatus> findAll() {
-        return this.data.values().stream().toList();
-    }
-
-    @Override
-    public Boolean existsById(UUID id) {
+    public boolean existsById(UUID id) {
         return this.data.containsKey(id);
     }
 
     @Override
     public void deleteById(UUID id) {
         this.data.remove(id);
+    }
+
+    @Override
+    public void deleteAllByChannelId(UUID channelId) {
+        this.findAllByChannelId(channelId)
+                .forEach(readStatus -> this.deleteById(readStatus.getId()));
     }
 }

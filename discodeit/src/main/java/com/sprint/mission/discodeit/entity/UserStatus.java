@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -17,27 +18,32 @@ public class UserStatus implements Serializable {
     private Instant updatedAt;
 
     private UUID userId;
-    boolean isOnline;
+    private Instant lastActiveAt;
 
-    public UserStatus(UUID userId) {
+
+    public UserStatus(UUID userId, Instant lastActiveAt) {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
         this.userId = userId;
-        this.isOnline = true;
+        this.lastActiveAt = lastActiveAt;
     }
 
-    public boolean stillOnline(){
-        if(updatedAt.isAfter(Instant.now().minusSeconds(300))){
-            isOnline = true;
-        }
-        else{
-            isOnline = false;
-        }
-        return isOnline;
+    public Boolean isOnline() {
+        Instant instantFiveMinutesAgo = Instant.now().minus(Duration.ofMinutes(5));
+
+        return lastActiveAt.isAfter(instantFiveMinutesAgo);
     }
 
-    public void update() {
-        this.isOnline = true;
+    public void update(Instant lastActiveAt) {
+        boolean anyValueUpdated = false;
+        if (lastActiveAt != null && !lastActiveAt.equals(this.lastActiveAt)) {
+            this.lastActiveAt = lastActiveAt;
+            anyValueUpdated = true;
+        }
+
+        if (anyValueUpdated) {
+            this.updatedAt = Instant.now();
+        }
     }
 }

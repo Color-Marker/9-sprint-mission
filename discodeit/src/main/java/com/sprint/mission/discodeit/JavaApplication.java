@@ -17,12 +17,12 @@ import java.util.UUID;
 
 public class JavaApplication {
     static User setupUser(UserService userService) {
-        BinaryContentCreateDto file1 = new BinaryContentCreateDto("file1","txt",40L);
-        BinaryContentCreateDto file2 = new BinaryContentCreateDto("file2","txt",40L);
-        UserCreateDto userCreateDto1 = new UserCreateDto("admin", "admin@codeit.com", "admin1234", file1);
-        UserCreateDto userCreateDto2 = new UserCreateDto("woody", "woody@codeit.com", "woody1234", file2);
-        User user1 = userService.create(userCreateDto1);
-        User user2 = userService.create(userCreateDto2);
+        BinaryContentCreateReqDto file1 = new BinaryContentCreateReqDto("file1","txt",40L);
+        BinaryContentCreateReqDto file2 = new BinaryContentCreateReqDto("file2","txt",40L);
+        UserCreateReqDto userCreateReqDto1 = new UserCreateReqDto("admin", "admin@codeit.com", "admin1234", file1);
+        UserCreateReqDto userCreateReqDto2 = new UserCreateReqDto("woody", "woody@codeit.com", "woody1234", file2);
+        User user1 = userService.create(userCreateReqDto1);
+        User user2 = userService.create(userCreateReqDto2);
 
         System.out.println("user1: " + user1.getUsername() + "_" + user1.getId());
         System.out.println("user2: " + user2.getUsername() + "_" + user2.getId());
@@ -41,8 +41,8 @@ public class JavaApplication {
     }
 
     static void messageCreateTest(MessageService messageService, Channel channel, User author) {
-        MessageCreateDto messageCreateDto = new MessageCreateDto("Hello World", channel.getId(), author.getId(), null);
-        Message message = messageService.create(messageCreateDto);
+        MessageCreateReqDto messageCreateReqDto = new MessageCreateReqDto("Hello World", channel.getId(), author.getId(), null);
+        Message message = messageService.create(messageCreateReqDto);
         System.out.println("Message created: " + message.getContent());
         System.out.println("In channel: " + message.getChannelId());
         System.out.println("By user: " + message.getAuthorId());

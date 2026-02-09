@@ -13,18 +13,18 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
+@ConditionalOnProperty(name = "discodeit.repository.type", havingValue = "file")
 @Repository
-@ConditionalOnProperty(
-        name = "discodeit.repository.type",
-        havingValue = "file"
-)
 public class FileMessageRepository implements MessageRepository {
     private final Path DIRECTORY;
     private final String EXTENSION = ".ser";
 
-    public FileMessageRepository( @Value("${discodeit.repository.file-directory}") String envPath) {
-        this.DIRECTORY = Paths.get(envPath, Message.class.getSimpleName());
+    public FileMessageRepository(
+            @Value("${discodeit.repository.file-directory:data}") String fileDirectory
+    ) {
+        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), fileDirectory, Message.class.getSimpleName());
         if (Files.notExists(DIRECTORY)) {
             try {
                 Files.createDirectories(DIRECTORY);
@@ -70,9 +70,9 @@ public class FileMessageRepository implements MessageRepository {
     }
 
     @Override
-    public List<Message> findAll() {
-        try {
-            return Files.list(DIRECTORY)
+    public List<Message> findAllByChannelId(UUID channelId) {
+        try (Stream<Path> paths = Files.list(DIRECTORY)) {
+            return paths
                     .filter(path -> path.toString().endsWith(EXTENSION))
                     .map(path -> {
                         try (
@@ -84,6 +84,7 @@ public class FileMessageRepository implements MessageRepository {
                             throw new RuntimeException(e);
                         }
                     })
+                    .filter(message -> message.getChannelId().equals(channelId))
                     .toList();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -104,5 +105,11 @@ public class FileMessageRepository implements MessageRepository {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void deleteAllByChannelId(UUID channelId) {
+        this.findAllByChannelId(channelId)
+                .forEach(message -> this.deleteById(message.getId()));
     }
 }
