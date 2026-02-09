@@ -20,18 +20,7 @@ import java.util.UUID;
 public class DiscodeitApplication {
 
 	public static void main(String[] args) {
-		ConfigurableApplicationContext context = SpringApplication.run(DiscodeitApplication.class, args);
-
-		// 서비스 초기화
-		UserService userService;
-		ChannelService channelService;
-		MessageService messageService;
-
-		// TODO context에서 Bean을 조회하여 각 서비스 구현테 할당 코드 작성하기
-		userService = context.getBean(UserService.class);
-		channelService = context.getBean(ChannelService.class);
-		messageService = context.getBean(MessageService.class);
-
+		SpringApplication.run(DiscodeitApplication.class, args);
 	}
 
 }

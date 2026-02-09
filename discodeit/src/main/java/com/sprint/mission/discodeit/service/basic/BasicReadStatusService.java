@@ -1,25 +1,29 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.ReadStatusCreateReqDto;
+import com.sprint.mission.discodeit.dto.ReadStatusUpdateReqDto;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.service.ReadStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class BasicReadStatusService {
+public class BasicReadStatusService implements ReadStatusService {
     private final ReadStatusRepository readStatusRepository;
     private final UserRepository userRepository;
     private final ChannelRepository channelRepository;
 
     @Override
-    public ReadStatus create(ReadStatusCreateRequest request) {
+    public ReadStatus create(ReadStatusCreateReqDto request) {
         UUID userId = request.userId();
         UUID channelId = request.channelId();
 
@@ -52,7 +56,7 @@ public class BasicReadStatusService {
     }
 
     @Override
-    public ReadStatus update(UUID readStatusId, ReadStatusUpdateRequest request) {
+    public ReadStatus update(UUID readStatusId, ReadStatusUpdateReqDto request) {
         Instant newLastReadAt = request.newLastReadAt();
         ReadStatus readStatus = readStatusRepository.findById(readStatusId)
                 .orElseThrow(() -> new NoSuchElementException("ReadStatus with id " + readStatusId + " not found"));

@@ -1,23 +1,27 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.UserStatusCreateReqDto;
+import com.sprint.mission.discodeit.dto.UserStatusUpdateReqDto;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
+import com.sprint.mission.discodeit.service.UserStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class BasicUserStatusService {
+public class BasicUserStatusService implements UserStatusService {
     private final UserStatusRepository userStatusRepository;
     private final UserRepository userRepository;
 
     @Override
-    public UserStatus create(UserStatusCreateRequest request) {
+    public UserStatus create(UserStatusCreateReqDto request) {
         UUID userId = request.userId();
 
         if (!userRepository.existsById(userId)) {
@@ -45,7 +49,7 @@ public class BasicUserStatusService {
     }
 
     @Override
-    public UserStatus update(UUID userStatusId, UserStatusUpdateRequest request) {
+    public UserStatus update(UUID userStatusId, UserStatusUpdateReqDto request) {
         Instant newLastActiveAt = request.newLastActiveAt();
 
         UserStatus userStatus = userStatusRepository.findById(userStatusId)
@@ -56,7 +60,7 @@ public class BasicUserStatusService {
     }
 
     @Override
-    public UserStatus updateByUserId(UUID userId, UserStatusUpdateRequest request) {
+    public UserStatus updateByUserId(UUID userId, UserStatusUpdateReqDto request) {
         Instant newLastActiveAt = request.newLastActiveAt();
 
         UserStatus userStatus = userStatusRepository.findByUserId(userId)
