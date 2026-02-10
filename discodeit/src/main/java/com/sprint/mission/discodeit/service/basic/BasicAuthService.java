@@ -1,11 +1,13 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.UserLoginReqDto;
+import com.sprint.mission.discodeit.dto.UserStatusUpdateReqDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.AuthService;
+import com.sprint.mission.discodeit.service.UserStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,7 @@ import java.util.NoSuchElementException;
 @Service
 public class BasicAuthService implements AuthService {
     private final UserRepository userRepository;
-    private final UserStatusRepository userStatusRepository;
+    private final UserStatusService userStatusService;
 
     @Override
     public User login(UserLoginReqDto loginRequest) {
@@ -29,10 +31,8 @@ public class BasicAuthService implements AuthService {
         if (!user.getPassword().equals(password)) {
             throw new IllegalArgumentException("Wrong password");
         }
-        UserStatus userStatus = userStatusRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new NoSuchElementException("해당 유저의 상태를 찾을 수 없습니다."));
-        userStatus.update(Instant.now());
-        userStatusRepository.save(userStatus);
+        UserStatusUpdateReqDto dto = new UserStatusUpdateReqDto(Instant.now());
+        userStatusService.updateByUserId(user.getId(), dto);
 
         return user;
     }
