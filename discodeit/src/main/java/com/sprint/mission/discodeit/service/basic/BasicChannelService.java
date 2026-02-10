@@ -33,7 +33,9 @@ public class BasicChannelService implements ChannelService {
 
     @Override
     public Channel create(PrivateChannelCreateReqDto request) {
-        Channel channel = new Channel(ChannelType.PRIVATE, null, null);
+        String name = request.name();
+        String description = request.description();
+        Channel channel = new Channel(ChannelType.PRIVATE, name, description);
         Channel createdChannel = channelRepository.save(channel);
 
         request.participantIds().stream()

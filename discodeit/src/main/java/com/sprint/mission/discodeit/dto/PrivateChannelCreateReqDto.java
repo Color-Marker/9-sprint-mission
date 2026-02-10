@@ -4,5 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record PrivateChannelCreateReqDto(
-        List<UUID> participantIds
+        List<UUID> participantIds,
+        String name,
+        String description
 ) {}

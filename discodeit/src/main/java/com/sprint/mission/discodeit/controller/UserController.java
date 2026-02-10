@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -89,8 +89,8 @@ public class UserController {
         return ResponseEntity.ok("user: " + userId + "가 삭제되었습니다.");
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<?> userList(){
+    @GetMapping("/findAll")
+    public ResponseEntity<List<UserDto>> userList(){
         List<UserDto> allUsers = userService.findAll();
         return ResponseEntity.ok(allUsers);
     }
