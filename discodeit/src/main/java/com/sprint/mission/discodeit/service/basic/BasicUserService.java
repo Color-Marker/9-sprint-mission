@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
-import com.sprint.mission.discodeit.dto.UseCreaterDto;
+import com.sprint.mission.discodeit.dto.UserCreateDto;
 import com.sprint.mission.discodeit.dto.UserFindResDto;
 import com.sprint.mission.discodeit.dto.UserUpdateDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
@@ -27,26 +27,27 @@ public class BasicUserService implements UserService {
     private final BinaryContentRepository binaryContentRepository;
 
     @Override
-    public User create(UseCreaterDto useCreaterDto) {
+    public User create(UserCreateDto userCreateDto) {
         List<User> allUser = userRepository.findAll();
         allUser.stream()
-                .filter(p -> p.getUsername().equals(useCreaterDto.username()))
+                .filter(p -> p.getUsername().equals(userCreateDto.username()))
                 .findAny()
                 .ifPresent(p->{
-                    throw new IllegalArgumentException("Already existing user name: " + useCreaterDto.username());
+                    throw new IllegalArgumentException("Already existing user name: " + userCreateDto.username());
                 });
         allUser.stream()
-                .filter(p -> p.getEmail().equals(useCreaterDto.email()))
+                .filter(p -> p.getEmail().equals(userCreateDto.email()))
                 .findAny()
                 .ifPresent(p->{
-                    throw new IllegalArgumentException("Already existing email: " + useCreaterDto.email());
+                    throw new IllegalArgumentException("Already existing email: " + userCreateDto.email());
                 });
-        User user = new User(useCreaterDto.username(), useCreaterDto.email(), useCreaterDto.password());
+        User user = new User(userCreateDto.username(), userCreateDto.email(), userCreateDto.password());
         UserStatus userStatus = new UserStatus(user.getId());
-        BinaryContentCreateDto binaryContentDto = useCreaterDto.profile();
+        BinaryContentCreateDto binaryContentDto = userCreateDto.profile();
         userStatusRepository.save(userStatus);
         if(binaryContentDto!=null){
-            binaryContentRepository.save(binaryContentDto);
+            BinaryContent bc = binaryContentRepository.save(binaryContentDto);
+            user.setProfileId(bc.getId());
         }
         return userRepository.save(user);
     }

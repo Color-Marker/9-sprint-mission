@@ -3,6 +3,5 @@ package com.sprint.mission.discodeit.dto;
 import java.util.UUID;
 
 public record UserStatusUpdateDto (
-        UUID id,
-        boolean isOnline
+        UUID id
 ){ }

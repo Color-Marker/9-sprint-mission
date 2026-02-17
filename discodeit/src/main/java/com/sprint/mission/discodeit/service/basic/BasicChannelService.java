@@ -32,7 +32,7 @@ public class BasicChannelService implements ChannelService {
 
     @Override
     public Channel createPrivateChannel(PrivateChannelDto privateChannelDto) {
-        Channel channel = new Channel(privateChannelDto.type(), null,null);
+        Channel channel = new Channel(privateChannelDto.type(), privateChannelDto.name(), privateChannelDto.description());
         Channel saved = channelRepository.save(channel);
         privateChannelDto.userIdList()
                 .forEach(u->{

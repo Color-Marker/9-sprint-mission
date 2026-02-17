@@ -10,29 +10,25 @@
 - [x] 심화 항목 2
 
 ## 기본 구조
-* 
+* 미션에서 제공해 준 기본 코드를 이용했습니다.
 
 ## 주요 변경사항
-* 
+* 어노테이션들을 추가하였으며, dto를 통해 파라미터를 받게끔 변경하였습니다.
+* 새로운 기능을 위한 레포지토리들이 추가되었습니다.
 
-## Spring 개념 이해
-JavaApplication과 DiscodeitApplication에서 
-Service를 초기화하는 방식의 차이에 대해 다음 키워드를 중심으로 정리.
+### JavaApplication vs DiscodeitApplication
+현재 JavaApplication에서는, 서비스를 생성자로 새롭게 생성하기 전에, 
+레포지토리들을 먼저 생성자로 모두 생성한 후, 서비스를 new Service()로 직접 호출하는 방식으로 객체를 생성하고 있다.
+즉, 개발자가 직접 제어를 하고 있다고 볼 수 있다.
+또한, 현재 JavaApplication에서는 그저 평범한 객체를 이용하고 있다. 컨테이너의 관리도 받지 않으며,
+Bean을 이용하고 있지도 않다.
+의존성 주입은, 현재 JavaApplication에서는 서비스를 생성할 때, 
+그 이전에 레포지토리를 직접 생성자를 통해 생성한 후 일일이 주입해 주는 방식으로 진행하고 있습니다.
 
-**키워드: IoC Container, Dependency Injection, Bean**
+반면에 DiscodeitApplication에서는, 애플리케이션이 실행될 때 컨테이너가 스스로 필요한 객체들을 생성해준다.
+따라서 getBean을 통해 생성되어 있는 서비스 객체를 받아오기만 하면 된다.
+DiscodeitApplication에서는 Spring IoC 컨테이너가 관리하는 자바 객체인 Bean의 형태로 클래스를 사용하고 있다.
+클래스 위에 @Service들과 같은 어노테이션으로 Bean으로 등록해주고 있다.
+의존성 주입은, 컨테이너가 서비스 객체들 내부의 ChannelRepository와 같은 것들에 
+이미 생성해둔 빈들을 찾아 알아서 연결해 생성해줍니다.
 
-### JavaApplication의 Service 초기화 방식
-현재 JavaApplication에서는, 서비스를 생성자로 새롭게 생성하기 전에,
-
-레포지토리들을 먼저 생성자로 모두 생성한 후, 서비스 생성자에 직접 매개변수로 입력해주는 방식으로 초기화를 진행하고 있다.
-
-
-### DiscodeitApplication의 Service 초기화 방식
-
-
-## 스크린샷
-![사진설명](사진링크)
-
-## 멘토에게
-- 
-- 
