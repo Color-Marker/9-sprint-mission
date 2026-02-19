@@ -8,18 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(
-            @RequestParam String username,
-            @RequestParam String password
+            @RequestBody UserLoginReqDto dto
             ){
-        UserLoginReqDto dto = new UserLoginReqDto(username, password);
         User user = authService.login(dto);
         return ResponseEntity.ok(user);
     }
