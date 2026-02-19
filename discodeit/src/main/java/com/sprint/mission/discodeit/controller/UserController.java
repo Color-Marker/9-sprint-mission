@@ -8,6 +8,9 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.UserStatusService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Tag(name = "User API")
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -28,12 +32,15 @@ public class UserController {
   private final UserService userService;
   private final UserStatusService userStatusService;
 
+  @Operation(summary = "유저 생성")
   @PostMapping(
       path = "",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE
   )
   public ResponseEntity<?> create(
+      @Parameter(description = "유저 정보")
       @RequestPart("userReqDto") UserReqDto userReqDto,
+      @Parameter(description = "유저 프로필 파일")
       @RequestPart(value = "profile", required = false) MultipartFile profile
   ) {
     Optional<BinaryContentCreateReqDto> binaryDto = Optional.ofNullable(profile)
@@ -54,13 +61,17 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(result));
   }
 
+  @Operation(summary = "유저 수정")
   @PutMapping(
       path = "/{userId}",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE
   )
   public ResponseEntity<?> edit(
+      @Parameter(description = "유저 ID")
       @PathVariable UUID userId,
+      @Parameter(description = "유저 정보")
       @RequestPart("userReqDto") UserReqDto userDto,
+      @Parameter(description = "유저 프로필 파일")
       @RequestPart(value = "profile", required = false) MultipartFile profile
   ) {
     Optional<BinaryContentCreateReqDto> binaryDto = Optional.ofNullable(profile)
@@ -81,8 +92,10 @@ public class UserController {
     return ResponseEntity.ok(ResponseDto.ok(result));
   }
 
+  @Operation(summary = "유저 삭제")
   @DeleteMapping("/{userId}")
   public ResponseEntity<?> delete(
+      @Parameter(description = "유저 ID")
       @PathVariable UUID userId
   ) {
     userService.delete(userId);
@@ -90,14 +103,17 @@ public class UserController {
     return ResponseEntity.ok(ResponseDto.ok(result));
   }
 
+  @Operation(summary = "전체 유저 출력")
   @GetMapping("")
   public ResponseEntity<?> userList() {
     List<UserDto> allUsers = userService.findAll();
     return ResponseEntity.ok(ResponseDto.ok(allUsers));
   }
 
+  @Operation(summary = "유저 읽음 상태 업데이트")
   @PatchMapping("/{userId}/userstatus")
   public ResponseEntity<?> update(
+      @Parameter(description = "유저 ID")
       @PathVariable UUID userId
   ) {
     UserStatus userStatus = userStatusService.updateByUserId(userId);

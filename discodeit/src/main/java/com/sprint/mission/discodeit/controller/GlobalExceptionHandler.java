@@ -1,17 +1,13 @@
 package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.dto.ResponseDto;
-import com.sprint.mission.discodeit.error.ErrorResponse;
-import jakarta.validation.ConstraintViolationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.NoSuchElementException;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
@@ -33,20 +29,6 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(ResponseDto.fail(e.getMessage()));
   }
-
-  @ExceptionHandler
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseDto<Object> handleMethodArgumentNotValidException(
-      MethodArgumentNotValidException e) {
-    return ResponseDto.fail(ErrorResponse.of(e.getBindingResult()));
-  }
-
-  @ExceptionHandler
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseDto<Object> handleConstraintViolationException(ConstraintViolationException e) {
-    return ResponseDto.fail(ErrorResponse.of(e.getConstraintViolations()));
-  }
-
 }
 
 
