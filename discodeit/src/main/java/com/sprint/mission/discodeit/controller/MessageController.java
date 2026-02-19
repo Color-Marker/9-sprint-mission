@@ -27,50 +27,42 @@ public class MessageController {
 
   private final MessageService messageService;
 
-  @PostMapping(
-      path = "",
-      consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-  )
+  @PostMapping(path = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<?> create(
       @RequestPart("messageCreateReqDto") MessageCreateReqDto messageCreateReqDto,
-      @RequestPart("files") List<MultipartFile> files
-  ) {
+      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
     List<BinaryContentCreateReqDto> binaryDtos = new ArrayList<>();
-    try {
-      for (MultipartFile file : files) {
-        BinaryContentCreateReqDto data = new BinaryContentCreateReqDto(file.getName(),
-            file.getContentType(), file.getBytes());
-        binaryDtos.add(data);
+    if (files != null) {
+      try {
+        for (MultipartFile file : files) {
+          BinaryContentCreateReqDto data = new BinaryContentCreateReqDto(file.getName(),
+              file.getContentType(), file.getBytes());
+          binaryDtos.add(data);
+        }
+      } catch (IOException e) {
+        throw new RuntimeException("파일을 읽을 수 없습니다.");
       }
-    } catch (IOException e) {
-      throw new RuntimeException("파일을 읽을 수 없습니다.");
     }
     Message message = messageService.create(messageCreateReqDto, binaryDtos);
     return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(message));
   }
 
   @PatchMapping("/{messageId}")
-  public ResponseEntity<?> edit(
-      @PathVariable UUID messageId,
-      @RequestBody MessageUpdateReqDto dto
-  ) {
+  public ResponseEntity<?> edit(@PathVariable UUID messageId,
+      @RequestBody MessageUpdateReqDto dto) {
     Message message = messageService.update(messageId, dto);
     return ResponseEntity.ok(ResponseDto.ok(message));
   }
 
   @DeleteMapping("/{messageId}")
-  public ResponseEntity<?> delete(
-      @PathVariable UUID messageId
-  ) {
+  public ResponseEntity<?> delete(@PathVariable UUID messageId) {
     messageService.delete(messageId);
     String result = "message: " + messageId + "가 삭제되었습니다.";
     return ResponseEntity.ok(ResponseDto.ok(result));
   }
 
   @GetMapping("/{channelId}")
-  public ResponseEntity<?> messageList(
-      @PathVariable UUID channelId
-  ) {
+  public ResponseEntity<?> messageList(@PathVariable UUID channelId) {
     List<Message> messages = messageService.findAllByChannelId(channelId);
     return ResponseEntity.ok(ResponseDto.ok(messages));
   }

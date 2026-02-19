@@ -1,0 +1,14 @@
+{
+  "status": true,
+  "data": {
+    "content": "hello",
+    "channelId": "881823c3-17e4-4645-9910-581092870be6",
+    "authorId": "6b9caf30-ef34-4d90-8346-bda843001850",
+    "attachmentIds": [],
+    "id": "59a31810-3d6e-4c73-be2b-592566100027",
+    "createdAt": "2026-02-19T09:06:27.261024200Z",
+    "updatedAt": null
+  },
+  "error": null,
+  "timestamp": "2026-02-19T18:06:27.2630271"
+}
