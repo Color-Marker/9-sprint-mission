@@ -25,14 +25,14 @@ public class ChannelController {
   public ResponseEntity<?> publicCreate(@RequestBody PublicChannelReqDto dto) {
     Channel channel = channelService.create(dto);
     ChannelDto result = channelService.find(channel.getId());
-    return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(result));
   }
 
   @PostMapping("/private")
   public ResponseEntity<?> privateCreate(@RequestBody PrivateChannelCreateReqDto dto) {
     Channel channel = channelService.create(dto);
     ChannelDto result = channelService.find(channel.getId());
-    return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(result));
   }
 
   @PutMapping("/public/{channelId}")
@@ -42,7 +42,7 @@ public class ChannelController {
   ) {
     channelService.update(channelId, dto);
     ChannelDto result = channelService.find(channelId);
-    return ResponseEntity.ok(result);
+    return ResponseEntity.ok(ResponseDto.ok(result));
   }
 
   @DeleteMapping("/{channelId}")
@@ -51,7 +51,7 @@ public class ChannelController {
   ) {
     channelService.delete(channelId);
     String result = "channel: " + channelId + "가 삭제되었습니다.";
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResponseDto.ok(result));
+    return ResponseEntity.ok(ResponseDto.ok(result));
   }
 
   @GetMapping("/{userId}")

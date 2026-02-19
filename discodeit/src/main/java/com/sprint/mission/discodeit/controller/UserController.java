@@ -1,8 +1,8 @@
 package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.dto.BinaryContentCreateReqDto;
+import com.sprint.mission.discodeit.dto.ResponseDto;
 import com.sprint.mission.discodeit.dto.UserReqDto;
-import com.sprint.mission.discodeit.dto.UserStatusUpdateReqDto;
 import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -29,11 +29,11 @@ public class UserController {
   private final UserStatusService userStatusService;
 
   @PostMapping(
-      path = "/",
+      path = "",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE
   )
   public ResponseEntity<?> create(
-      @RequestPart("userCreateReqDto") UserReqDto userReqDto,
+      @RequestPart("userReqDto") UserReqDto userReqDto,
       @RequestPart(value = "profile", required = false) MultipartFile profile
   ) {
     Optional<BinaryContentCreateReqDto> binaryDto = Optional.ofNullable(profile)
@@ -51,7 +51,7 @@ public class UserController {
         });
     User user = userService.create(userReqDto, binaryDto);
     UserDto result = userService.find(user.getId());
-    return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(result));
   }
 
   @PutMapping(
@@ -78,7 +78,7 @@ public class UserController {
         });
     userService.update(userId, userDto, binaryDto);
     UserDto result = userService.find(userId);
-    return ResponseEntity.ok(result);
+    return ResponseEntity.ok(ResponseDto.ok(result));
   }
 
   @DeleteMapping("/{userId}")
@@ -87,21 +87,20 @@ public class UserController {
   ) {
     userService.delete(userId);
     String result = "user: " + userId + "가 삭제되었습니다.";
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(result);
+    return ResponseEntity.ok(ResponseDto.ok(result));
   }
 
-  @GetMapping("/")
-  public ResponseEntity<List<UserDto>> userList() {
+  @GetMapping("")
+  public ResponseEntity<?> userList() {
     List<UserDto> allUsers = userService.findAll();
-    return ResponseEntity.ok(allUsers);
+    return ResponseEntity.ok(ResponseDto.ok(allUsers));
   }
 
   @PatchMapping("/{userId}/userstatus")
   public ResponseEntity<?> update(
-      @PathVariable UUID userId,
-      @RequestBody UserStatusUpdateReqDto dto
+      @PathVariable UUID userId
   ) {
-    UserStatus userStatus = userStatusService.updateByUserId(userId, dto);
-    return ResponseEntity.ok(userStatus);
+    UserStatus userStatus = userStatusService.updateByUserId(userId);
+    return ResponseEntity.ok(ResponseDto.ok(userStatus));
   }
 }

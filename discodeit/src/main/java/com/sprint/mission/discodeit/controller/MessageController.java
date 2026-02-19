@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.controller;
 import com.sprint.mission.discodeit.dto.BinaryContentCreateReqDto;
 import com.sprint.mission.discodeit.dto.MessageCreateReqDto;
 import com.sprint.mission.discodeit.dto.MessageUpdateReqDto;
+import com.sprint.mission.discodeit.dto.ResponseDto;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class MessageController {
   private final MessageService messageService;
 
   @PostMapping(
-      path = "/",
+      path = "",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE
   )
   public ResponseEntity<?> create(
@@ -45,7 +46,7 @@ public class MessageController {
       throw new RuntimeException("파일을 읽을 수 없습니다.");
     }
     Message message = messageService.create(messageCreateReqDto, binaryDtos);
-    return ResponseEntity.status(HttpStatus.CREATED).body(message);
+    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(message));
   }
 
   @PatchMapping("/{messageId}")
@@ -54,7 +55,7 @@ public class MessageController {
       @RequestBody MessageUpdateReqDto dto
   ) {
     Message message = messageService.update(messageId, dto);
-    return ResponseEntity.ok(message);
+    return ResponseEntity.ok(ResponseDto.ok(message));
   }
 
   @DeleteMapping("/{messageId}")
@@ -63,7 +64,7 @@ public class MessageController {
   ) {
     messageService.delete(messageId);
     String result = "message: " + messageId + "가 삭제되었습니다.";
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(result);
+    return ResponseEntity.ok(ResponseDto.ok(result));
   }
 
   @GetMapping("/{channelId}")
@@ -71,6 +72,6 @@ public class MessageController {
       @PathVariable UUID channelId
   ) {
     List<Message> messages = messageService.findAllByChannelId(channelId);
-    return ResponseEntity.ok(messages);
+    return ResponseEntity.ok(ResponseDto.ok(messages));
   }
 }

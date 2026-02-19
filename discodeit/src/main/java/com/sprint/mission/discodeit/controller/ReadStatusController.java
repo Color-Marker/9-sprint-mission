@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.dto.ReadStatusCreateReqDto;
 import com.sprint.mission.discodeit.dto.ReadStatusUpdateReqDto;
+import com.sprint.mission.discodeit.dto.ResponseDto;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.service.ReadStatusService;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,10 @@ public class ReadStatusController {
 
   private final ReadStatusService readStatusService;
 
-  @PostMapping("/")
+  @PostMapping("")
   public ResponseEntity<?> create(@RequestBody ReadStatusCreateReqDto dto) {
     ReadStatus readStatus = readStatusService.create(dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(readStatus);
+    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(readStatus));
   }
 
   @PatchMapping("/{statusId}")
@@ -32,7 +33,7 @@ public class ReadStatusController {
       @RequestBody ReadStatusUpdateReqDto dto
   ) {
     ReadStatus readStatus = readStatusService.update(statusId, dto);
-    return ResponseEntity.ok(readStatus);
+    return ResponseEntity.ok(ResponseDto.ok(readStatus));
   }
 
   @GetMapping("/{userId}")
@@ -40,6 +41,6 @@ public class ReadStatusController {
       @PathVariable UUID userId
   ) {
     List<ReadStatus> statusList = readStatusService.findAllByUserId(userId);
-    return ResponseEntity.ok(statusList);
+    return ResponseEntity.ok(ResponseDto.ok(statusList));
   }
 }
