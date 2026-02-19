@@ -3,10 +3,11 @@ package com.sprint.mission.discodeit.controller;
 import com.sprint.mission.discodeit.dto.BinaryContentCreateReqDto;
 import com.sprint.mission.discodeit.dto.MessageCreateReqDto;
 import com.sprint.mission.discodeit.dto.MessageUpdateReqDto;
-import com.sprint.mission.discodeit.dto.UserCreateReqDto;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.service.MessageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,55 +19,58 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Controller
-@RequestMapping("/api/message")
+@RestController
+@RequestMapping("/api/messages")
 @RequiredArgsConstructor
 public class MessageController {
-    private final MessageService messageService;
 
-    @PostMapping(
-            path = "/create",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
-    public ResponseEntity<?> create(
-            @RequestPart("messageCreateReqDto") MessageCreateReqDto messageCreateReqDto,
-            @RequestPart("files") List<MultipartFile> files
-    ){
-        List<BinaryContentCreateReqDto> binaryDtos = new ArrayList<>();
-        try {
-            for(MultipartFile file: files){
-                BinaryContentCreateReqDto data = new BinaryContentCreateReqDto(file.getName(), file.getContentType(), file.getBytes());
-                binaryDtos.add(data);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("파일을 읽을 수 없습니다.");
-        }
-        Message message = messageService.create(messageCreateReqDto, binaryDtos);
-        return ResponseEntity.ok(message);
-    }
+  private final MessageService messageService;
 
-    @PatchMapping("/edit/{messageId}")
-    public ResponseEntity<?> edit(
-            @PathVariable UUID messageId,
-            @RequestBody MessageUpdateReqDto dto
-    ){
-        Message message = messageService.update(messageId,dto);
-        return  ResponseEntity.ok(message);
+  @PostMapping(
+      path = "/",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+  )
+  public ResponseEntity<?> create(
+      @RequestPart("messageCreateReqDto") MessageCreateReqDto messageCreateReqDto,
+      @RequestPart("files") List<MultipartFile> files
+  ) {
+    List<BinaryContentCreateReqDto> binaryDtos = new ArrayList<>();
+    try {
+      for (MultipartFile file : files) {
+        BinaryContentCreateReqDto data = new BinaryContentCreateReqDto(file.getName(),
+            file.getContentType(), file.getBytes());
+        binaryDtos.add(data);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("파일을 읽을 수 없습니다.");
     }
+    Message message = messageService.create(messageCreateReqDto, binaryDtos);
+    return ResponseEntity.status(HttpStatus.CREATED).body(message);
+  }
 
-    @DeleteMapping("/delete/{messageId}")
-    public ResponseEntity<?> delete(
-            @PathVariable UUID messageId
-    ){
-        messageService.delete(messageId);
-        return ResponseEntity.ok("message: " + messageId + "가 삭제되었습니다.");
-    }
+  @PatchMapping("/{messageId}")
+  public ResponseEntity<?> edit(
+      @PathVariable UUID messageId,
+      @RequestBody MessageUpdateReqDto dto
+  ) {
+    Message message = messageService.update(messageId, dto);
+    return ResponseEntity.ok(message);
+  }
 
-    @GetMapping("/list/{channelId}")
-    public ResponseEntity<?> messageList(
-            @PathVariable UUID channelId
-    ){
-        List<Message> messages = messageService.findAllByChannelId(channelId);
-        return ResponseEntity.ok(messages);
-    }
+  @DeleteMapping("/{messageId}")
+  public ResponseEntity<?> delete(
+      @PathVariable UUID messageId
+  ) {
+    messageService.delete(messageId);
+    String result = "message: " + messageId + "가 삭제되었습니다.";
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(result);
+  }
+
+  @GetMapping("/{channelId}")
+  public ResponseEntity<?> messageList(
+      @PathVariable UUID channelId
+  ) {
+    List<Message> messages = messageService.findAllByChannelId(channelId);
+    return ResponseEntity.ok(messages);
+  }
 }
