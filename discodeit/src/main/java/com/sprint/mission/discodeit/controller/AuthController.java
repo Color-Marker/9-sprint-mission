@@ -27,6 +27,6 @@ public class AuthController {
       @RequestBody UserLoginReqDto dto
   ) {
     User user = authService.login(dto);
-    return ResponseEntity.ok(ResponseDto.ok(user));
+    return ResponseEntity.ok(user);
   }
 }

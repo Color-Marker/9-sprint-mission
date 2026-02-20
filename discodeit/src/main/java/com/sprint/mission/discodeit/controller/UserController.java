@@ -1,8 +1,8 @@
 package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.dto.BinaryContentCreateReqDto;
-import com.sprint.mission.discodeit.dto.ResponseDto;
-import com.sprint.mission.discodeit.dto.UserReqDto;
+import com.sprint.mission.discodeit.dto.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.UserUpdateRequest;
 import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -39,7 +39,7 @@ public class UserController {
   )
   public ResponseEntity<?> create(
       @Parameter(description = "유저 정보")
-      @RequestPart("userReqDto") UserReqDto userReqDto,
+      @RequestPart("userCreateRequest") UserCreateRequest UserCreateRequest,
       @Parameter(description = "유저 프로필 파일")
       @RequestPart(value = "profile", required = false) MultipartFile profile
   ) {
@@ -56,13 +56,13 @@ public class UserController {
             throw new RuntimeException("프로필 파일을 읽을 수 없습니다.", e);
           }
         });
-    User user = userService.create(userReqDto, binaryDto);
+    User user = userService.create(UserCreateRequest, binaryDto);
     UserDto result = userService.find(user.getId());
-    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(result));
+    return ResponseEntity.status(HttpStatus.CREATED).body(result);
   }
 
   @Operation(summary = "유저 수정")
-  @PutMapping(
+  @PatchMapping(
       path = "/{userId}",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE
   )
@@ -70,7 +70,7 @@ public class UserController {
       @Parameter(description = "유저 ID")
       @PathVariable UUID userId,
       @Parameter(description = "유저 정보")
-      @RequestPart("userReqDto") UserReqDto userDto,
+      @RequestPart("userUpdateRequest") UserUpdateRequest userDto,
       @Parameter(description = "유저 프로필 파일")
       @RequestPart(value = "profile", required = false) MultipartFile profile
   ) {
@@ -89,7 +89,7 @@ public class UserController {
         });
     userService.update(userId, userDto, binaryDto);
     UserDto result = userService.find(userId);
-    return ResponseEntity.ok(ResponseDto.ok(result));
+    return ResponseEntity.ok(result);
   }
 
   @Operation(summary = "유저 삭제")
@@ -100,23 +100,23 @@ public class UserController {
   ) {
     userService.delete(userId);
     String result = "user: " + userId + "가 삭제되었습니다.";
-    return ResponseEntity.ok(ResponseDto.ok(result));
+    return ResponseEntity.ok(result);
   }
 
   @Operation(summary = "전체 유저 출력")
   @GetMapping("")
   public ResponseEntity<?> userList() {
     List<UserDto> allUsers = userService.findAll();
-    return ResponseEntity.ok(ResponseDto.ok(allUsers));
+    return ResponseEntity.ok(allUsers);
   }
 
   @Operation(summary = "유저 읽음 상태 업데이트")
-  @PatchMapping("/{userId}/userstatus")
+  @PatchMapping("/{userId}/userStatus")
   public ResponseEntity<?> update(
       @Parameter(description = "유저 ID")
       @PathVariable UUID userId
   ) {
     UserStatus userStatus = userStatusService.updateByUserId(userId);
-    return ResponseEntity.ok(ResponseDto.ok(userStatus));
+    return ResponseEntity.ok(userStatus);
   }
 }

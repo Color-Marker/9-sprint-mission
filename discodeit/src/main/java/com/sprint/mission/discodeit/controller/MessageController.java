@@ -3,7 +3,6 @@ package com.sprint.mission.discodeit.controller;
 import com.sprint.mission.discodeit.dto.BinaryContentCreateReqDto;
 import com.sprint.mission.discodeit.dto.MessageCreateReqDto;
 import com.sprint.mission.discodeit.dto.MessageUpdateReqDto;
-import com.sprint.mission.discodeit.dto.ResponseDto;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,9 +32,9 @@ public class MessageController {
   @PostMapping(path = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<?> create(
       @Parameter(description = "메시지 정보")
-      @RequestPart("messageCreateReqDto") MessageCreateReqDto messageCreateReqDto,
+      @RequestPart("messageCreateRequest") MessageCreateReqDto messageCreateReqDto,
       @Parameter(description = "파일 정보")
-      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+      @RequestPart(value = "attachments", required = false) List<MultipartFile> files) {
     List<BinaryContentCreateReqDto> binaryDtos = new ArrayList<>();
     if (files != null) {
       try {
@@ -49,7 +48,7 @@ public class MessageController {
       }
     }
     Message message = messageService.create(messageCreateReqDto, binaryDtos);
-    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(message));
+    return ResponseEntity.status(HttpStatus.CREATED).body(message);
   }
 
   @Operation(summary = "메시지 수정")
@@ -60,7 +59,7 @@ public class MessageController {
       @Parameter(description = "메시지 정보")
       @RequestBody MessageUpdateReqDto dto) {
     Message message = messageService.update(messageId, dto);
-    return ResponseEntity.ok(ResponseDto.ok(message));
+    return ResponseEntity.ok(message);
   }
 
   @Operation(summary = "메시지 삭제")
@@ -70,15 +69,15 @@ public class MessageController {
       @PathVariable UUID messageId) {
     messageService.delete(messageId);
     String result = "message: " + messageId + "가 삭제되었습니다.";
-    return ResponseEntity.ok(ResponseDto.ok(result));
+    return ResponseEntity.ok(result);
   }
 
   @Operation(summary = "채널 별 메시지 출력")
-  @GetMapping("/{channelId}")
+  @GetMapping("")
   public ResponseEntity<?> messageList(
       @Parameter(description = "채널 ID")
-      @PathVariable UUID channelId) {
+      @RequestParam UUID channelId) {
     List<Message> messages = messageService.findAllByChannelId(channelId);
-    return ResponseEntity.ok(ResponseDto.ok(messages));
+    return ResponseEntity.ok(messages);
   }
 }

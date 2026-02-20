@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Tag(name = "Channel API")
 @RestController
-@RequestMapping("/api/channel")
+@RequestMapping("/api/channels")
 @RequiredArgsConstructor
 public class ChannelController {
 
@@ -32,7 +32,7 @@ public class ChannelController {
       @RequestBody PublicChannelReqDto dto) {
     Channel channel = channelService.create(dto);
     ChannelDto result = channelService.find(channel.getId());
-    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(result));
+    return ResponseEntity.status(HttpStatus.CREATED).body(result);
   }
 
   @Operation(summary = "private 채널 생성")
@@ -42,7 +42,7 @@ public class ChannelController {
       @RequestBody PrivateChannelCreateReqDto dto) {
     Channel channel = channelService.create(dto);
     ChannelDto result = channelService.find(channel.getId());
-    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(result));
+    return ResponseEntity.status(HttpStatus.CREATED).body(result);
   }
 
   @Operation(summary = "public 채널 수정")
@@ -55,7 +55,7 @@ public class ChannelController {
   ) {
     channelService.update(channelId, dto);
     ChannelDto result = channelService.find(channelId);
-    return ResponseEntity.ok(ResponseDto.ok(result));
+    return ResponseEntity.ok(result);
   }
 
   @Operation(summary = "채널 삭제")
@@ -66,16 +66,16 @@ public class ChannelController {
   ) {
     channelService.delete(channelId);
     String result = "channel: " + channelId + "가 삭제되었습니다.";
-    return ResponseEntity.ok(ResponseDto.ok(result));
+    return ResponseEntity.ok(result);
   }
 
   @Operation(summary = "유저 소속 채널 출력")
-  @GetMapping("/{userId}")
+  @GetMapping("")
   public ResponseEntity<?> channelList(
       @Parameter(description = "유저 ID")
-      @PathVariable UUID userId
+      @RequestParam UUID userId
   ) {
     List<ChannelDto> channelList = channelService.findAllByUserId(userId);
-    return ResponseEntity.ok(ResponseDto.ok(channelList));
+    return ResponseEntity.ok(channelList);
   }
 }

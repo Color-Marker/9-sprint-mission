@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Tag(name = "Read Status API")
 @RestController
-@RequestMapping("/api/readStatus")
+@RequestMapping("/api/readStatuses")
 @RequiredArgsConstructor
 public class ReadStatusController {
 
@@ -30,7 +30,7 @@ public class ReadStatusController {
       @Parameter(description = "읽음 상태 정보")
       @RequestBody ReadStatusCreateReqDto dto) {
     ReadStatus readStatus = readStatusService.create(dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.ok(readStatus));
+    return ResponseEntity.status(HttpStatus.CREATED).body(readStatus);
   }
 
   @Operation(summary = "읽음 상태 수정")
@@ -42,16 +42,16 @@ public class ReadStatusController {
       @RequestBody ReadStatusUpdateReqDto dto
   ) {
     ReadStatus readStatus = readStatusService.update(statusId, dto);
-    return ResponseEntity.ok(ResponseDto.ok(readStatus));
+    return ResponseEntity.ok(readStatus);
   }
 
   @Operation(summary = "유저별 읽음 상태 출력")
-  @GetMapping("/{userId}")
+  @GetMapping("")
   public ResponseEntity<?> statusList(
       @Parameter(description = "유저 ID")
-      @PathVariable UUID userId
+      @RequestParam UUID userId
   ) {
     List<ReadStatus> statusList = readStatusService.findAllByUserId(userId);
-    return ResponseEntity.ok(ResponseDto.ok(statusList));
+    return ResponseEntity.ok(statusList);
   }
 }

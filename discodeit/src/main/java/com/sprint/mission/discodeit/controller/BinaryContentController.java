@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Binary Content API")
 @RestController
-@RequestMapping("/api/binaryContent")
+@RequestMapping("/api/binaryContents")
 @RequiredArgsConstructor
 public class BinaryContentController {
 
@@ -33,19 +33,19 @@ public class BinaryContentController {
   @GetMapping("")
   public ResponseEntity<?> findSome(
       @Parameter(description = "다중 파일 ID 정보")
-      @RequestParam List<UUID> fileIdList
+      @RequestParam List<UUID> binaryContentId
   ) {
-    List<BinaryContent> fileList = binaryContentService.findAllByIdIn(fileIdList);
-    return ResponseEntity.ok(ResponseDto.ok(fileList));
+    List<BinaryContent> fileList = binaryContentService.findAllByIdIn(binaryContentId);
+    return ResponseEntity.ok(fileList);
   }
 
   @Operation(summary = "단일 파일 출력")
-  @GetMapping("/{id}")
+  @GetMapping("/{binaryContentId}")
   public ResponseEntity<?> find(
       @Parameter(description = "파일 ID")
-      @PathVariable UUID id
+      @PathVariable UUID binaryContentId
   ) {
-    BinaryContent file = binaryContentService.find(id);
-    return ResponseEntity.ok(ResponseDto.ok(file));
+    BinaryContent file = binaryContentService.find(binaryContentId);
+    return ResponseEntity.ok(file);
   }
 }

@@ -1,7 +1,8 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.BinaryContentCreateReqDto;
-import com.sprint.mission.discodeit.dto.UserReqDto;
+import com.sprint.mission.discodeit.dto.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.UserUpdateRequest;
 import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
@@ -25,10 +26,10 @@ public class BasicUserService implements UserService {
   private final BinaryContentRepository binaryContentRepository;
 
   @Override
-  public User create(UserReqDto userCreateRequest,
+  public User create(UserCreateRequest UserCreateRequest,
       Optional<BinaryContentCreateReqDto> optionalProfileCreateRequest) {
-    String username = userCreateRequest.username();
-    String email = userCreateRequest.email();
+    String username = UserCreateRequest.username();
+    String email = UserCreateRequest.email();
 
     if (userRepository.existsByEmail(email)) {
       throw new IllegalArgumentException("User with email " + email + " already exists");
@@ -47,7 +48,7 @@ public class BasicUserService implements UserService {
           return binaryContentRepository.save(binaryContent).getId();
         })
         .orElse(null);
-    String password = userCreateRequest.password();
+    String password = UserCreateRequest.password();
 
     User user = new User(username, email, password, nullableProfileId);
     User createdUser = userRepository.save(user);
@@ -75,13 +76,13 @@ public class BasicUserService implements UserService {
   }
 
   @Override
-  public User update(UUID userId, UserReqDto userUpdateRequest,
+  public User update(UUID userId, UserUpdateRequest userUpdateRequest,
       Optional<BinaryContentCreateReqDto> optionalProfileCreateRequest) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
 
-    String newUsername = userUpdateRequest.username();
-    String newEmail = userUpdateRequest.email();
+    String newUsername = userUpdateRequest.newUsername();
+    String newEmail = userUpdateRequest.newEmail();
     if (userRepository.existsByEmail(newEmail)) {
       throw new IllegalArgumentException("User with email " + newEmail + " already exists");
     }
@@ -103,7 +104,7 @@ public class BasicUserService implements UserService {
         })
         .orElse(null);
 
-    String newPassword = userUpdateRequest.password();
+    String newPassword = userUpdateRequest.newPassword();
     user.update(newUsername, newEmail, newPassword, nullableProfileId);
 
     return userRepository.save(user);
