@@ -7,5 +7,7 @@ discodeit:
     multipart:
       max-file-size: 10MB       # 개별 파일 당 최대 용량 임시 설정
       max-request-size: 10MB
+  server:
+    port: ${PORT:8080}
 
 
