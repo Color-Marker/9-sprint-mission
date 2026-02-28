@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.repository.jcf;
 
-import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
+import com.sprint.mission.discodeit.dto.BinaryContentCreateReqDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -8,11 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+@ConditionalOnProperty(name = "discodeit.repository.type", havingValue = "jcf", matchIfMissing = true)
 @Repository
-@ConditionalOnProperty(
-        name = "discodeit.repository.type",
-        havingValue = "jcf"
-)
 public class JCFBinaryContentRepository implements BinaryContentRepository {
     private final Map<UUID, BinaryContent> data;
 
@@ -20,10 +17,8 @@ public class JCFBinaryContentRepository implements BinaryContentRepository {
         this.data = new HashMap<>();
     }
 
-
     @Override
-    public BinaryContent save(BinaryContentCreateDto dto) {
-        BinaryContent binaryContent = new BinaryContent(dto.fileName(), dto.contentType(), dto.size());
+    public BinaryContent save(BinaryContent binaryContent) {
         this.data.put(binaryContent.getId(), binaryContent);
         return binaryContent;
     }
@@ -31,17 +26,17 @@ public class JCFBinaryContentRepository implements BinaryContentRepository {
     @Override
     public Optional<BinaryContent> findById(UUID id) {
         return Optional.ofNullable(this.data.get(id));
-
     }
 
     @Override
-    public List<BinaryContent> findAll() {
-        return this.data.values().stream().toList();
-
+    public List<BinaryContent> findAllByIdIn(List<UUID> ids) {
+        return this.data.values().stream()
+                .filter(content -> ids.contains(content.getId()))
+                .toList();
     }
 
     @Override
-    public Boolean existsById(UUID id) {
+    public boolean existsById(UUID id) {
         return this.data.containsKey(id);
     }
 
