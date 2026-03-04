@@ -1,6 +1,8 @@
 server:
   port: ${PORT:8080}
 discodeit:
+  storage:
+    type: local
   repository:
     type: file   # jcf | file
     file-directory: .discodeit
@@ -26,7 +28,7 @@ spring:
         highlight_sql: true
         use_sql_comments: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        
+
 logging:
   level:
     org.hibernate.SQL: debug
