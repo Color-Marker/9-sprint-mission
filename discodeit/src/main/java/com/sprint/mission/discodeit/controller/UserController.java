@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,20 +44,15 @@ public class UserController {
   ) {
     Optional<BinaryContentCreateRequest> binaryDto = Optional.ofNullable(profile)
         .filter(file -> !file.isEmpty())
-        .map(file -> {
-          try {
-            return new BinaryContentCreateRequest(
+        .map(file ->
+            new BinaryContentCreateRequest(
                 file.getOriginalFilename(),
-                file.getContentType(),
-                file.getBytes()
-            );
-          } catch (IOException e) {
-            throw new RuntimeException("프로필 파일을 읽을 수 없습니다.", e);
-          }
-        });
-    User user = userService.create(UserCreateRequest, binaryDto);
-    UserDto result = userService.find(user.getId());
-    return ResponseEntity.status(HttpStatus.CREATED).body(result);
+                file.getSize(),
+                file.getContentType()
+            )
+        );
+    UserDto user = userService.create(UserCreateRequest, binaryDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(user);
   }
 
   @Operation(summary = "유저 수정")
@@ -76,17 +70,13 @@ public class UserController {
   ) {
     Optional<BinaryContentCreateRequest> binaryDto = Optional.ofNullable(profile)
         .filter(file -> !file.isEmpty())
-        .map(file -> {
-          try {
-            return new BinaryContentCreateRequest(
+        .map(file ->
+            new BinaryContentCreateRequest(
                 file.getOriginalFilename(),
-                file.getContentType(),
-                file.getBytes()
-            );
-          } catch (IOException e) {
-            throw new RuntimeException("프로필 파일을 읽을 수 없습니다.", e);
-          }
-        });
+                file.getSize(),
+                file.getContentType()
+            )
+        );
     userService.update(userId, userDto, binaryDto);
     UserDto result = userService.find(userId);
     return ResponseEntity.ok(result);

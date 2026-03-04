@@ -40,7 +40,7 @@ public class MessageController {
       try {
         for (MultipartFile file : files) {
           BinaryContentCreateRequest data = new BinaryContentCreateRequest(file.getName(),
-              file.getContentType(), file.getBytes());
+              , file.getSize(),file.getContentType());
           binaryDtos.add(data);
         }
       } catch (IOException e) {
