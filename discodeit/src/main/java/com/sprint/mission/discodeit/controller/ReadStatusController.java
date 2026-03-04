@@ -1,8 +1,7 @@
 package com.sprint.mission.discodeit.controller;
 
-import com.sprint.mission.discodeit.dto.ReadStatusCreateReqDto;
-import com.sprint.mission.discodeit.dto.ReadStatusUpdateReqDto;
-import com.sprint.mission.discodeit.dto.ResponseDto;
+import com.sprint.mission.discodeit.dto.request.ReadStatusCreateRequest;
+import com.sprint.mission.discodeit.dto.request.ReadStatusUpdateRequest;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.service.ReadStatusService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +27,7 @@ public class ReadStatusController {
   @PostMapping("")
   public ResponseEntity<?> create(
       @Parameter(description = "읽음 상태 정보")
-      @RequestBody ReadStatusCreateReqDto dto) {
+      @RequestBody ReadStatusCreateRequest dto) {
     ReadStatus readStatus = readStatusService.create(dto);
     return ResponseEntity.status(HttpStatus.CREATED).body(readStatus);
   }
@@ -39,7 +38,7 @@ public class ReadStatusController {
       @Parameter(description = "읽음 상태 ID")
       @PathVariable UUID statusId,
       @Parameter(description = "읽음 상태 정보")
-      @RequestBody ReadStatusUpdateReqDto dto
+      @RequestBody ReadStatusUpdateRequest dto
   ) {
     ReadStatus readStatus = readStatusService.update(statusId, dto);
     return ResponseEntity.ok(readStatus);

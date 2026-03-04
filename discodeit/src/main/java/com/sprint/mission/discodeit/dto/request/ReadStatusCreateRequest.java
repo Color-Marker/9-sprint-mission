@@ -1,10 +1,10 @@
-package com.sprint.mission.discodeit.dto;
+package com.sprint.mission.discodeit.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.UUID;
 
-public record ReadStatusCreateReqDto(
+public record ReadStatusCreateRequest(
     @Schema(description = "채널 아이디")
     UUID channelId,
     @Schema(description = "유저 아이디")

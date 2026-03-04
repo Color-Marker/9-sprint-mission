@@ -1,8 +1,8 @@
 package com.sprint.mission.discodeit.controller;
 
-import com.sprint.mission.discodeit.dto.BinaryContentCreateReqDto;
-import com.sprint.mission.discodeit.dto.UserCreateRequest;
-import com.sprint.mission.discodeit.dto.UserUpdateRequest;
+import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
+import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -43,11 +43,11 @@ public class UserController {
       @Parameter(description = "유저 프로필 파일")
       @RequestPart(value = "profile", required = false) MultipartFile profile
   ) {
-    Optional<BinaryContentCreateReqDto> binaryDto = Optional.ofNullable(profile)
+    Optional<BinaryContentCreateRequest> binaryDto = Optional.ofNullable(profile)
         .filter(file -> !file.isEmpty())
         .map(file -> {
           try {
-            return new BinaryContentCreateReqDto(
+            return new BinaryContentCreateRequest(
                 file.getOriginalFilename(),
                 file.getContentType(),
                 file.getBytes()
@@ -74,11 +74,11 @@ public class UserController {
       @Parameter(description = "유저 프로필 파일")
       @RequestPart(value = "profile", required = false) MultipartFile profile
   ) {
-    Optional<BinaryContentCreateReqDto> binaryDto = Optional.ofNullable(profile)
+    Optional<BinaryContentCreateRequest> binaryDto = Optional.ofNullable(profile)
         .filter(file -> !file.isEmpty())
         .map(file -> {
           try {
-            return new BinaryContentCreateReqDto(
+            return new BinaryContentCreateRequest(
                 file.getOriginalFilename(),
                 file.getContentType(),
                 file.getBytes()

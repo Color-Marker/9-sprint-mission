@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.PrivateChannelCreateReqDto;
-import com.sprint.mission.discodeit.dto.PublicChannelReqDto;
+import com.sprint.mission.discodeit.dto.request.PrivateChannelCreateRequest;
+import com.sprint.mission.discodeit.dto.request.PublicChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.data.ChannelDto;
 import com.sprint.mission.discodeit.entity.*;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
@@ -23,7 +23,7 @@ public class BasicChannelService implements ChannelService {
   private final MessageRepository messageRepository;
 
   @Override
-  public Channel create(PublicChannelReqDto request) {
+  public Channel create(PublicChannelCreateRequest request) {
     String name = request.name();
     String description = request.description();
     Channel channel = new Channel(ChannelType.PUBLIC, name, description);
@@ -32,7 +32,7 @@ public class BasicChannelService implements ChannelService {
   }
 
   @Override
-  public Channel create(PrivateChannelCreateReqDto request) {
+  public Channel create(PrivateChannelCreateRequest request) {
     String name = request.name();
     String description = request.description();
     Channel channel = new Channel(ChannelType.PRIVATE, name, description);
@@ -69,7 +69,7 @@ public class BasicChannelService implements ChannelService {
   }
 
   @Override
-  public Channel update(UUID channelId, PublicChannelReqDto request) {
+  public Channel update(UUID channelId, PublicChannelCreateRequest request) {
     String newName = request.name();
     String newDescription = request.description();
     Channel channel = channelRepository.findById(channelId)

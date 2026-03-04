@@ -1,10 +1,10 @@
-package com.sprint.mission.discodeit.dto;
+package com.sprint.mission.discodeit.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.UUID;
 
-public record PrivateChannelCreateReqDto(
+public record PrivateChannelCreateRequest(
     @Schema(description = "참가자 목록")
     List<UUID> participantIds,
     @Schema(description = "채널 이름")

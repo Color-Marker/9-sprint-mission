@@ -1,8 +1,8 @@
 package com.sprint.mission.discodeit.controller;
 
-import com.sprint.mission.discodeit.dto.BinaryContentCreateReqDto;
-import com.sprint.mission.discodeit.dto.MessageCreateReqDto;
-import com.sprint.mission.discodeit.dto.MessageUpdateReqDto;
+import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
+import com.sprint.mission.discodeit.dto.request.MessageCreateRequest;
+import com.sprint.mission.discodeit.dto.request.MessageUpdateRequest;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,14 +32,14 @@ public class MessageController {
   @PostMapping(path = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<?> create(
       @Parameter(description = "메시지 정보")
-      @RequestPart("messageCreateRequest") MessageCreateReqDto messageCreateReqDto,
+      @RequestPart("messageCreateRequest") MessageCreateRequest messageCreateRequest,
       @Parameter(description = "파일 정보")
       @RequestPart(value = "attachments", required = false) List<MultipartFile> files) {
-    List<BinaryContentCreateReqDto> binaryDtos = new ArrayList<>();
+    List<BinaryContentCreateRequest> binaryDtos = new ArrayList<>();
     if (files != null) {
       try {
         for (MultipartFile file : files) {
-          BinaryContentCreateReqDto data = new BinaryContentCreateReqDto(file.getName(),
+          BinaryContentCreateRequest data = new BinaryContentCreateRequest(file.getName(),
               file.getContentType(), file.getBytes());
           binaryDtos.add(data);
         }
@@ -47,7 +47,7 @@ public class MessageController {
         throw new RuntimeException("파일을 읽을 수 없습니다.");
       }
     }
-    Message message = messageService.create(messageCreateReqDto, binaryDtos);
+    Message message = messageService.create(messageCreateRequest, binaryDtos);
     return ResponseEntity.status(HttpStatus.CREATED).body(message);
   }
 
@@ -57,7 +57,7 @@ public class MessageController {
       @Parameter(description = "메시지 ID")
       @PathVariable UUID messageId,
       @Parameter(description = "메시지 정보")
-      @RequestBody MessageUpdateReqDto dto) {
+      @RequestBody MessageUpdateRequest dto) {
     Message message = messageService.update(messageId, dto);
     return ResponseEntity.ok(message);
   }

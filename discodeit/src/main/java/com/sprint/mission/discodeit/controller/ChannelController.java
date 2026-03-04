@@ -1,8 +1,7 @@
 package com.sprint.mission.discodeit.controller;
 
-import com.sprint.mission.discodeit.dto.PrivateChannelCreateReqDto;
-import com.sprint.mission.discodeit.dto.PublicChannelReqDto;
-import com.sprint.mission.discodeit.dto.ResponseDto;
+import com.sprint.mission.discodeit.dto.request.PrivateChannelCreateRequest;
+import com.sprint.mission.discodeit.dto.request.PublicChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.data.ChannelDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.service.ChannelService;
@@ -29,7 +28,7 @@ public class ChannelController {
   @PostMapping("/public")
   public ResponseEntity<?> publicCreate(
       @Parameter(description = "채널 정보")
-      @RequestBody PublicChannelReqDto dto) {
+      @RequestBody PublicChannelCreateRequest dto) {
     Channel channel = channelService.create(dto);
     ChannelDto result = channelService.find(channel.getId());
     return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -39,7 +38,7 @@ public class ChannelController {
   @PostMapping("/private")
   public ResponseEntity<?> privateCreate(
       @Parameter(description = "채널 정보")
-      @RequestBody PrivateChannelCreateReqDto dto) {
+      @RequestBody PrivateChannelCreateRequest dto) {
     Channel channel = channelService.create(dto);
     ChannelDto result = channelService.find(channel.getId());
     return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -51,7 +50,7 @@ public class ChannelController {
       @Parameter(description = "채널 ID")
       @PathVariable UUID channelId,
       @Parameter(description = "채널 정보")
-      @RequestBody PublicChannelReqDto dto
+      @RequestBody PublicChannelCreateRequest dto
   ) {
     channelService.update(channelId, dto);
     ChannelDto result = channelService.find(channelId);

@@ -1,8 +1,8 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.BinaryContentCreateReqDto;
-import com.sprint.mission.discodeit.dto.UserCreateRequest;
-import com.sprint.mission.discodeit.dto.UserUpdateRequest;
+import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
+import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
@@ -27,7 +27,7 @@ public class BasicUserService implements UserService {
 
   @Override
   public User create(UserCreateRequest UserCreateRequest,
-      Optional<BinaryContentCreateReqDto> optionalProfileCreateRequest) {
+      Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
     String username = UserCreateRequest.username();
     String email = UserCreateRequest.email();
 
@@ -77,7 +77,7 @@ public class BasicUserService implements UserService {
 
   @Override
   public User update(UUID userId, UserUpdateRequest userUpdateRequest,
-      Optional<BinaryContentCreateReqDto> optionalProfileCreateRequest) {
+      Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
 
