@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.request.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.entity.User;
@@ -11,6 +12,7 @@ import com.sprint.mission.discodeit.service.UserStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,11 +47,17 @@ public class UserController {
     Optional<BinaryContentCreateRequest> binaryDto = Optional.ofNullable(profile)
         .filter(file -> !file.isEmpty())
         .map(file ->
-            new BinaryContentCreateRequest(
-                file.getOriginalFilename(),
-                file.getSize(),
-                file.getContentType()
-            )
+            {
+              try {
+                return new BinaryContentCreateRequest(
+                    file.getOriginalFilename(),
+                    file.getBytes(),
+                    file.getContentType()
+                );
+              } catch (IOException e) {
+                throw new RuntimeException(e);
+              }
+            }
         );
     UserDto user = userService.create(UserCreateRequest, binaryDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(user);
@@ -71,11 +79,17 @@ public class UserController {
     Optional<BinaryContentCreateRequest> binaryDto = Optional.ofNullable(profile)
         .filter(file -> !file.isEmpty())
         .map(file ->
-            new BinaryContentCreateRequest(
-                file.getOriginalFilename(),
-                file.getSize(),
-                file.getContentType()
-            )
+            {
+              try {
+                return new BinaryContentCreateRequest(
+                    file.getOriginalFilename(),
+                    file.getBytes(),
+                    file.getContentType()
+                );
+              } catch (IOException e) {
+                throw new RuntimeException(e);
+              }
+            }
         );
     userService.update(userId, userDto, binaryDto);
     UserDto result = userService.find(userId);
@@ -104,9 +118,10 @@ public class UserController {
   @PatchMapping("/{userId}/userStatus")
   public ResponseEntity<?> update(
       @Parameter(description = "유저 ID")
-      @PathVariable UUID userId
+      @PathVariable UUID userId,
+      @RequestBody UserStatusUpdateRequest request
   ) {
-    UserStatus userStatus = userStatusService.updateByUserId(userId);
+    UserStatus userStatus = userStatusService.updateByUserId(userId, request);
     return ResponseEntity.ok(userStatus);
   }
 }

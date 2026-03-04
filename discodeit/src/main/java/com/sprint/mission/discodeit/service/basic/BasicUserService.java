@@ -48,19 +48,19 @@ public class BasicUserService implements UserService {
         .map(profileRequest -> {
           String fileName = profileRequest.fileName();
           String contentType = profileRequest.contentType();
-          Long size = profileRequest.size();
-          BinaryContent binaryContent = new BinaryContent(fileName, size,
-              contentType);
+          byte[] bytes = profileRequest.bytes();
+          BinaryContent binaryContent = new BinaryContent(fileName, (long) bytes.length,
+              contentType, bytes);
           binaryContentRepository.save(binaryContent);
-          binaryContentStorage.put(binaryContent.getId(), size);
+          binaryContentStorage.put(binaryContent.getId(), bytes);
           return binaryContent;
         })
         .orElse(null);
     String password = userCreateRequest.password();
 
-    User user = new User(username, email, password, nullableProfile.getId());
+    User user = new User(username, email, password, nullableProfile);
     Instant now = Instant.now();
-    UserStatus userStatus = new UserStatus(user.getId(), now);
+    UserStatus userStatus = new UserStatus(user, now);
 
     userRepository.save(user);
     return userMapper.toDto(user);
@@ -102,11 +102,11 @@ public class BasicUserService implements UserService {
 
           String fileName = profileRequest.fileName();
           String contentType = profileRequest.contentType();
-          Long size = profileRequest.size();
-          BinaryContent binaryContent = new BinaryContent(fileName, size,
-              contentType);
+          byte[] bytes = profileRequest.bytes();
+          BinaryContent binaryContent = new BinaryContent(fileName, (long) bytes.length,
+              contentType, bytes);
           binaryContentRepository.save(binaryContent);
-          binaryContentStorage.put(binaryContent.getId(), size);
+          binaryContentStorage.put(binaryContent.getId(), bytes);
           return binaryContent;
         })
         .orElse(null);
