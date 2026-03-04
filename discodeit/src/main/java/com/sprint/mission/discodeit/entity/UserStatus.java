@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
 import lombok.Getter;
 
 import java.io.Serial;
@@ -9,41 +10,26 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Getter
-public class UserStatus implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class UserStatus extends BaseUpdatableEntity {
 
-    private UUID id;
-    private final Instant createdAt;
-    private Instant updatedAt;
-
-    private UUID userId;
-    private Instant lastActiveAt;
+  private User user;
+  private Instant lastActiveAt;
 
 
-    public UserStatus(UUID userId, Instant lastActiveAt) {
-        this.id = UUID.randomUUID();
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
-        this.userId = userId;
-        this.lastActiveAt = lastActiveAt;
+  public UserStatus(User user, Instant lastActiveAt) {
+    this.user = user;
+    this.lastActiveAt = lastActiveAt;
+  }
+
+  public Boolean isOnline() {
+    Instant instantFiveMinutesAgo = Instant.now().minus(Duration.ofMinutes(5));
+
+    return lastActiveAt.isAfter(instantFiveMinutesAgo);
+  }
+
+  public void update(Instant lastActiveAt) {
+    if (lastActiveAt != null && !lastActiveAt.equals(this.lastActiveAt)) {
+      this.lastActiveAt = lastActiveAt;
     }
-
-    public Boolean isOnline() {
-        Instant instantFiveMinutesAgo = Instant.now().minus(Duration.ofMinutes(5));
-
-        return lastActiveAt.isAfter(instantFiveMinutesAgo);
-    }
-
-    public void update(Instant lastActiveAt) {
-        boolean anyValueUpdated = false;
-        if (lastActiveAt != null && !lastActiveAt.equals(this.lastActiveAt)) {
-            this.lastActiveAt = lastActiveAt;
-            anyValueUpdated = true;
-        }
-
-        if (anyValueUpdated) {
-            this.updatedAt = Instant.now();
-        }
-    }
+  }
 }
