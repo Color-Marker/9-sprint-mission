@@ -4,7 +4,9 @@ import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequest;
 import com.sprint.mission.discodeit.dto.request.MessageUpdateRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
+import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,7 @@ public class BasicMessageService implements MessageService {
   private final UserRepository userRepository;
   private final BinaryContentRepository binaryContentRepository;
 
+  @Transactional
   @Override
   public Message create(MessageCreateRequest messageCreateRequest,
       List<BinaryContentCreateRequest> binaryContentCreateRequests) {
@@ -57,11 +61,14 @@ public class BasicMessageService implements MessageService {
           .toList();
     }
     String content = messageCreateRequest.content();
+    Channel channel = channelRepository.findById(channelId).orElse(null);
+    User author = userRepository.findById(authorId).orElse(null);
+    List<BinaryContent> attachments = binaryContentRepository.findAllByIdIn(attachmentIds);
     Message message = new Message(
         content,
-        channelId,
-        authorId,
-        attachmentIds
+        channel,
+        author,
+        attachments
     );
     return messageRepository.save(message);
   }
@@ -79,6 +86,7 @@ public class BasicMessageService implements MessageService {
         .toList();
   }
 
+  @Transactional
   @Override
   public Message update(UUID messageId, MessageUpdateRequest request) {
     String newContent = request.newContent();
@@ -89,16 +97,18 @@ public class BasicMessageService implements MessageService {
     return messageRepository.save(message);
   }
 
+  @Transactional
   @Override
   public void delete(UUID messageId) {
     Message message = messageRepository.findById(messageId)
         .orElseThrow(
             () -> new NoSuchElementException("Message with id " + messageId + " not found"));
 
-    message.getAttachmentIds()
-        .forEach(binaryContentRepository::deleteById);
-
+    List<UUID> attachmentIds = message.getAttachments().stream().map(BinaryContent::getId).toList();
     messageRepository.deleteById(messageId);
+    if (!attachmentIds.isEmpty()) {
+      binaryContentRepository.deleteAllByIdInBatch(attachmentIds);
+    }
   }
 
 }
