@@ -1,6 +1,8 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.dto.data.BinaryContentDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
+import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.service.BinaryContentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BinaryContentController {
 
   private final BinaryContentService binaryContentService;
+  private final BinaryContentMapper binaryContentMapper;
 
   @Operation(summary = "다중 파일 출력")
   @GetMapping("")
@@ -32,7 +35,10 @@ public class BinaryContentController {
       @RequestParam List<UUID> binaryContentId
   ) {
     List<BinaryContent> fileList = binaryContentService.findAllByIdIn(binaryContentId);
-    return ResponseEntity.ok(fileList);
+    List<BinaryContentDto> binaryContentDtos = fileList.stream()
+        .map(binaryContentMapper::toDto)
+        .toList();
+    return ResponseEntity.ok(binaryContentDtos);
   }
 
   @Operation(summary = "단일 파일 출력")
@@ -42,6 +48,16 @@ public class BinaryContentController {
       @PathVariable UUID binaryContentId
   ) {
     BinaryContent file = binaryContentService.find(binaryContentId);
-    return ResponseEntity.ok(file);
+    BinaryContentDto result = binaryContentMapper.toDto(file);
+    return ResponseEntity.ok(result);
+  }
+
+  @Operation(summary = "파일 다운로드")
+  @GetMapping("/{binaryContentId}/download")
+  public ResponseEntity<?> download(
+      @Parameter(description = "파일 ID")
+      @PathVariable UUID binaryContentId
+  ) {
+    return ResponseEntity.ok();
   }
 }

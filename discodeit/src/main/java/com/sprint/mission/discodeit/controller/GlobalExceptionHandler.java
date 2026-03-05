@@ -9,7 +9,6 @@ import java.util.NoSuchElementException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-@ResponseBody
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(IllegalArgumentException.class)

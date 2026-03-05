@@ -1,12 +1,13 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.dto.data.UserStatusDto;
 import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.dto.data.UserDto;
-import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
+import com.sprint.mission.discodeit.mapper.UserStatusMapper;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.UserStatusService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,7 @@ public class UserController {
 
   private final UserService userService;
   private final UserStatusService userStatusService;
+  private final UserStatusMapper userStatusMapper;
 
   @Operation(summary = "유저 생성")
   @PostMapping(
@@ -91,8 +93,7 @@ public class UserController {
               }
             }
         );
-    userService.update(userId, userDto, binaryDto);
-    UserDto result = userService.find(userId);
+    UserDto result = userService.update(userId, userDto, binaryDto);
     return ResponseEntity.ok(result);
   }
 
@@ -119,9 +120,10 @@ public class UserController {
   public ResponseEntity<?> update(
       @Parameter(description = "유저 ID")
       @PathVariable UUID userId,
-      @RequestBody UserStatusUpdateRequest request
+      @RequestBody UserStatusUpdateRequest userStatusUpdateRequest
   ) {
-    UserStatus userStatus = userStatusService.updateByUserId(userId, request);
-    return ResponseEntity.ok(userStatus);
+    UserStatus userStatus = userStatusService.updateByUserId(userId, userStatusUpdateRequest);
+    UserStatusDto result = userStatusMapper.toDto(userStatus);
+    return ResponseEntity.ok(result);
   }
 }

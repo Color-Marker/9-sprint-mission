@@ -29,7 +29,7 @@ public class BasicAuthService implements AuthService {
     if (!user.getPassword().equals(password)) {
       throw new IllegalArgumentException("Wrong password");
     }
-    userStatusService.updateByUserId(user.getId());
+    userStatusService.updateByUserId(user.getId(), null);
 
     return user;
   }

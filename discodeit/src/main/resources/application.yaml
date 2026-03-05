@@ -3,6 +3,8 @@ server:
 discodeit:
   storage:
     type: local
+    local:
+      root-path: ./storage
   servlet:
     multipart:
       max-file-size: 10MB       # 개별 파일 당 최대 용량 임시 설정
@@ -16,7 +18,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate # create - validate 로 나중에 변경.
     show-sql: false
     defer-datasource-initialization: true
     properties:

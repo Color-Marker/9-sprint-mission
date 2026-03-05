@@ -1,8 +1,10 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.dto.data.ReadStatusDto;
 import com.sprint.mission.discodeit.dto.request.ReadStatusCreateRequest;
 import com.sprint.mission.discodeit.dto.request.ReadStatusUpdateRequest;
 import com.sprint.mission.discodeit.entity.ReadStatus;
+import com.sprint.mission.discodeit.mapper.ReadStatusMapper;
 import com.sprint.mission.discodeit.service.ReadStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,6 +24,7 @@ import java.util.UUID;
 public class ReadStatusController {
 
   private final ReadStatusService readStatusService;
+  private final ReadStatusMapper readStatusMapper;
 
   @Operation(summary = "읽음 상태 생성")
   @PostMapping("")
@@ -29,7 +32,8 @@ public class ReadStatusController {
       @Parameter(description = "읽음 상태 정보")
       @RequestBody ReadStatusCreateRequest dto) {
     ReadStatus readStatus = readStatusService.create(dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(readStatus);
+    ReadStatusDto result = readStatusMapper.toDto(readStatus);
+    return ResponseEntity.status(HttpStatus.CREATED).body(result);
   }
 
   @Operation(summary = "읽음 상태 수정")
@@ -41,7 +45,8 @@ public class ReadStatusController {
       @RequestBody ReadStatusUpdateRequest dto
   ) {
     ReadStatus readStatus = readStatusService.update(statusId, dto);
-    return ResponseEntity.ok(readStatus);
+    ReadStatusDto result = readStatusMapper.toDto(readStatus);
+    return ResponseEntity.ok(result);
   }
 
   @Operation(summary = "유저별 읽음 상태 출력")
@@ -51,6 +56,9 @@ public class ReadStatusController {
       @RequestParam UUID userId
   ) {
     List<ReadStatus> statusList = readStatusService.findAllByUserId(userId);
-    return ResponseEntity.ok(statusList);
+    List<ReadStatusDto> result = statusList.stream()
+        .map(readStatusMapper::toDto)
+        .toList();
+    return ResponseEntity.ok(result);
   }
 }

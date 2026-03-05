@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.request.UserStatusCreateRequest;
+import com.sprint.mission.discodeit.dto.request.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserRepository;
@@ -55,9 +56,11 @@ public class BasicUserStatusService implements UserStatusService {
 
   @Transactional
   @Override
-  public UserStatus update(UUID userStatusId) {
+  public UserStatus update(UUID userStatusId, UserStatusUpdateRequest userStatusUpdateRequest) {
     Instant newLastActiveAt = Instant.now();
-
+    if (userStatusUpdateRequest != null) {
+      newLastActiveAt = userStatusUpdateRequest.lastActiveAt();
+    }
     UserStatus userStatus = userStatusRepository.findById(userStatusId)
         .orElseThrow(
             () -> new NoSuchElementException("UserStatus with id " + userStatusId + " not found"));
@@ -68,9 +71,11 @@ public class BasicUserStatusService implements UserStatusService {
 
   @Transactional
   @Override
-  public UserStatus updateByUserId(UUID userId) {
+  public UserStatus updateByUserId(UUID userId, UserStatusUpdateRequest userStatusUpdateRequest) {
     Instant newLastActiveAt = Instant.now();
-
+    if (userStatusUpdateRequest != null) {
+      newLastActiveAt = userStatusUpdateRequest.lastActiveAt();
+    }
     UserStatus userStatus = userStatusRepository.findByUserId(userId)
         .orElseThrow(
             () -> new NoSuchElementException("UserStatus with userId " + userId + " not found"));

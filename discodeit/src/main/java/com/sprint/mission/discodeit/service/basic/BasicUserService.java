@@ -50,7 +50,7 @@ public class BasicUserService implements UserService {
           String contentType = profileRequest.contentType();
           byte[] bytes = profileRequest.bytes();
           BinaryContent binaryContent = new BinaryContent(fileName, (long) bytes.length,
-              contentType, bytes);
+              contentType);
           binaryContentRepository.save(binaryContent);
           binaryContentStorage.put(binaryContent.getId(), bytes);
           return binaryContent;
@@ -61,8 +61,8 @@ public class BasicUserService implements UserService {
     User user = new User(username, email, password, nullableProfile);
     Instant now = Instant.now();
     UserStatus userStatus = new UserStatus(user, now);
-
     userRepository.save(user);
+    userStatusRepository.save(userStatus);
     return userMapper.toDto(user);
   }
 
@@ -90,11 +90,15 @@ public class BasicUserService implements UserService {
 
     String newUsername = userUpdateRequest.newUsername();
     String newEmail = userUpdateRequest.newEmail();
-    if (userRepository.existsByEmail(newEmail)) {
-      throw new IllegalArgumentException("User with email " + newEmail + " already exists");
+    if (newEmail != null && !newEmail.equals(user.getEmail())) {
+      if (userRepository.existsByEmail(newEmail)) {
+        throw new IllegalArgumentException("User with email " + newEmail + " already exists");
+      }
     }
-    if (userRepository.existsByUsername(newUsername)) {
-      throw new IllegalArgumentException("User with username " + newUsername + " already exists");
+    if (newUsername != null & !newUsername.equals(user.getUsername())) {
+      if (userRepository.existsByUsername(newUsername)) {
+        throw new IllegalArgumentException("User with username " + newUsername + " already exists");
+      }
     }
 
     BinaryContent nullableProfile = optionalProfileCreateRequest
@@ -104,7 +108,7 @@ public class BasicUserService implements UserService {
           String contentType = profileRequest.contentType();
           byte[] bytes = profileRequest.bytes();
           BinaryContent binaryContent = new BinaryContent(fileName, (long) bytes.length,
-              contentType, bytes);
+              contentType);
           binaryContentRepository.save(binaryContent);
           binaryContentStorage.put(binaryContent.getId(), bytes);
           return binaryContent;
@@ -120,7 +124,7 @@ public class BasicUserService implements UserService {
   @Transactional
   @Override
   public void delete(UUID userId) {
-    if (userRepository.existsById(userId)) {
+    if (!userRepository.existsById(userId)) {
       throw new NoSuchElementException("User with id " + userId + " not found");
     }
 

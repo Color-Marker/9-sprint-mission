@@ -53,7 +53,7 @@ public class BasicMessageService implements MessageService {
             byte[] bytes = attachmentRequest.bytes();
 
             BinaryContent binaryContent = new BinaryContent(fileName, (long) bytes.length,
-                contentType, bytes);
+                contentType);
             BinaryContent createdBinaryContent = binaryContentRepository.save(
                 binaryContent);
             return createdBinaryContent.getId();

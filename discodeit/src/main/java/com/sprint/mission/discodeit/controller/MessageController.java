@@ -1,9 +1,11 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.dto.data.MessageDto;
 import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequest;
 import com.sprint.mission.discodeit.dto.request.MessageUpdateRequest;
 import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.mapper.MessageMapper;
 import com.sprint.mission.discodeit.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,6 +29,7 @@ import java.util.UUID;
 public class MessageController {
 
   private final MessageService messageService;
+  private final MessageMapper messageMapper;
 
   @Operation(summary = "메시지 생성")
   @PostMapping(path = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -34,13 +37,17 @@ public class MessageController {
       @Parameter(description = "메시지 정보")
       @RequestPart("messageCreateRequest") MessageCreateRequest messageCreateRequest,
       @Parameter(description = "파일 정보")
-      @RequestPart(value = "attachments", required = false) List<MultipartFile> files) {
+      @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments) {
     List<BinaryContentCreateRequest> binaryDtos = new ArrayList<>();
-    if (files != null) {
+    if (attachments != null) {
       try {
-        for (MultipartFile file : files) {
-          BinaryContentCreateRequest data = new BinaryContentCreateRequest(file.getName(),
-              , file.getSize(),file.getContentType());
+        for (MultipartFile file : attachments) {
+          if (file.isEmpty()) {
+            continue;
+          }
+          BinaryContentCreateRequest data = new BinaryContentCreateRequest(
+              file.getOriginalFilename(),
+              file.getBytes(), file.getContentType());
           binaryDtos.add(data);
         }
       } catch (IOException e) {
@@ -48,7 +55,8 @@ public class MessageController {
       }
     }
     Message message = messageService.create(messageCreateRequest, binaryDtos);
-    return ResponseEntity.status(HttpStatus.CREATED).body(message);
+    MessageDto result = messageMapper.toDto(message);
+    return ResponseEntity.status(HttpStatus.CREATED).body(result);
   }
 
   @Operation(summary = "메시지 수정")
@@ -59,7 +67,8 @@ public class MessageController {
       @Parameter(description = "메시지 정보")
       @RequestBody MessageUpdateRequest dto) {
     Message message = messageService.update(messageId, dto);
-    return ResponseEntity.ok(message);
+    MessageDto result = messageMapper.toDto(message);
+    return ResponseEntity.ok(result);
   }
 
   @Operation(summary = "메시지 삭제")
@@ -78,6 +87,9 @@ public class MessageController {
       @Parameter(description = "채널 ID")
       @RequestParam UUID channelId) {
     List<Message> messages = messageService.findAllByChannelId(channelId);
-    return ResponseEntity.ok(messages);
+    List<MessageDto> messageDtos = messages.stream()
+        .map(messageMapper::toDto)
+        .toList();
+    return ResponseEntity.ok(messageDtos);
   }
 }
