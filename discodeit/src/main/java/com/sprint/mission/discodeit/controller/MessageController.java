@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.dto.data.MessageDto;
 import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequest;
 import com.sprint.mission.discodeit.dto.request.MessageUpdateRequest;
+import com.sprint.mission.discodeit.dto.response.PageResponse;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.mapper.MessageMapper;
 import com.sprint.mission.discodeit.service.MessageService;
@@ -11,6 +12,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -85,11 +89,9 @@ public class MessageController {
   @GetMapping("")
   public ResponseEntity<?> messageList(
       @Parameter(description = "채널 ID")
-      @RequestParam UUID channelId) {
-    List<Message> messages = messageService.findAllByChannelId(channelId);
-    List<MessageDto> messageDtos = messages.stream()
-        .map(messageMapper::toDto)
-        .toList();
-    return ResponseEntity.ok(messageDtos);
+      @RequestParam UUID channelId,
+      @PageableDefault(size = 50, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    PageResponse<MessageDto> messages = messageService.findAllByChannelId(channelId, pageable);
+    return ResponseEntity.ok(messages);
   }
 }
