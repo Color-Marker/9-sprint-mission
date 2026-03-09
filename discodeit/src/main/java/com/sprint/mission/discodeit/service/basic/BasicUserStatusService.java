@@ -34,7 +34,7 @@ public class BasicUserStatusService implements UserStatusService {
     if (!userRepository.existsById(userId)) {
       throw new NoSuchElementException("User with id " + userId + " does not exist");
     }
-    if (userStatusRepository.findByUserId(userId).isPresent()) {
+    if (userStatusRepository.existsByUserId(userId)) {
       throw new IllegalArgumentException("UserStatus with id " + userId + " already exists");
     }
 
@@ -47,7 +47,7 @@ public class BasicUserStatusService implements UserStatusService {
   @Transactional(readOnly = true)
   @Override
   public UserStatus find(UUID userStatusId) {
-    return userStatusRepository.findById(userStatusId)
+    return userStatusRepository.findWithUserById(userStatusId)
         .orElseThrow(
             () -> new NoSuchElementException("UserStatus with id " + userStatusId + " not found"));
   }
@@ -55,7 +55,7 @@ public class BasicUserStatusService implements UserStatusService {
   @Transactional(readOnly = true)
   @Override
   public List<UserStatus> findAll() {
-    return userStatusRepository.findAll().stream()
+    return userStatusRepository.findAllWithUserBy().stream()
         .toList();
   }
 
@@ -66,7 +66,7 @@ public class BasicUserStatusService implements UserStatusService {
     if (userStatusUpdateRequest != null) {
       newLastActiveAt = userStatusUpdateRequest.lastActiveAt();
     }
-    UserStatus userStatus = userStatusRepository.findById(userStatusId)
+    UserStatus userStatus = userStatusRepository.findWithUserById(userStatusId)
         .orElseThrow(
             () -> new NoSuchElementException("UserStatus with id " + userStatusId + " not found"));
     userStatus.update(newLastActiveAt);
@@ -83,7 +83,7 @@ public class BasicUserStatusService implements UserStatusService {
     if (userStatusUpdateRequest != null) {
       newLastActiveAt = userStatusUpdateRequest.lastActiveAt();
     }
-    UserStatus userStatus = userStatusRepository.findByUserId(userId)
+    UserStatus userStatus = userStatusRepository.findWithUserByUserId(userId)
         .orElseThrow(
             () -> new NoSuchElementException("UserStatus with userId " + userId + " not found"));
     userStatus.update(newLastActiveAt);

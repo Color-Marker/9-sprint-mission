@@ -69,7 +69,7 @@ public class BasicUserService implements UserService {
   @Transactional(readOnly = true)
   @Override
   public UserDto find(UUID userId) {
-    return userRepository.findById(userId)
+    return userRepository.findWithProfileAndStatusById(userId)
         .map(userMapper::toDto)
         .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
   }
@@ -77,7 +77,7 @@ public class BasicUserService implements UserService {
   @Transactional(readOnly = true)
   @Override
   public List<UserDto> findAll() {
-    return userRepository.findAll()
+    return userRepository.findAllWithProfileAndStatusBy()
         .stream()
         .map(userMapper::toDto)
         .toList();

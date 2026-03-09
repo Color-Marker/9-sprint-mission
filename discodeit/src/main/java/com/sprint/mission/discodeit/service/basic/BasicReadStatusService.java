@@ -43,7 +43,7 @@ public class BasicReadStatusService implements ReadStatusService {
     if (!channelRepository.existsById(channelId)) {
       throw new NoSuchElementException("Channel with id " + channelId + " does not exist");
     }
-    if (readStatusRepository.findAllByUserId(userId).stream()
+    if (readStatusRepository.findAllWithExtraByUserId(userId).stream()
         .anyMatch(readStatus -> readStatus.getChannel().equals(channel))) {
       throw new IllegalArgumentException(
           "ReadStatus with userId " + userId + " and channelId " + channelId + " already exists");
@@ -58,7 +58,7 @@ public class BasicReadStatusService implements ReadStatusService {
   @Transactional(readOnly = true)
   @Override
   public ReadStatusDto find(UUID readStatusId) {
-    ReadStatus readStatus = readStatusRepository.findById(readStatusId)
+    ReadStatus readStatus = readStatusRepository.findWithExtraById(readStatusId)
         .orElseThrow(
             () -> new NoSuchElementException("ReadStatus with id " + readStatusId + " not found"));
     return readStatusMapper.toDto(readStatus);
@@ -67,7 +67,7 @@ public class BasicReadStatusService implements ReadStatusService {
   @Transactional(readOnly = true)
   @Override
   public List<ReadStatusDto> findAllByUserId(UUID userId) {
-    List<ReadStatus> statusList = readStatusRepository.findAllByUserId(userId).stream()
+    List<ReadStatus> statusList = readStatusRepository.findAllWithExtraByUserId(userId).stream()
         .toList();
     return statusList.stream()
         .map(readStatusMapper::toDto)
@@ -78,7 +78,7 @@ public class BasicReadStatusService implements ReadStatusService {
   @Override
   public ReadStatusDto update(UUID readStatusId, ReadStatusUpdateRequest request) {
     Instant newLastReadAt = request.newLastReadAt();
-    ReadStatus readStatus = readStatusRepository.findById(readStatusId)
+    ReadStatus readStatus = readStatusRepository.findWithExtraById(readStatusId)
         .orElseThrow(
             () -> new NoSuchElementException("ReadStatus with id " + readStatusId + " not found"));
     readStatus.update(newLastReadAt);

@@ -7,6 +7,7 @@ import com.sprint.mission.discodeit.entity.User;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReadStatusRepository extends JpaRepository<ReadStatus, UUID> {
@@ -18,4 +19,16 @@ public interface ReadStatusRepository extends JpaRepository<ReadStatus, UUID> {
   List<ReadStatus> findAllByChannel(Channel channel);
 
   void deleteAllByChannelId(UUID channelId);
+
+  @EntityGraph(attributePaths = {
+      "user.status",
+      "channel"
+  })
+  Optional<ReadStatus> findWithExtraById(UUID readStatusId);
+
+  @EntityGraph(attributePaths = {
+      "user.status",
+      "channel"
+  })
+  List<ReadStatus> findAllWithExtraByUserId(UUID userId);
 }

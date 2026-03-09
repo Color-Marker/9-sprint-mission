@@ -88,7 +88,7 @@ public class BasicMessageService implements MessageService {
   @Transactional(readOnly = true)
   @Override
   public Message find(UUID messageId) {
-    return messageRepository.findById(messageId)
+    return messageRepository.findWithChannelAuthorAttachmentById(messageId)
         .orElseThrow(
             () -> new NoSuchElementException("Message with id " + messageId + " not found"));
   }
@@ -96,7 +96,8 @@ public class BasicMessageService implements MessageService {
   @Transactional(readOnly = true)
   @Override
   public PageResponse<MessageDto> findAllByChannelId(UUID channelId, Pageable pageable) {
-    Slice<Message> messageSlice = messageRepository.findAllByChannelId(channelId, pageable);
+    Slice<Message> messageSlice = messageRepository.findAllWithExtraByChannelId(channelId,
+        pageable);
     return pageResponseMapper.fromSlice(messageSlice, messageMapper::toDto);
   }
 
@@ -104,7 +105,7 @@ public class BasicMessageService implements MessageService {
   @Override
   public MessageDto update(UUID messageId, MessageUpdateRequest request) {
     String newContent = request.newContent();
-    Message message = messageRepository.findById(messageId)
+    Message message = messageRepository.findWithChannelAuthorAttachmentById(messageId)
         .orElseThrow(
             () -> new NoSuchElementException("Message with id " + messageId + " not found"));
     message.update(newContent);
