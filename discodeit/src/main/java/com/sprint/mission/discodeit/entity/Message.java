@@ -40,12 +40,8 @@ public class Message extends BaseUpdatableEntity {
   @JoinColumn(name = "author_id", nullable = false, columnDefinition = "uuid")
   private User author;
   //
-  @ManyToMany
-  @JoinTable(
-      name = "message_attachments",
-      joinColumns = @JoinColumn(name = "message_id"),
-      inverseJoinColumns = @JoinColumn(name = "attachment_id")
-  )
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @JoinColumn(name = "message_id")
   private List<BinaryContent> attachments = new ArrayList<>();
 
   public Message(String content, Channel channel, User author, List<BinaryContent> attachments) {

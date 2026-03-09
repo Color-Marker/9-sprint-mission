@@ -31,7 +31,7 @@ public class BinaryContentController {
 
   @Operation(summary = "다중 파일 출력")
   @GetMapping("")
-  public ResponseEntity<?> findSome(
+  public ResponseEntity<List<BinaryContentDto>> findSome(
       @Parameter(description = "다중 파일 ID 정보")
       @RequestParam List<UUID> binaryContentId
   ) {
@@ -41,7 +41,7 @@ public class BinaryContentController {
 
   @Operation(summary = "단일 파일 출력")
   @GetMapping("/{binaryContentId}")
-  public ResponseEntity<?> find(
+  public ResponseEntity<BinaryContentDto> find(
       @Parameter(description = "파일 ID")
       @PathVariable UUID binaryContentId
   ) {

@@ -22,7 +22,7 @@ public class AuthController {
 
   @Operation(summary = "로그인")
   @PostMapping("/login")
-  public ResponseEntity<?> login(
+  public ResponseEntity<UserDto> login(
       @Parameter(description = "로그인 정보")
       @RequestBody LoginRequest dto
   ) {

@@ -8,6 +8,7 @@ import com.sprint.mission.discodeit.service.ChannelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Tag(name = "Channel API")
 @RestController
@@ -26,27 +28,38 @@ public class ChannelController {
 
   @Operation(summary = "public 채널 생성")
   @PostMapping("/public")
-  public ResponseEntity<?> publicCreate(
+  public ResponseEntity<ChannelDto> publicCreate(
       @Parameter(description = "채널 정보")
       @RequestBody PublicChannelCreateRequest dto) {
     Channel channel = channelService.create(dto);
     ChannelDto result = channelService.find(channel.getId());
-    return ResponseEntity.status(HttpStatus.CREATED).body(result);
+
+    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(result.id())
+        .toUri();
+
+    return ResponseEntity.created(location).body(result);
   }
 
   @Operation(summary = "private 채널 생성")
   @PostMapping("/private")
-  public ResponseEntity<?> privateCreate(
+  public ResponseEntity<ChannelDto> privateCreate(
       @Parameter(description = "채널 정보")
       @RequestBody PrivateChannelCreateRequest dto) {
     Channel channel = channelService.create(dto);
     ChannelDto result = channelService.find(channel.getId());
-    return ResponseEntity.status(HttpStatus.CREATED).body(result);
+
+    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(result.id())
+        .toUri();
+    return ResponseEntity.created(location).body(result);
   }
 
   @Operation(summary = "public 채널 수정")
   @PutMapping("/public/{channelId}")
-  public ResponseEntity<?> edit(
+  public ResponseEntity<ChannelDto> edit(
       @Parameter(description = "채널 ID")
       @PathVariable UUID channelId,
       @Parameter(description = "채널 정보")
@@ -59,18 +72,17 @@ public class ChannelController {
 
   @Operation(summary = "채널 삭제")
   @DeleteMapping("/{channelId}")
-  public ResponseEntity<?> delete(
+  public ResponseEntity<Void> delete(
       @Parameter(description = "채널 ID")
       @PathVariable UUID channelId
   ) {
     channelService.delete(channelId);
-    String result = "channel: " + channelId + "가 삭제되었습니다.";
-    return ResponseEntity.ok(result);
+    return ResponseEntity.noContent().build();
   }
 
   @Operation(summary = "유저 소속 채널 출력")
   @GetMapping("")
-  public ResponseEntity<?> channelList(
+  public ResponseEntity<List<ChannelDto>> channelList(
       @Parameter(description = "유저 ID")
       @RequestParam UUID userId
   ) {

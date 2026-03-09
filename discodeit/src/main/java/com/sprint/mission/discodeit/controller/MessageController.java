@@ -11,6 +11,7 @@ import com.sprint.mission.discodeit.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Tag(name = "Message API")
 @RestController
@@ -36,7 +38,7 @@ public class MessageController {
 
   @Operation(summary = "메시지 생성")
   @PostMapping(path = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<?> create(
+  public ResponseEntity<MessageDto> create(
       @Parameter(description = "메시지 정보")
       @RequestPart("messageCreateRequest") MessageCreateRequest messageCreateRequest,
       @Parameter(description = "파일 정보")
@@ -58,12 +60,16 @@ public class MessageController {
       }
     }
     MessageDto message = messageService.create(messageCreateRequest, binaryDtos);
-    return ResponseEntity.status(HttpStatus.CREATED).body(message);
+    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(message.id())
+        .toUri();
+    return ResponseEntity.created(location).body(message);
   }
 
   @Operation(summary = "메시지 수정")
   @PatchMapping("/{messageId}")
-  public ResponseEntity<?> edit(
+  public ResponseEntity<MessageDto> edit(
       @Parameter(description = "메시지 ID")
       @PathVariable UUID messageId,
       @Parameter(description = "메시지 정보")
@@ -74,17 +80,16 @@ public class MessageController {
 
   @Operation(summary = "메시지 삭제")
   @DeleteMapping("/{messageId}")
-  public ResponseEntity<?> delete(
+  public ResponseEntity<Void> delete(
       @Parameter(description = "메시지 ID")
       @PathVariable UUID messageId) {
     messageService.delete(messageId);
-    String result = "message: " + messageId + "가 삭제되었습니다.";
-    return ResponseEntity.ok(result);
+    return ResponseEntity.noContent().build();
   }
 
   @Operation(summary = "채널 별 메시지 출력")
   @GetMapping("")
-  public ResponseEntity<?> messageList(
+  public ResponseEntity<PageResponse<MessageDto>> messageList(
       @Parameter(description = "채널 ID")
       @RequestParam UUID channelId,
       @PageableDefault(size = 50, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {

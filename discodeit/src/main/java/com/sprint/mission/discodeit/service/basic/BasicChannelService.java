@@ -65,16 +65,21 @@ public class BasicChannelService implements ChannelService {
   @Transactional(readOnly = true)
   @Override
   public List<ChannelDto> findAllByUserId(UUID userId) {
+    if (!userRepository.existsById(userId)) {
+      throw new NoSuchElementException("You are not a user");
+    }
     List<UUID> mySubscribedChannelIds = readStatusRepository.findAllByUserId(userId).stream()
         .map(ReadStatus::getChannel)
         .map(Channel::getId)
         .toList();
 
-    return channelRepository.findAll().stream()
-        .filter(channel ->
-            channel.getType().equals(ChannelType.PUBLIC)
-                || mySubscribedChannelIds.contains(channel.getId())
-        )
+    List<Channel> channels;
+    if (mySubscribedChannelIds.isEmpty()) {
+      channels = channelRepository.findByType(ChannelType.PUBLIC);
+    } else {
+      channels = channelRepository.findPublicOrSubscribedChannels(mySubscribedChannelIds);
+    }
+    return channels.stream()
         .map(channelMapper::toDto)
         .toList();
   }

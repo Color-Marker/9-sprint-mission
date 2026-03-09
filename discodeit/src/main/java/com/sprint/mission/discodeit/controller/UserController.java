@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Tag(name = "User API")
 @RestController
@@ -39,7 +41,7 @@ public class UserController {
       path = "",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE
   )
-  public ResponseEntity<?> create(
+  public ResponseEntity<UserDto> create(
       @Parameter(description = "유저 정보")
       @RequestPart("userCreateRequest") UserCreateRequest UserCreateRequest,
       @Parameter(description = "유저 프로필 파일")
@@ -61,7 +63,13 @@ public class UserController {
             }
         );
     UserDto user = userService.create(UserCreateRequest, binaryDto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(user);
+
+    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(user.id())
+        .toUri();
+
+    return ResponseEntity.created(location).body(user);
   }
 
   @Operation(summary = "유저 수정")
@@ -69,7 +77,7 @@ public class UserController {
       path = "/{userId}",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE
   )
-  public ResponseEntity<?> edit(
+  public ResponseEntity<UserDto> edit(
       @Parameter(description = "유저 ID")
       @PathVariable UUID userId,
       @Parameter(description = "유저 정보")
@@ -98,25 +106,24 @@ public class UserController {
 
   @Operation(summary = "유저 삭제")
   @DeleteMapping("/{userId}")
-  public ResponseEntity<?> delete(
+  public ResponseEntity<Void> delete(
       @Parameter(description = "유저 ID")
       @PathVariable UUID userId
   ) {
     userService.delete(userId);
-    String result = "user: " + userId + "가 삭제되었습니다.";
-    return ResponseEntity.ok(result);
+    return ResponseEntity.noContent().build();
   }
 
   @Operation(summary = "전체 유저 출력")
   @GetMapping("")
-  public ResponseEntity<?> userList() {
+  public ResponseEntity<List<UserDto>> userList() {
     List<UserDto> allUsers = userService.findAll();
     return ResponseEntity.ok(allUsers);
   }
 
   @Operation(summary = "유저 읽음 상태 업데이트")
   @PatchMapping("/{userId}/userStatus")
-  public ResponseEntity<?> update(
+  public ResponseEntity<UserStatusDto> update(
       @Parameter(description = "유저 ID")
       @PathVariable UUID userId,
       @RequestBody UserStatusUpdateRequest userStatusUpdateRequest
