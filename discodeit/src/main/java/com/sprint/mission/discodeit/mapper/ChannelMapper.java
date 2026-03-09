@@ -14,37 +14,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
-@RequiredArgsConstructor
-public class ChannelMapper {
+@Mapper(componentModel = "spring", uses = {UserMapper.class})
+public abstract class ChannelMapper {
 
-  private final MessageRepository messageRepository;
-  private final ReadStatusRepository readStatusRepository;
-  private final UserRepository userRepository;
-  private final UserMapper userMapper;
+  @Autowired
+  public MessageRepository messageRepository;
+  @Autowired
+  public UserRepository userRepository;
+  @Autowired
+  public ReadStatusRepository readStatusRepository;
+  @Autowired
+  public UserMapper userMapper;
 
-  public ChannelDto toDto(Channel channel) {
-    Instant lastMessageAt = messageRepository.findFirstByChannelOrderByCreatedAtDesc(channel)
+  @Mapping(target = "lastMessageAt", expression = "java(findLastMessageAt(channel))")
+  @Mapping(target = "participants", expression = "java(getParticipants(channel))")
+  public abstract ChannelDto toDto(Channel channel);
+
+  public Instant findLastMessageAt(Channel channel) {
+    return messageRepository.findFirstByChannelOrderByCreatedAtDesc(channel)
         .map(Message::getCreatedAt)
         .orElse(null);
-    List<UserDto> participants;
+  }
+
+  public List<UserDto> getParticipants(Channel channel) {
     if (channel.getType().equals(ChannelType.PUBLIC)) {
-      participants = userRepository.findAll().stream().map(userMapper::toDto).toList();
+      return userRepository.findAll().stream()
+          .map(userMapper::toDto)
+          .toList();
     } else {
-      participants = readStatusRepository.findAllByChannel(channel).stream()
+      return readStatusRepository.findAllByChannel(channel).stream()
           .map(ReadStatus::getUser)
           .map(userMapper::toDto)
           .toList();
     }
-    return new ChannelDto(
-        channel.getId(),
-        channel.getType(),
-        channel.getName(),
-        channel.getDescription(),
-        participants,
-        lastMessageAt
-    );
   }
+
 }
