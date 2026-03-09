@@ -28,7 +28,6 @@ public class BinaryContentController {
 
   private final BinaryContentService binaryContentService;
   private final BinaryContentStorage binaryContentStorage;
-  private final BinaryContentMapper binaryContentMapper;
 
   @Operation(summary = "다중 파일 출력")
   @GetMapping("")
@@ -36,11 +35,8 @@ public class BinaryContentController {
       @Parameter(description = "다중 파일 ID 정보")
       @RequestParam List<UUID> binaryContentId
   ) {
-    List<BinaryContent> fileList = binaryContentService.findAllByIdIn(binaryContentId);
-    List<BinaryContentDto> binaryContentDtos = fileList.stream()
-        .map(binaryContentMapper::toDto)
-        .toList();
-    return ResponseEntity.ok(binaryContentDtos);
+    List<BinaryContentDto> fileList = binaryContentService.findAllByIdIn(binaryContentId);
+    return ResponseEntity.ok(fileList);
   }
 
   @Operation(summary = "단일 파일 출력")
@@ -49,9 +45,8 @@ public class BinaryContentController {
       @Parameter(description = "파일 ID")
       @PathVariable UUID binaryContentId
   ) {
-    BinaryContent file = binaryContentService.find(binaryContentId);
-    BinaryContentDto result = binaryContentMapper.toDto(file);
-    return ResponseEntity.ok(result);
+    BinaryContentDto file = binaryContentService.find(binaryContentId);
+    return ResponseEntity.ok(file);
   }
 
   @Operation(summary = "파일 다운로드")
@@ -60,8 +55,7 @@ public class BinaryContentController {
       @Parameter(description = "파일 ID")
       @PathVariable UUID binaryContentId
   ) {
-    BinaryContent binaryContent = binaryContentService.find(binaryContentId);
-    BinaryContentDto dto = binaryContentMapper.toDto(binaryContent);
-    return binaryContentStorage.download(dto);
+    BinaryContentDto binaryContent = binaryContentService.find(binaryContentId);
+    return binaryContentStorage.download(binaryContent);
   }
 }

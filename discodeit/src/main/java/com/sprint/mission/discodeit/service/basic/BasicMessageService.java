@@ -44,7 +44,7 @@ public class BasicMessageService implements MessageService {
 
   @Transactional
   @Override
-  public Message create(MessageCreateRequest messageCreateRequest,
+  public MessageDto create(MessageCreateRequest messageCreateRequest,
       List<BinaryContentCreateRequest> binaryContentCreateRequests) {
     UUID channelId = messageCreateRequest.channelId();
     UUID authorId = messageCreateRequest.authorId();
@@ -81,9 +81,11 @@ public class BasicMessageService implements MessageService {
         author,
         attachments
     );
-    return messageRepository.save(message);
+    messageRepository.save(message);
+    return messageMapper.toDto(message);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public Message find(UUID messageId) {
     return messageRepository.findById(messageId)
@@ -91,6 +93,7 @@ public class BasicMessageService implements MessageService {
             () -> new NoSuchElementException("Message with id " + messageId + " not found"));
   }
 
+  @Transactional(readOnly = true)
   @Override
   public PageResponse<MessageDto> findAllByChannelId(UUID channelId, Pageable pageable) {
     Slice<Message> messageSlice = messageRepository.findAllByChannelId(channelId, pageable);
@@ -99,13 +102,14 @@ public class BasicMessageService implements MessageService {
 
   @Transactional
   @Override
-  public Message update(UUID messageId, MessageUpdateRequest request) {
+  public MessageDto update(UUID messageId, MessageUpdateRequest request) {
     String newContent = request.newContent();
     Message message = messageRepository.findById(messageId)
         .orElseThrow(
             () -> new NoSuchElementException("Message with id " + messageId + " not found"));
     message.update(newContent);
-    return messageRepository.save(message);
+    messageRepository.save(message);
+    return messageMapper.toDto(message);
   }
 
   @Transactional

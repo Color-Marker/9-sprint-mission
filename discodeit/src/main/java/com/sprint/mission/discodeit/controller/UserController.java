@@ -33,7 +33,6 @@ public class UserController {
 
   private final UserService userService;
   private final UserStatusService userStatusService;
-  private final UserStatusMapper userStatusMapper;
 
   @Operation(summary = "유저 생성")
   @PostMapping(
@@ -122,8 +121,7 @@ public class UserController {
       @PathVariable UUID userId,
       @RequestBody UserStatusUpdateRequest userStatusUpdateRequest
   ) {
-    UserStatus userStatus = userStatusService.updateByUserId(userId, userStatusUpdateRequest);
-    UserStatusDto result = userStatusMapper.toDto(userStatus);
-    return ResponseEntity.ok(result);
+    UserStatusDto userStatus = userStatusService.updateByUserId(userId, userStatusUpdateRequest);
+    return ResponseEntity.ok(userStatus);
   }
 }

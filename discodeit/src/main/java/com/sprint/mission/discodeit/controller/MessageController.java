@@ -33,7 +33,6 @@ import java.util.UUID;
 public class MessageController {
 
   private final MessageService messageService;
-  private final MessageMapper messageMapper;
 
   @Operation(summary = "메시지 생성")
   @PostMapping(path = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -58,9 +57,8 @@ public class MessageController {
         throw new RuntimeException("파일을 읽을 수 없습니다.");
       }
     }
-    Message message = messageService.create(messageCreateRequest, binaryDtos);
-    MessageDto result = messageMapper.toDto(message);
-    return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    MessageDto message = messageService.create(messageCreateRequest, binaryDtos);
+    return ResponseEntity.status(HttpStatus.CREATED).body(message);
   }
 
   @Operation(summary = "메시지 수정")
@@ -70,9 +68,8 @@ public class MessageController {
       @PathVariable UUID messageId,
       @Parameter(description = "메시지 정보")
       @RequestBody MessageUpdateRequest dto) {
-    Message message = messageService.update(messageId, dto);
-    MessageDto result = messageMapper.toDto(message);
-    return ResponseEntity.ok(result);
+    MessageDto message = messageService.update(messageId, dto);
+    return ResponseEntity.ok(message);
   }
 
   @Operation(summary = "메시지 삭제")

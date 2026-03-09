@@ -17,8 +17,9 @@ spring:
     driver-class-name: org.postgresql.Driver
 
   jpa:
+    open-in-view: false
     hibernate:
-      ddl-auto: create # create - validate 로 나중에 변경.
+      ddl-auto: validate # create - validate 로 나중에 변경.
     show-sql: false
     defer-datasource-initialization: true
     properties:

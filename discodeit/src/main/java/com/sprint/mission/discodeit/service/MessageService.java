@@ -13,14 +13,14 @@ import org.springframework.data.domain.Pageable;
 
 public interface MessageService {
 
-  Message create(MessageCreateRequest messageCreateRequest,
+  MessageDto create(MessageCreateRequest messageCreateRequest,
       List<BinaryContentCreateRequest> binaryContentCreateRequests);
 
   Message find(UUID messageId);
 
   PageResponse<MessageDto> findAllByChannelId(UUID channelId, Pageable pageable);
 
-  Message update(UUID messageId, MessageUpdateRequest request);
+  MessageDto update(UUID messageId, MessageUpdateRequest request);
 
   void delete(UUID messageId);
 }

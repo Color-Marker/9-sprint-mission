@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
   private final AuthService authService;
-  private final UserMapper userMapper;
 
   @Operation(summary = "로그인")
   @PostMapping("/login")
@@ -27,8 +26,7 @@ public class AuthController {
       @Parameter(description = "로그인 정보")
       @RequestBody LoginRequest dto
   ) {
-    User user = authService.login(dto);
-    UserDto result = userMapper.toDto(user);
-    return ResponseEntity.ok(result);
+    UserDto user = authService.login(dto);
+    return ResponseEntity.ok(user);
   }
 }

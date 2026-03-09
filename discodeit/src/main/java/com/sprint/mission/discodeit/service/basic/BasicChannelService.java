@@ -53,6 +53,7 @@ public class BasicChannelService implements ChannelService {
     return createdChannel;
   }
 
+  @Transactional(readOnly = true)
   @Override
   public ChannelDto find(UUID channelId) {
     return channelRepository.findById(channelId)
@@ -61,6 +62,7 @@ public class BasicChannelService implements ChannelService {
             () -> new NoSuchElementException("Channel with id " + channelId + " not found"));
   }
 
+  @Transactional(readOnly = true)
   @Override
   public List<ChannelDto> findAllByUserId(UUID userId) {
     List<UUID> mySubscribedChannelIds = readStatusRepository.findAllByUserId(userId).stream()

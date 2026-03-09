@@ -24,16 +24,14 @@ import java.util.UUID;
 public class ReadStatusController {
 
   private final ReadStatusService readStatusService;
-  private final ReadStatusMapper readStatusMapper;
 
   @Operation(summary = "읽음 상태 생성")
   @PostMapping("")
   public ResponseEntity<?> create(
       @Parameter(description = "읽음 상태 정보")
       @RequestBody ReadStatusCreateRequest dto) {
-    ReadStatus readStatus = readStatusService.create(dto);
-    ReadStatusDto result = readStatusMapper.toDto(readStatus);
-    return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    ReadStatusDto readStatus = readStatusService.create(dto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(readStatus);
   }
 
   @Operation(summary = "읽음 상태 수정")
@@ -44,9 +42,8 @@ public class ReadStatusController {
       @Parameter(description = "읽음 상태 정보")
       @RequestBody ReadStatusUpdateRequest dto
   ) {
-    ReadStatus readStatus = readStatusService.update(statusId, dto);
-    ReadStatusDto result = readStatusMapper.toDto(readStatus);
-    return ResponseEntity.ok(result);
+    ReadStatusDto readStatus = readStatusService.update(statusId, dto);
+    return ResponseEntity.ok(readStatus);
   }
 
   @Operation(summary = "유저별 읽음 상태 출력")
@@ -55,10 +52,7 @@ public class ReadStatusController {
       @Parameter(description = "유저 ID")
       @RequestParam UUID userId
   ) {
-    List<ReadStatus> statusList = readStatusService.findAllByUserId(userId);
-    List<ReadStatusDto> result = statusList.stream()
-        .map(readStatusMapper::toDto)
-        .toList();
-    return ResponseEntity.ok(result);
+    List<ReadStatusDto> statusList = readStatusService.findAllByUserId(userId);
+    return ResponseEntity.ok(statusList);
   }
 }
