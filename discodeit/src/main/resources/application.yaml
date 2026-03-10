@@ -24,7 +24,7 @@ spring:
     defer-datasource-initialization: true
     properties:
       hibernate:
-        default_batch_fetch_size: 50 # 내가 추가함.
+        default_batch_fetch_size: 50 # 추가함.
         # 메시지 레포에서 entitygraph로다가 attachments도 들고오니까
         # 쿼리가 엄청 길어지길래 다른 방법 찾아보다가 batch 쓰는 방식으로 접근해 봄.
         # pageable 사이즈랑 동일하게 50으로 설정함.
