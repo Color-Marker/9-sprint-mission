@@ -1,7 +1,11 @@
 package com.sprint.mission.discodeit.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 
 public record ReadStatusUpdateReqDto(
-        Instant newLastReadAt
-) { }
+    @Schema(description = "최근 읽음 상태 업데이트 시간")
+    Instant newLastReadAt
+) {
+
+}

@@ -1,11 +1,8 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.UserLoginReqDto;
-import com.sprint.mission.discodeit.dto.UserStatusUpdateReqDto;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserRepository;
-import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.AuthService;
 import com.sprint.mission.discodeit.service.UserStatusService;
 import lombok.RequiredArgsConstructor;
@@ -17,23 +14,24 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @Service
 public class BasicAuthService implements AuthService {
-    private final UserRepository userRepository;
-    private final UserStatusService userStatusService;
 
-    @Override
-    public User login(UserLoginReqDto loginRequest) {
-        String username = loginRequest.username();
-        String password = loginRequest.password();
+  private final UserRepository userRepository;
+  private final UserStatusService userStatusService;
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NoSuchElementException("User with username " + username + " not found"));
+  @Override
+  public User login(UserLoginReqDto loginRequest) {
+    String username = loginRequest.username();
+    String password = loginRequest.password();
 
-        if (!user.getPassword().equals(password)) {
-            throw new IllegalArgumentException("Wrong password");
-        }
-        UserStatusUpdateReqDto dto = new UserStatusUpdateReqDto(Instant.now());
-        userStatusService.updateByUserId(user.getId(), dto);
+    User user = userRepository.findByUsername(username)
+        .orElseThrow(
+            () -> new NoSuchElementException("User with username " + username + " not found"));
 
-        return user;
+    if (!user.getPassword().equals(password)) {
+      throw new IllegalArgumentException("Wrong password");
     }
+    userStatusService.updateByUserId(user.getId());
+
+    return user;
+  }
 }
