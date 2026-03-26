@@ -11,8 +11,6 @@ public record UserStatusCreateRequest(
     @NotNull(message = "사용자 아이디는 필수입니다.")
     @Schema(description = "사용자 아이디", example = "guest")
     UUID userId,
-    @NotNull(message = "최근 활성화 시간은 필수입니다.")
-    @PastOrPresent(message = "최근 활성화 시간은 현재 또는 과거입니다.")
     @Schema(description = "최근 활성화 시간")
     Instant lastActiveAt
 ) {

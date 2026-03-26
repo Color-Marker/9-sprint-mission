@@ -110,8 +110,8 @@ public class MessageController {
   public ResponseEntity<PageResponse<MessageDto>> messageList(
       @Parameter(description = "채널 ID")
       @Valid @RequestParam UUID channelId,
-      @Valid @RequestParam(required = false) Instant cursor,
-      @Valid @PageableDefault(size = 50, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+      @RequestParam(required = false) Instant cursor,
+      @PageableDefault(size = 50, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
     PageResponse<MessageDto> messages = messageService.findAllByChannelId(channelId, cursor,
         pageable);
     return ResponseEntity.ok(messages);

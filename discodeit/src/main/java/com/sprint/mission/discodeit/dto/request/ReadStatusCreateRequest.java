@@ -13,7 +13,6 @@ public record ReadStatusCreateRequest(
     @NotNull(message = "유저 아이디는 필수입니다.")
     @Schema(description = "유저 아이디")
     UUID userId,
-    @PastOrPresent(message = "최신 읽음 시간은 현재 또는 과거입니다.")
     @Schema(description = "최신 읽음 시간")
     Instant lastReadAt
 ) {

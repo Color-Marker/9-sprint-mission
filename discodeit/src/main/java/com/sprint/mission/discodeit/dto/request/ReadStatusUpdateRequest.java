@@ -7,8 +7,6 @@ import jakarta.validation.constraints.PastOrPresent;
 import java.time.Instant;
 
 public record ReadStatusUpdateRequest(
-    @NotNull(message = "최근 읽음 시간은 필수입니다.")
-    @PastOrPresent(message = "최근 읽음 시간은 현재 또는 과거입니다.")
     @Schema(description = "최근 읽음 상태 업데이트 시간")
     Instant newLastReadAt
 ) {
