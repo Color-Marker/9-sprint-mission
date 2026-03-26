@@ -10,7 +10,7 @@ discodeit:
 
 spring:
   profiles:
-    active: dev # 일단 dev yaml로 실행되게 설정
+    active: dev # 일단 dev yaml 설정으로 기본 실행되게 설정
 
   jpa:
     open-in-view: false
@@ -25,7 +25,3 @@ spring:
         format_sql: true
         highlight_sql: true
         use_sql_comments: true
-
-logging:
-  level:
-    root: info
