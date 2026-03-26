@@ -9,6 +9,7 @@ import com.sprint.mission.discodeit.service.ReadStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class ReadStatusController {
   @PostMapping("")
   public ResponseEntity<ReadStatusDto> create(
       @Parameter(description = "읽음 상태 정보")
-      @RequestBody ReadStatusCreateRequest dto) {
+      @Valid @RequestBody ReadStatusCreateRequest dto) {
     ReadStatusDto readStatus = readStatusService.create(dto);
 
     URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -47,9 +48,9 @@ public class ReadStatusController {
   @PatchMapping("/{statusId}")
   public ResponseEntity<ReadStatusDto> edit(
       @Parameter(description = "읽음 상태 ID")
-      @PathVariable UUID statusId,
+      @Valid @PathVariable UUID statusId,
       @Parameter(description = "읽음 상태 정보")
-      @RequestBody ReadStatusUpdateRequest dto
+      @Valid @RequestBody ReadStatusUpdateRequest dto
   ) {
     ReadStatusDto readStatus = readStatusService.update(statusId, dto);
     return ResponseEntity.ok(readStatus);
@@ -59,7 +60,7 @@ public class ReadStatusController {
   @GetMapping("")
   public ResponseEntity<List<ReadStatusDto>> statusList(
       @Parameter(description = "유저 ID")
-      @RequestParam UUID userId
+      @Valid @RequestParam UUID userId
   ) {
     List<ReadStatusDto> statusList = readStatusService.findAllByUserId(userId);
     return ResponseEntity.ok(statusList);

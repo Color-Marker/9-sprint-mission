@@ -11,6 +11,7 @@ import com.sprint.mission.discodeit.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -108,9 +109,9 @@ public class MessageController {
   @GetMapping("")
   public ResponseEntity<PageResponse<MessageDto>> messageList(
       @Parameter(description = "채널 ID")
-      @RequestParam UUID channelId,
-      @RequestParam(required = false) Instant cursor,
-      @PageableDefault(size = 50, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+      @Valid @RequestParam UUID channelId,
+      @Valid @RequestParam(required = false) Instant cursor,
+      @Valid @PageableDefault(size = 50, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
     PageResponse<MessageDto> messages = messageService.findAllByChannelId(channelId, cursor,
         pageable);
     return ResponseEntity.ok(messages);

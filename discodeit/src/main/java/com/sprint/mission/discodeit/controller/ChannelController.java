@@ -8,6 +8,7 @@ import com.sprint.mission.discodeit.service.ChannelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class ChannelController {
   @PostMapping("/public")
   public ResponseEntity<ChannelDto> publicCreate(
       @Parameter(description = "채널 정보")
-      @RequestBody PublicChannelCreateRequest dto) {
+      @Valid @RequestBody PublicChannelCreateRequest dto) {
 
     log.info("public 채널 생성 요청 - 채널 정보: {}", dto);
 
@@ -51,7 +52,7 @@ public class ChannelController {
   @PostMapping("/private")
   public ResponseEntity<ChannelDto> privateCreate(
       @Parameter(description = "채널 정보")
-      @RequestBody PrivateChannelCreateRequest dto) {
+      @Valid @RequestBody PrivateChannelCreateRequest dto) {
 
     log.info("private 채널 생성 요청 - 채널 정보: {}", dto);
 
@@ -69,9 +70,9 @@ public class ChannelController {
   @PutMapping("/public/{channelId}")
   public ResponseEntity<ChannelDto> edit(
       @Parameter(description = "채널 ID")
-      @PathVariable UUID channelId,
+      @Valid @PathVariable UUID channelId,
       @Parameter(description = "채널 정보")
-      @RequestBody PublicChannelCreateRequest dto
+      @Valid @RequestBody PublicChannelCreateRequest dto
   ) {
 
     log.info("public 채널 수정 요청 - 채널 ID: {}, 채널 정보: {}", channelId, dto);
@@ -85,7 +86,7 @@ public class ChannelController {
   @DeleteMapping("/{channelId}")
   public ResponseEntity<Void> delete(
       @Parameter(description = "채널 ID")
-      @PathVariable UUID channelId
+      @Valid @PathVariable UUID channelId
   ) {
     log.info("채널 삭제 요청 - 채널 ID: {}", channelId);
 
@@ -97,7 +98,7 @@ public class ChannelController {
   @GetMapping("")
   public ResponseEntity<List<ChannelDto>> channelList(
       @Parameter(description = "유저 ID")
-      @RequestParam UUID userId
+      @Valid @RequestParam UUID userId
   ) {
     List<ChannelDto> channelList = channelService.findAllByUserId(userId);
     return ResponseEntity.ok(channelList);

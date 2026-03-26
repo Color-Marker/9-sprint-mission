@@ -16,11 +16,13 @@ import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.exception.userStatus.UserStatusAlreadyExistException;
 import com.sprint.mission.discodeit.exception.userStatus.UserStatusNotFoundException;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -230,7 +232,23 @@ public class GlobalExceptionHandler {
         ));
   }
 
-
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ErrorResponse> validFailException(MethodArgumentNotValidException e) {
+    Map<String, Object> details = new HashMap<>();
+    e.getBindingResult().getFieldErrors()
+        .forEach(error ->
+            details.put(error.getField(), error.getDefaultMessage()));
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST.value())
+        .body(new ErrorResponse(
+            Instant.now(),
+            "VALIDATION_FAILED",
+            "입력값이 유효하지 않습니다.",
+            details,
+            e.getClass().getSimpleName(),
+            HttpStatus.BAD_REQUEST.value()
+        ));
+  }
 }
 
 

@@ -8,6 +8,7 @@ import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class BinaryContentController {
   @GetMapping("")
   public ResponseEntity<List<BinaryContentDto>> findSome(
       @Parameter(description = "다중 파일 ID 정보")
-      @RequestParam List<UUID> binaryContentId
+      @Valid @RequestParam List<UUID> binaryContentId
   ) {
     List<BinaryContentDto> fileList = binaryContentService.findAllByIdIn(binaryContentId);
     return ResponseEntity.ok(fileList);
@@ -44,7 +45,7 @@ public class BinaryContentController {
   @GetMapping("/{binaryContentId}")
   public ResponseEntity<BinaryContentDto> find(
       @Parameter(description = "파일 ID")
-      @PathVariable UUID binaryContentId
+      @Valid @PathVariable UUID binaryContentId
   ) {
     BinaryContentDto file = binaryContentService.find(binaryContentId);
     return ResponseEntity.ok(file);
@@ -54,7 +55,7 @@ public class BinaryContentController {
   @GetMapping("/{binaryContentId}/download")
   public ResponseEntity<?> download(
       @Parameter(description = "파일 ID")
-      @PathVariable UUID binaryContentId
+      @Valid @PathVariable UUID binaryContentId
   ) {
     log.info("파일 다운로드 요청 - 요청 파일 ID: {}", binaryContentId);
     BinaryContentDto binaryContent = binaryContentService.find(binaryContentId);

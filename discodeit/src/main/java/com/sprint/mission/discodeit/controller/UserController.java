@@ -13,6 +13,7 @@ import com.sprint.mission.discodeit.service.UserStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -45,9 +46,9 @@ public class UserController {
   )
   public ResponseEntity<UserDto> create(
       @Parameter(description = "유저 정보")
-      @RequestPart("userCreateRequest") UserCreateRequest UserCreateRequest,
+      @Valid @RequestPart("userCreateRequest") UserCreateRequest UserCreateRequest,
       @Parameter(description = "유저 프로필 파일")
-      @RequestPart(value = "profile", required = false) MultipartFile profile
+      @Valid @RequestPart(value = "profile", required = false) MultipartFile profile
   ) {
     Optional<BinaryContentCreateRequest> binaryDto = Optional.ofNullable(profile)
         .filter(file -> !file.isEmpty())
@@ -81,11 +82,11 @@ public class UserController {
   )
   public ResponseEntity<UserDto> edit(
       @Parameter(description = "유저 ID")
-      @PathVariable UUID userId,
+      @Valid @PathVariable UUID userId,
       @Parameter(description = "유저 정보")
-      @RequestPart("userUpdateRequest") UserUpdateRequest userDto,
+      @Valid @RequestPart("userUpdateRequest") UserUpdateRequest userDto,
       @Parameter(description = "유저 프로필 파일")
-      @RequestPart(value = "profile", required = false) MultipartFile profile
+      @Valid @RequestPart(value = "profile", required = false) MultipartFile profile
   ) {
     Optional<BinaryContentCreateRequest> binaryDto = Optional.ofNullable(profile)
         .filter(file -> !file.isEmpty())
@@ -110,7 +111,7 @@ public class UserController {
   @DeleteMapping("/{userId}")
   public ResponseEntity<Void> delete(
       @Parameter(description = "유저 ID")
-      @PathVariable UUID userId
+      @Valid @PathVariable UUID userId
   ) {
     userService.delete(userId);
     return ResponseEntity.noContent().build();
@@ -127,8 +128,8 @@ public class UserController {
   @PatchMapping("/{userId}/userStatus")
   public ResponseEntity<UserStatusDto> update(
       @Parameter(description = "유저 ID")
-      @PathVariable UUID userId,
-      @RequestBody UserStatusUpdateRequest userStatusUpdateRequest
+      @Valid @PathVariable UUID userId,
+      @Valid @RequestBody UserStatusUpdateRequest userStatusUpdateRequest
   ) {
     UserStatusDto userStatus = userStatusService.updateByUserId(userId, userStatusUpdateRequest);
     return ResponseEntity.ok(userStatus);
