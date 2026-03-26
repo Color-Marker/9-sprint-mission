@@ -15,6 +15,7 @@ import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+@Slf4j
 @Tag(name = "Message API")
 @RestController
 @RequestMapping("/api/messages")
@@ -46,6 +48,9 @@ public class MessageController {
       @RequestPart("messageCreateRequest") MessageCreateRequest messageCreateRequest,
       @Parameter(description = "파일 정보")
       @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments) {
+
+    log.info("메시지 생성 요청 - 메시지 정보: {}, 파일 정보: {}", messageCreateRequest, attachments);
+
     List<BinaryContentCreateRequest> binaryDtos = new ArrayList<>();
     if (attachments != null) {
       try {
@@ -53,12 +58,15 @@ public class MessageController {
           if (file.isEmpty()) {
             continue;
           }
+          log.info("파일 업로드 요청 - 파일명: {}, 타입: {}, 크기: {} bytes",
+              file.getOriginalFilename(), file.getContentType(), file.getSize());
           BinaryContentCreateRequest data = new BinaryContentCreateRequest(
               file.getOriginalFilename(),
               file.getBytes(), file.getContentType());
           binaryDtos.add(data);
         }
       } catch (IOException e) {
+        log.warn("파일 인식 실패 예외 발생");
         throw new RuntimeException("파일을 읽을 수 없습니다.");
       }
     }
@@ -77,6 +85,9 @@ public class MessageController {
       @PathVariable UUID messageId,
       @Parameter(description = "메시지 정보")
       @RequestBody MessageUpdateRequest dto) {
+
+    log.info("메시지 수정 요청 - 메시지 ID: {}, 메시지 정보: {}", messageId, dto);
+
     MessageDto message = messageService.update(messageId, dto);
     return ResponseEntity.ok(message);
   }
@@ -86,6 +97,9 @@ public class MessageController {
   public ResponseEntity<Void> delete(
       @Parameter(description = "메시지 ID")
       @PathVariable UUID messageId) {
+
+    log.info("메시지 삭제 요청 - 메시지 ID: {}", messageId);
+
     messageService.delete(messageId);
     return ResponseEntity.noContent().build();
   }

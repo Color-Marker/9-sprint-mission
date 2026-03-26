@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+@Slf4j
 @Tag(name = "Channel API")
 @RestController
 @RequestMapping("/api/channels")
@@ -31,6 +33,9 @@ public class ChannelController {
   public ResponseEntity<ChannelDto> publicCreate(
       @Parameter(description = "채널 정보")
       @RequestBody PublicChannelCreateRequest dto) {
+
+    log.info("public 채널 생성 요청 - 채널 정보: {}", dto);
+
     Channel channel = channelService.create(dto);
     ChannelDto result = channelService.find(channel.getId());
 
@@ -47,6 +52,9 @@ public class ChannelController {
   public ResponseEntity<ChannelDto> privateCreate(
       @Parameter(description = "채널 정보")
       @RequestBody PrivateChannelCreateRequest dto) {
+
+    log.info("private 채널 생성 요청 - 채널 정보: {}", dto);
+
     Channel channel = channelService.create(dto);
     ChannelDto result = channelService.find(channel.getId());
 
@@ -65,6 +73,9 @@ public class ChannelController {
       @Parameter(description = "채널 정보")
       @RequestBody PublicChannelCreateRequest dto
   ) {
+
+    log.info("public 채널 수정 요청 - 채널 ID: {}, 채널 정보: {}", channelId, dto);
+
     channelService.update(channelId, dto);
     ChannelDto result = channelService.find(channelId);
     return ResponseEntity.ok(result);
@@ -76,6 +87,8 @@ public class ChannelController {
       @Parameter(description = "채널 ID")
       @PathVariable UUID channelId
   ) {
+    log.info("채널 삭제 요청 - 채널 ID: {}", channelId);
+
     channelService.delete(channelId);
     return ResponseEntity.noContent().build();
   }

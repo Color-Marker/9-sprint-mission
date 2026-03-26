@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.InputStreamResource;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @ConditionalOnProperty(name = "discodeit.storage.type", havingValue = "local")
 @Component
 public class LocalBinaryContentStorage implements BinaryContentStorage {
@@ -45,12 +47,15 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
 
   public UUID put(UUID binaryContentId, byte[] bytes) {
     Path filePath = resolvePath(binaryContentId);
+    log.debug("파일 저장 경로 설정 - 파일 경로: {}", filePath);
     if (Files.exists(filePath)) {
+      log.warn("파일 저장 경로 예외 발생 - 파일 경로: {}", filePath);
       throw new IllegalArgumentException("File with key " + binaryContentId + " already exists");
     }
     try (OutputStream outputStream = Files.newOutputStream(filePath)) {
       outputStream.write(bytes);
     } catch (IOException e) {
+      log.error("파일 쓰기 중 오류 발생 - 파일 경로: {}, 메시지: {}", filePath, e.getMessage());
       throw new RuntimeException(e);
     }
     return binaryContentId;
@@ -58,12 +63,15 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
 
   public InputStream get(UUID binaryContentId) {
     Path filePath = resolvePath(binaryContentId);
+    log.debug("파일 경로 검색 - 파일 경로: {}", filePath);
     if (Files.notExists(filePath)) {
+      log.warn("파일 경로 검색 예외 발생 - 파일 경로: {}", filePath);
       throw new NoSuchElementException("File with key " + binaryContentId + " does not exist");
     }
     try {
       return Files.newInputStream(filePath);
     } catch (IOException e) {
+      log.error("파일 읽기 중 오류 발생 - 파일 경로: {}, 메시지: {}", filePath, e.getMessage());
       e.printStackTrace();
       throw new RuntimeException(e);
     }
@@ -77,7 +85,8 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
   public ResponseEntity<Resource> download(BinaryContentDto metaData) {
     InputStream inputStream = get(metaData.id());
     Resource resource = new InputStreamResource(inputStream);
-
+    log.info("파일 전송 준비 완료 - 파일 ID: {}, 파일명: {}, 타입: {}, 크기: {} bytes",
+        metaData.id(), metaData.fileName(), metaData.contentType(), metaData.size());
     return ResponseEntity
         .status(HttpStatus.OK)
         .header(HttpHeaders.CONTENT_DISPOSITION,

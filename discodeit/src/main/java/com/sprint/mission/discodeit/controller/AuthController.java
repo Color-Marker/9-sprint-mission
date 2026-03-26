@@ -9,9 +9,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @Tag(name = "Auth API")
 @RestController
 @RequestMapping("/api/auth")
@@ -26,6 +28,7 @@ public class AuthController {
       @Parameter(description = "로그인 정보")
       @RequestBody LoginRequest dto
   ) {
+    
     UserDto user = authService.login(dto);
     return ResponseEntity.ok(user);
   }

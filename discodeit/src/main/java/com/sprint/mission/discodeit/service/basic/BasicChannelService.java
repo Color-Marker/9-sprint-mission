@@ -4,6 +4,9 @@ import com.sprint.mission.discodeit.dto.request.PrivateChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.request.PublicChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.data.ChannelDto;
 import com.sprint.mission.discodeit.entity.*;
+import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
+import com.sprint.mission.discodeit.exception.channel.PrivateChannelUpdateException;
+import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
@@ -35,8 +38,9 @@ public class BasicChannelService implements ChannelService {
     String name = request.name();
     String description = request.description();
     Channel channel = new Channel(ChannelType.PUBLIC, name, description);
-
-    return channelRepository.save(channel);
+    Channel saved = channelRepository.save(channel);
+    log.info("public 채널 생성 완료 - 채널: {}", saved);
+    return saved;
   }
 
   @Transactional
@@ -46,10 +50,15 @@ public class BasicChannelService implements ChannelService {
     String description = request.description();
     Channel channel = new Channel(ChannelType.PRIVATE, name, description);
     Channel createdChannel = channelRepository.save(channel);
-
+    log.info("private 채널 생성 완료 - 채널: {}", createdChannel);
     request.participantIds().stream()
-        .map(userId -> new ReadStatus(userRepository.findById(userId).orElse(null), createdChannel,
-            channel.getCreatedAt()))
+        .map(userId -> {
+          ReadStatus newStatus = new ReadStatus(userRepository.findById(userId).orElse(null),
+              createdChannel,
+              channel.getCreatedAt());
+          log.debug("참가자별 채널 읽음 상태 생성 - 일음 상태: {}", newStatus);
+          return newStatus;
+        })
         .forEach(readStatusRepository::save);
 
     return createdChannel;
@@ -60,15 +69,14 @@ public class BasicChannelService implements ChannelService {
   public ChannelDto find(UUID channelId) {
     return channelRepository.findById(channelId)
         .map(channelMapper::toDto)
-        .orElseThrow(
-            () -> new NoSuchElementException("Channel with id " + channelId + " not found"));
+        .orElseThrow(() -> new ChannelNotFoundException(channelId));
   }
 
   @Transactional(readOnly = true)
   @Override
   public List<ChannelDto> findAllByUserId(UUID userId) {
     if (!userRepository.existsById(userId)) {
-      throw new NoSuchElementException("Author with id " + userId + " does not exist");
+      throw new UserNotFoundException(userId);
     }
     List<UUID> mySubscribedChannelIds = readStatusRepository.findAllByUserId(userId).stream()
         .map(ReadStatus::getChannel)
@@ -92,10 +100,14 @@ public class BasicChannelService implements ChannelService {
     String newName = request.name();
     String newDescription = request.description();
     Channel channel = channelRepository.findById(channelId)
-        .orElseThrow(
-            () -> new NoSuchElementException("Channel with id " + channelId + " not found"));
+        .orElseThrow(() ->
+        {
+          log.warn("채널 검색 실패 - 채널 ID: {}", channelId);
+          return new ChannelNotFoundException(channelId);
+        });
     if (channel.getType().equals(ChannelType.PRIVATE)) {
-      throw new IllegalArgumentException("Private channel cannot be updated");
+      log.warn("채널 수정 실패 - 채널 ID: {}", channelId);
+      throw new PrivateChannelUpdateException(channelId);
     }
     channel.update(newName, newDescription);
     return channelRepository.save(channel);
@@ -106,7 +118,10 @@ public class BasicChannelService implements ChannelService {
   public void delete(UUID channelId) {
     Channel channel = channelRepository.findById(channelId)
         .orElseThrow(
-            () -> new NoSuchElementException("Channel with id " + channelId + " not found"));
+            () -> {
+              log.warn("채널 검색 실패 - 채널 ID: {}", channelId);
+              return new ChannelNotFoundException(channelId);
+            });
 
     messageRepository.deleteAllByChannelId(channel.getId());
     readStatusRepository.deleteAllByChannelId(channel.getId());
