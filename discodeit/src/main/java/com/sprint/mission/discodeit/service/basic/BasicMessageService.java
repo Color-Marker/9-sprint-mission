@@ -20,6 +20,7 @@ import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BasicMessageService implements MessageService {
