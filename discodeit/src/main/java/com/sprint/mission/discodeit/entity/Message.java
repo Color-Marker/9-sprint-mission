@@ -14,6 +14,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.websocket.Decoder.Binary;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -27,6 +29,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "messages")
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Message extends BaseUpdatableEntity {
 
@@ -47,13 +51,6 @@ public class Message extends BaseUpdatableEntity {
       inverseJoinColumns = @JoinColumn(name = "attachment_id")
   )
   private List<BinaryContent> attachments = new ArrayList<>();
-
-  public Message(String content, Channel channel, User author, List<BinaryContent> attachments) {
-    this.content = content;
-    this.channel = channel;
-    this.author = author;
-    this.attachments = attachments;
-  }
 
   public void update(String newContent) {
     if (newContent != null && !newContent.equals(this.content)) {

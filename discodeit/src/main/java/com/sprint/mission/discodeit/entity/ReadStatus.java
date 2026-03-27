@@ -9,6 +9,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -20,6 +22,8 @@ import lombok.NoArgsConstructor;
     @UniqueConstraint(name = "uk_user_channel", columnNames = {"user_id", "channel_id"})
 })
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReadStatus extends BaseUpdatableEntity {
 
@@ -31,12 +35,6 @@ public class ReadStatus extends BaseUpdatableEntity {
   private Channel channel;
   @Column(nullable = false)
   private Instant lastReadAt;
-
-  public ReadStatus(User user, Channel channel, Instant lastReadAt) {
-    this.user = user;
-    this.channel = channel;
-    this.lastReadAt = lastReadAt;
-  }
 
   public void update(Instant newLastReadAt) {
     if (newLastReadAt != null && !newLastReadAt.equals(this.lastReadAt)) {

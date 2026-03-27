@@ -60,8 +60,8 @@ public class BasicUserService implements UserService {
               contentType);
           BinaryContent content = binaryContentRepository.save(binaryContent);
           log.debug("프로필 사진 저장 - 파일 상세: {}", content);
-          binaryContentStorage.put(binaryContent.getId(), bytes);
-          return binaryContent;
+          binaryContentStorage.put(content.getId(), bytes);
+          return content;
         })
         .orElse(null);
     String password = userCreateRequest.password();
@@ -128,8 +128,8 @@ public class BasicUserService implements UserService {
               contentType);
           BinaryContent content = binaryContentRepository.save(binaryContent);
           log.debug("프로필 사진 저장 - 파일 상세: {}", content);
-          binaryContentStorage.put(binaryContent.getId(), bytes);
-          return binaryContent;
+          binaryContentStorage.put(content.getId(), bytes);
+          return content;
         })
         .orElse(null);
 
