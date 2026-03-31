@@ -15,13 +15,14 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import static java.time.Instant.now;
 
 @Entity
 @Table(name = "channels")
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Channel extends BaseUpdatableEntity {
