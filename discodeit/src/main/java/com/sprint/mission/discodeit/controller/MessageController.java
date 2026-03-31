@@ -46,7 +46,7 @@ public class MessageController {
   @PostMapping(path = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<MessageDto> create(
       @Parameter(description = "메시지 정보")
-      @RequestPart("messageCreateRequest") MessageCreateRequest messageCreateRequest,
+      @Valid @RequestPart("messageCreateRequest") MessageCreateRequest messageCreateRequest,
       @Parameter(description = "파일 정보")
       @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments) {
 

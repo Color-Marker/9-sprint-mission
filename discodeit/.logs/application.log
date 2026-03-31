@@ -4466,3 +4466,362 @@ CREATE TABLE binary_contents ( id uuid PRIMARY KEY, created_at timestamp with ti
     [34mdrop[0m [34mtable[0m [34mif[0m [34mexists[0m user_statuses [34mcascade[0m 
 26-03-31 11:30:07.834 [SpringApplicationShutdownHook] DEBUG org.hibernate.SQL - 
     [34mdrop[0m [34mtable[0m [34mif[0m [34mexists[0m users [34mcascade[0m 
+26-03-31 11:43:11.463 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+26-03-31 11:43:11.583 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Starting MessageControllerTest using Java 17.0.15 with PID 23956 (started by ASUS in C:\Users\ASUS\Desktop\dev\web\codeit_sprint_bootcamp\sprint-mission\9-sprint-mission\discodeit)
+26-03-31 11:43:11.586 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - The following 1 profile is active: "dev"
+26-03-31 11:43:15.798 [Test worker] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+26-03-31 11:43:17.057 [Test worker] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+26-03-31 11:43:17.058 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+26-03-31 11:43:17.062 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 4 ms
+26-03-31 11:43:17.153 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Started MessageControllerTest in 6.646 seconds (process running for 9.128)
+26-03-31 11:43:17.492 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 수정 요청 - 메시지 ID: 54fa247b-007c-4658-bcd2-0765be88eebb, 메시지 정보: MessageUpdateRequest[newContent=수정된 메시지]
+26-03-31 11:43:17.703 [Test worker] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter 'channelId' for method parameter type UUID is not present]
+26-03-31 11:43:17.739 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 수정 요청 - 메시지 ID: a4e7f87d-0a38-4e79-9821-77972415f8a8, 메시지 정보: MessageUpdateRequest[newContent=수정된 메시지]
+26-03-31 11:43:17.799 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 삭제 요청 - 메시지 ID: 23d3b14b-f250-432c-b339-e8db4668550b
+26-03-31 11:43:17.855 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 생성 요청 - 메시지 정보: MessageCreateRequest[content=, channelId=51573b24-5e58-4ec3-87e3-9a72819420b3, authorId=9e7564cc-3f9d-452e-a2ff-e39817b8ca0c], 파일 정보: null
+26-03-31 11:43:17.889 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 삭제 요청 - 메시지 ID: d3d8a23c-141f-48d3-a9cd-5378857a5d7d
+26-03-31 11:43:17.901 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 생성 요청 - 메시지 정보: MessageCreateRequest[content=hello, channelId=0ea7735e-05a5-4298-bc56-6a357c113a37, authorId=f008bdad-65eb-49f0-822a-19de0e5699d4], 파일 정보: null
+26-03-31 11:44:36.992 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+26-03-31 11:44:37.098 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Starting MessageControllerTest using Java 17.0.15 with PID 15272 (started by ASUS in C:\Users\ASUS\Desktop\dev\web\codeit_sprint_bootcamp\sprint-mission\9-sprint-mission\discodeit)
+26-03-31 11:44:37.100 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - The following 1 profile is active: "dev"
+26-03-31 11:44:41.964 [Test worker] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+26-03-31 11:44:43.579 [Test worker] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+26-03-31 11:44:43.580 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+26-03-31 11:44:43.585 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 4 ms
+26-03-31 11:44:43.972 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Started MessageControllerTest in 7.926 seconds (process running for 10.291)
+26-03-31 11:44:44.452 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 수정 요청 - 메시지 ID: 4702d135-2dc7-4e34-bf62-b32dafc37f7d, 메시지 정보: MessageUpdateRequest[newContent=수정된 메시지]
+26-03-31 11:44:44.679 [Test worker] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter 'channelId' for method parameter type UUID is not present]
+26-03-31 11:44:44.720 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 수정 요청 - 메시지 ID: fe1f3d93-ceb1-4ff9-be0a-7adf1f8b4192, 메시지 정보: MessageUpdateRequest[newContent=수정된 메시지]
+26-03-31 11:44:44.779 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 삭제 요청 - 메시지 ID: 650c3f6a-6f05-43b7-8e62-05d7aeb7d925
+26-03-31 11:44:45.095 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 삭제 요청 - 메시지 ID: 5fe12f9b-29f7-49f5-aea2-e670ba82c932
+26-03-31 11:44:45.113 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 생성 요청 - 메시지 정보: MessageCreateRequest[content=hello, channelId=2cc0d4ba-3b55-4349-abb8-4b0d2ffd9d9b, authorId=f6208e6e-63e8-44db-a8a0-6be9455bdba0], 파일 정보: null
+26-03-31 11:45:50.078 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+26-03-31 11:45:50.289 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Starting MessageControllerTest using Java 17.0.15 with PID 14936 (started by ASUS in C:\Users\ASUS\Desktop\dev\web\codeit_sprint_bootcamp\sprint-mission\9-sprint-mission\discodeit)
+26-03-31 11:45:50.293 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - The following 1 profile is active: "dev"
+26-03-31 11:45:57.350 [Test worker] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+26-03-31 11:45:59.742 [Test worker] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+26-03-31 11:45:59.743 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+26-03-31 11:45:59.748 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 5 ms
+26-03-31 11:45:59.940 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Started MessageControllerTest in 11.133 seconds (process running for 14.236)
+26-03-31 11:46:00.462 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 수정 요청 - 메시지 ID: ab4df3d7-586a-48f2-8166-b9841c6343ca, 메시지 정보: MessageUpdateRequest[newContent=수정된 메시지]
+26-03-31 11:46:00.756 [Test worker] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter 'channelId' for method parameter type UUID is not present]
+26-03-31 11:46:00.809 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 수정 요청 - 메시지 ID: fc454240-f6f0-468e-935c-bd8039aa56e4, 메시지 정보: MessageUpdateRequest[newContent=수정된 메시지]
+26-03-31 11:46:00.892 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 삭제 요청 - 메시지 ID: 7456c920-33dd-4647-b1ba-3788428a3d11
+26-03-31 11:46:01.248 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 삭제 요청 - 메시지 ID: ba012d49-797f-4e8a-b719-293e37146229
+26-03-31 11:46:01.268 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 생성 요청 - 메시지 정보: MessageCreateRequest[content=hello, channelId=cd1038dc-454c-4f53-a349-05708ef9542e, authorId=2bc8c91c-caf9-4015-ac93-5d3dfd69a7ac], 파일 정보: null
+26-03-31 11:46:52.858 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+26-03-31 11:46:53.023 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Starting MessageControllerTest using Java 17.0.15 with PID 18656 (started by ASUS in C:\Users\ASUS\Desktop\dev\web\codeit_sprint_bootcamp\sprint-mission\9-sprint-mission\discodeit)
+26-03-31 11:46:53.026 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - The following 1 profile is active: "dev"
+26-03-31 11:47:00.193 [Test worker] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+26-03-31 11:47:02.873 [Test worker] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+26-03-31 11:47:02.875 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+26-03-31 11:47:02.879 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 4 ms
+26-03-31 11:47:03.100 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Started MessageControllerTest in 11.483 seconds (process running for 14.847)
+26-03-31 11:47:03.669 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 수정 요청 - 메시지 ID: 622d783e-2859-4824-b459-6e95e0396c5d, 메시지 정보: MessageUpdateRequest[newContent=수정된 메시지]
+26-03-31 11:47:03.933 [Test worker] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter 'channelId' for method parameter type UUID is not present]
+26-03-31 11:47:03.988 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 수정 요청 - 메시지 ID: 4e549d31-654d-4471-bf5d-1e71e10fd9e3, 메시지 정보: MessageUpdateRequest[newContent=수정된 메시지]
+26-03-31 11:47:04.064 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 삭제 요청 - 메시지 ID: f53919df-36d3-45e4-b390-07e46969ccaf
+26-03-31 11:47:04.476 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 삭제 요청 - 메시지 ID: 8373b8d8-8c06-410a-8cc1-827a937aec28
+26-03-31 11:47:04.494 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 생성 요청 - 메시지 정보: MessageCreateRequest[content=hello, channelId=3de7e3b4-9e55-481a-b46b-9fc9f5004328, authorId=f5eeb304-b75a-4b31-a2dc-8b80464d48ab], 파일 정보: null
+26-03-31 11:48:22.478 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+26-03-31 11:48:22.809 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Starting MessageControllerTest using Java 17.0.15 with PID 22200 (started by ASUS in C:\Users\ASUS\Desktop\dev\web\codeit_sprint_bootcamp\sprint-mission\9-sprint-mission\discodeit)
+26-03-31 11:48:22.815 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - The following 1 profile is active: "dev"
+26-03-31 11:48:30.668 [Test worker] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+26-03-31 11:48:34.063 [Test worker] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+26-03-31 11:48:34.065 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+26-03-31 11:48:34.070 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 5 ms
+26-03-31 11:48:34.513 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Started MessageControllerTest in 13.419 seconds (process running for 17.053)
+26-03-31 11:49:52.413 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+26-03-31 11:49:52.678 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Starting MessageControllerTest using Java 17.0.15 with PID 15064 (started by ASUS in C:\Users\ASUS\Desktop\dev\web\codeit_sprint_bootcamp\sprint-mission\9-sprint-mission\discodeit)
+26-03-31 11:49:52.683 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - The following 1 profile is active: "dev"
+26-03-31 11:49:59.710 [Test worker] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+26-03-31 11:50:02.258 [Test worker] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+26-03-31 11:50:02.259 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+26-03-31 11:50:02.264 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 5 ms
+26-03-31 11:50:02.457 [Test worker] INFO  c.s.m.d.C.MessageControllerTest - Started MessageControllerTest in 11.473 seconds (process running for 14.861)
+26-03-31 11:50:03.039 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 수정 요청 - 메시지 ID: 5430d1b0-8eb2-438b-ba3a-f81809766fdb, 메시지 정보: MessageUpdateRequest[newContent=수정된 메시지]
+26-03-31 11:50:03.354 [Test worker] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter 'channelId' for method parameter type UUID is not present]
+26-03-31 11:50:03.408 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 수정 요청 - 메시지 ID: c1e059a0-3434-4719-8d0c-b8dfbecc5018, 메시지 정보: MessageUpdateRequest[newContent=수정된 메시지]
+26-03-31 11:50:03.488 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 삭제 요청 - 메시지 ID: 3c1edf49-7e43-4db0-8de8-78d3589b0832
+26-03-31 11:50:03.878 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 삭제 요청 - 메시지 ID: ea2b0a34-c751-46ac-adee-8089c97a60b0
+26-03-31 11:50:03.899 [Test worker] INFO  c.s.m.d.controller.MessageController - 메시지 생성 요청 - 메시지 정보: MessageCreateRequest[content=hello, channelId=adc8c10f-02b3-497c-9939-8b602233d75f, authorId=9888252a-ee89-498c-88e9-0bbe6e61903d], 파일 정보: null
+26-03-31 11:50:51.215 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+26-03-31 11:50:51.433 [Test worker] INFO  c.s.m.d.C.ChannelControllerTest - Starting ChannelControllerTest using Java 17.0.15 with PID 15896 (started by ASUS in C:\Users\ASUS\Desktop\dev\web\codeit_sprint_bootcamp\sprint-mission\9-sprint-mission\discodeit)
+26-03-31 11:50:51.437 [Test worker] INFO  c.s.m.d.C.ChannelControllerTest - The following 1 profile is active: "dev"
+26-03-31 11:50:58.540 [Test worker] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+26-03-31 11:51:00.967 [Test worker] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+26-03-31 11:51:00.968 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+26-03-31 11:51:00.973 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 3 ms
+26-03-31 11:51:01.128 [Test worker] INFO  c.s.m.d.C.ChannelControllerTest - Started ChannelControllerTest in 11.211 seconds (process running for 15.004)
+26-03-31 11:51:01.874 [Test worker] INFO  c.s.m.d.controller.ChannelController - public 채널 수정 요청 - 채널 ID: 6e74452f-b30f-4b6e-a7b6-da522abd4ee0, 채널 정보: PublicChannelCreateRequest[name=updated, description=수정된 설명]
+26-03-31 11:51:02.132 [Test worker] INFO  c.s.m.d.controller.ChannelController - 채널 삭제 요청 - 채널 ID: 4e56bdb9-be9a-46b2-9735-206faa4b730e
+26-03-31 11:51:02.381 [Test worker] INFO  c.s.m.d.controller.ChannelController - public 채널 생성 요청 - 채널 정보: PublicChannelCreateRequest[name=general, description=공지 채널]
+26-03-31 11:51:02.430 [Test worker] INFO  c.s.m.d.controller.ChannelController - 채널 삭제 요청 - 채널 ID: 7b6fc792-2718-4974-a8f7-cfbdc4855c1c
+26-03-31 11:51:02.445 [Test worker] INFO  c.s.m.d.controller.ChannelController - public 채널 수정 요청 - 채널 ID: 02a61d11-f0f0-4209-b35e-76721d3e60f5, 채널 정보: PublicChannelCreateRequest[name=updated, description=수정된 설명]
+26-03-31 11:51:02.464 [Test worker] INFO  c.s.m.d.controller.ChannelController - private 채널 생성 요청 - 채널 정보: PrivateChannelCreateRequest[participantIds=[811ef7d0-e632-479d-a85c-04b70931f51c, 364418fe-d9a0-45db-9265-6882b7b429fe], name=dm, description=null]
+26-03-31 11:51:16.807 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+26-03-31 11:51:17.087 [Test worker] INFO  c.s.m.d.C.UserControllerTest - Starting UserControllerTest using Java 17.0.15 with PID 9620 (started by ASUS in C:\Users\ASUS\Desktop\dev\web\codeit_sprint_bootcamp\sprint-mission\9-sprint-mission\discodeit)
+26-03-31 11:51:17.092 [Test worker] INFO  c.s.m.d.C.UserControllerTest - The following 1 profile is active: "dev"
+26-03-31 11:51:24.022 [Test worker] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+26-03-31 11:51:26.262 [Test worker] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+26-03-31 11:51:26.263 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+26-03-31 11:51:26.267 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 3 ms
+26-03-31 11:51:26.417 [Test worker] INFO  c.s.m.d.C.UserControllerTest - Started UserControllerTest in 10.982 seconds (process running for 14.292)
+26-03-31 11:51:27.598 [Test worker] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Failure in @ExceptionHandler com.sprint.mission.discodeit.controller.GlobalExceptionHandler#handleUserNotFoundException(DuplicateNameException)
+java.lang.IllegalStateException: Could not resolve parameter [0] in public org.springframework.http.ResponseEntity<com.sprint.mission.discodeit.dto.response.ErrorResponse> com.sprint.mission.discodeit.controller.GlobalExceptionHandler.handleUserNotFoundException(com.sprint.mission.discodeit.exception.user.DuplicateNameException): No suitable resolver
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:224)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:181)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver.doResolveHandlerMethodException(ExceptionHandlerExceptionResolver.java:471)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodExceptionResolver.doResolveException(AbstractHandlerMethodExceptionResolver.java:73)
+	at org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver.resolveException(AbstractHandlerExceptionResolver.java:182)
+	at org.springframework.web.servlet.handler.HandlerExceptionResolverComposite.resolveException(HandlerExceptionResolverComposite.java:80)
+	at org.springframework.web.servlet.DispatcherServlet.processHandlerException(DispatcherServlet.java:1360)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.processHandlerException(TestDispatcherServlet.java:146)
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1161)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1106)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:888)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:72)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:165)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:201)
+	at com.sprint.mission.discodeit.Controller.UserControllerTest.updateUserStatus_fail_notFound(UserControllerTest.java:146)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:775)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:479)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:161)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:152)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:91)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:112)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:94)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:87)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:216)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:212)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:137)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:201)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:170)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:94)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:59)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:142)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$1(InterceptingLauncher.java:39)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:38)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:124)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:99)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:94)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:63)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:92)
+	at jdk.proxy1/jdk.proxy1.$Proxy4.stop(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker$3.run(TestWorker.java:200)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:132)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
+	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:122)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:72)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+26-03-31 11:51:28.168 [Test worker] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Failure in @ExceptionHandler com.sprint.mission.discodeit.controller.GlobalExceptionHandler#handleUserNotFoundException(DuplicateNameException)
+java.lang.IllegalStateException: Could not resolve parameter [0] in public org.springframework.http.ResponseEntity<com.sprint.mission.discodeit.dto.response.ErrorResponse> com.sprint.mission.discodeit.controller.GlobalExceptionHandler.handleUserNotFoundException(com.sprint.mission.discodeit.exception.user.DuplicateNameException): No suitable resolver
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:224)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:181)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver.doResolveHandlerMethodException(ExceptionHandlerExceptionResolver.java:471)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodExceptionResolver.doResolveException(AbstractHandlerMethodExceptionResolver.java:73)
+	at org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver.resolveException(AbstractHandlerExceptionResolver.java:182)
+	at org.springframework.web.servlet.handler.HandlerExceptionResolverComposite.resolveException(HandlerExceptionResolverComposite.java:80)
+	at org.springframework.web.servlet.DispatcherServlet.processHandlerException(DispatcherServlet.java:1360)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.processHandlerException(TestDispatcherServlet.java:146)
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1161)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1106)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doDelete(FrameworkServlet.java:936)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:596)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:72)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:165)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:201)
+	at com.sprint.mission.discodeit.Controller.UserControllerTest.deleteUser_fail_notFound(UserControllerTest.java:116)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:775)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:479)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:161)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:152)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:91)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:112)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:94)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:87)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:216)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:212)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:137)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:201)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:170)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:94)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:59)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:142)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$1(InterceptingLauncher.java:39)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:38)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:124)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:99)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:94)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:63)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:92)
+	at jdk.proxy1/jdk.proxy1.$Proxy4.stop(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker$3.run(TestWorker.java:200)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:132)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
+	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:122)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:72)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+26-03-31 11:52:38.543 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+26-03-31 11:52:38.744 [Test worker] INFO  c.s.m.d.C.UserControllerTest - Starting UserControllerTest using Java 17.0.15 with PID 24036 (started by ASUS in C:\Users\ASUS\Desktop\dev\web\codeit_sprint_bootcamp\sprint-mission\9-sprint-mission\discodeit)
+26-03-31 11:52:38.747 [Test worker] INFO  c.s.m.d.C.UserControllerTest - The following 1 profile is active: "dev"
+26-03-31 11:52:45.566 [Test worker] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+26-03-31 11:52:48.096 [Test worker] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+26-03-31 11:52:48.097 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+26-03-31 11:52:48.102 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 5 ms
+26-03-31 11:52:48.323 [Test worker] INFO  c.s.m.d.C.UserControllerTest - Started UserControllerTest in 11.099 seconds (process running for 14.244)

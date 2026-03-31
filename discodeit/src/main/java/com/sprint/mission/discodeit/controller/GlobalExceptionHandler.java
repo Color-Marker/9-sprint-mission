@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(UserNotFoundException.class)
-  public ResponseEntity<ErrorResponse> handleUserNotFoundException(DuplicateNameException e) {
+  public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
     return ResponseEntity
         .status(HttpStatus.NOT_FOUND.value())
         .body(new ErrorResponse(
