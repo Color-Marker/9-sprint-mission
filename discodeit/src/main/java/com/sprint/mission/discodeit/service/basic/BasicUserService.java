@@ -43,11 +43,11 @@ public class BasicUserService implements UserService {
     String email = userCreateRequest.email();
 
     if (userRepository.existsByEmail(email)) {
-      log.warn("유저 생성 - 이메일 {} 은 이미 존재합니다.", email);
+      log.warn("유저 생성 실패 - 이메일 {} 은 이미 존재합니다.", email);
       throw new DuplicateEmailException(email);
     }
     if (userRepository.existsByUsername(username)) {
-      log.warn("유저 생성 - 이름 {} 은 이미 존재합니다.", username);
+      log.warn("유저 생성 실패 - 이름 {} 은 이미 존재합니다.", username);
       throw new DuplicateNameException(username);
     }
 
