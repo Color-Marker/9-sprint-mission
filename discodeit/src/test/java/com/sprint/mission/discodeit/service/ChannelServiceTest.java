@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.never;
 
+import com.sprint.mission.discodeit.dto.data.ChannelDto;
 import com.sprint.mission.discodeit.dto.request.PrivateChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.request.PublicChannelCreateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
@@ -153,5 +154,30 @@ public class ChannelServiceTest {
     then(messageRepository).shouldHaveNoInteractions();
     then(readStatusRepository).shouldHaveNoInteractions();
     then(channelRepository).should(never()).deleteById(any(UUID.class));
+  }
+
+  @Test
+  @DisplayName("채널 검색 성공 테스트")
+  void findChannelSuccessTest() {
+    UUID channelId = UUID.randomUUID();
+    Channel channel = Channel.builder()
+        .id(channelId)
+        .type(ChannelType.PUBLIC).name("test").description("test").build();
+    given(channelRepository.findById(channelId)).willReturn(Optional.of(channel));
+    given(channelRepository.findById(channelId)).willReturn(Optional.of(channel));
+    given(channelMapper.toDto(channel)).willReturn(
+        new ChannelDto(channelId, ChannelType.PUBLIC, "test", "test", List.of(), null));
+    channelService.find(channelId);
+    then(channelRepository).should().findById(channelId);
+  }
+
+  @Test
+  @DisplayName("채널 검색 실패 테스트 - 존재하지 않는 채널")
+  void findChannelFailTest() {
+    UUID channelId = UUID.randomUUID();
+    given(channelRepository.findById(channelId)).willReturn(Optional.empty());
+    assertThrows(ChannelNotFoundException.class, () -> {
+      channelService.find(channelId);
+    });
   }
 }

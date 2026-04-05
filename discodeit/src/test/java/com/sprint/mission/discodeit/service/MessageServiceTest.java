@@ -217,4 +217,29 @@ public class MessageServiceTest {
     then(messageRepository).should().existsById(messageId);
     then(messageRepository).should(never()).deleteById(any(UUID.class));
   }
+
+  // MessageServiceTest에 추가
+  @Test
+  @DisplayName("메시지 검색 성공 테스트")
+  void findMessageSuccessTest() {
+    UUID messageId = UUID.randomUUID();
+    Message message = Message.builder()
+        .id(messageId)
+        .content("내용").build();
+    given(messageRepository.findWithChannelAuthorAttachmentById(messageId))
+        .willReturn(Optional.of(message));
+    Message result = messageService.find(messageId);
+    assertEquals(message, result);
+  }
+
+  @Test
+  @DisplayName("메시지 검색 실패 테스트 - 존재하지 않는 메시지")
+  void findMessageFailTest() {
+    UUID messageId = UUID.randomUUID();
+    given(messageRepository.findWithChannelAuthorAttachmentById(messageId)).willReturn(
+        Optional.empty());
+    assertThrows(MessageNotFoundException.class, () -> {
+      messageService.find(messageId);
+    });
+  }
 }

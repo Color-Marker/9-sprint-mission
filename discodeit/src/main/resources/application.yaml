@@ -9,6 +9,13 @@ discodeit:
       max-request-size: 10MB
 
 spring:
+  application:
+    name: discodeit
+  boot:
+    admin:
+      client:
+        instance:
+          name: discodeit
   profiles:
     active: dev # 일단 dev yaml 설정으로 기본 실행되게 설정
 

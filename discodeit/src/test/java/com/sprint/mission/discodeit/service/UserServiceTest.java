@@ -269,4 +269,28 @@ public class UserServiceTest {
     then(userRepository).should().existsById(userId);
     then(userRepository).should(never()).deleteById(any(UUID.class));
   }
+
+  @Test
+  @DisplayName("유저 검색 성공 테스트")
+  void findSuccessTest() {
+    UUID userId = UUID.randomUUID();
+    User user = User.builder()
+        .id(userId)
+        .username("test").email("test@test.com").password("test").build();
+    UserDto expectedDto = new UserDto(userId, "test", "test@test.com", null, true);
+    given(userRepository.findWithProfileAndStatusById(userId)).willReturn(Optional.of(user));
+    given(userMapper.toDto(user)).willReturn(expectedDto);
+    UserDto result = userService.find(userId);
+    assertEquals(expectedDto, result);
+  }
+
+  @Test
+  @DisplayName("유저 검색 실패 테스트 - 존재하지 않는 유저")
+  void findUserFailTest() {
+    UUID userId = UUID.randomUUID();
+    given(userRepository.findWithProfileAndStatusById(userId)).willReturn(Optional.empty());
+    assertThrows(UserNotFoundException.class, () -> {
+      userService.find(userId);
+    });
+  }
 }
