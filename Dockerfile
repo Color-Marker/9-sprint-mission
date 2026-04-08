@@ -3,13 +3,20 @@ FROM amazoncorretto:17 AS builder
 
 WORKDIR /app
 
-COPY discodeit/ .
+COPY discodeit/gradlew .
+COPY discodeit/gradle gradle
+COPY discodeit/build.gradle .
+COPY discodeit/settings.gradle .
+
 
 RUN chmod +x ./gradlew
-RUN ./gradlew clean build -x test
+RUN ./gradlew dependencies --no-daemon
+
+COPY discodeit/ .
+RUN ./gradlew clean build -x test --no-daemon
 
 # 2단계 러닝 환경
-FROM amazoncorretto:17
+FROM amazoncorretto:17-alpine
 
 WORKDIR /app
 
