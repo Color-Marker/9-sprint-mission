@@ -4,6 +4,5 @@
 .idea
 .logs/
 *.log
-storage/
 .env
 discodeit.env
