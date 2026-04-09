@@ -1,0 +1,39 @@
+discodeit:
+  storage:
+    type: local
+    local:
+      root-path: ./test-storage
+aws:
+  credentials:
+    access-key: asdf
+    secret-key: asdf
+  s3:
+    region: ap-northeast-2
+    bucket: asdf
+
+spring:
+  sql:
+    init:
+      mode: never
+
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        default_batch_fetch_size: 50
+        format_sql: true
+        highlight_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace

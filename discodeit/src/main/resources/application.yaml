@@ -1,0 +1,72 @@
+server:
+  port: 80
+
+discodeit:
+  storage:
+    type: ${STORAGE_TYPE:local}  # local | s3 (기본값: local)
+    local:
+      root-path: ${STORAGE_LOCAL_ROOT_PATH:.discodeit/storage}
+    s3:
+      access-key: ${AWS_S3_ACCESS_KEY}
+      secret-key: ${AWS_S3_SECRET_KEY}
+      region: ${AWS_S3_REGION}
+      bucket: ${AWS_S3_BUCKET}
+      presigned-url-expiration: ${AWS_S3_PRESIGNED_URL_EXPIRATION:PT10M} # (기본값: 10분)
+  servlet:
+    multipart:
+      max-file-size: 10MB       # 개별 파일 당 최대 용량 임시 설정
+      max-request-size: 10MB
+
+spring:
+  application:
+    name: discodeit
+  boot:
+    admin:
+      client:
+        instance:
+          name: discodeit
+
+  jpa:
+    open-in-view: false
+    show-sql: false
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        default_batch_fetch_size: 50 # 추가함.
+        # 메시지 레포에서 entitygraph로다가 attachments도 들고오니까
+        # 쿼리가 엄청 길어지길래 다른 방법 찾아보다가 batch 쓰는 방식으로 접근해 봄.
+        # pageable 사이즈랑 동일하게 50으로 설정함.
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, loggers
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: Discodeit
+    version: 1.7.0
+    java-version: 17
+    spring-boot-version: 3.4.0
+  config:
+    datasource:
+      url: ${spring.datasource.url}
+      driver-class-name: ${spring.datasource.driver-class-name}
+    jpa:
+      ddl-auto: ${spring.jpa.hibernate.ddl-auto}
+    storage:
+      type: ${discodeit.storage.type}
+      path: ${discodeit.storage.local.root-path}
+    multipart:
+      max-file-size: ${discodeit.servlet.multipart.max-file-size}
+      max-request-size: ${discodeit.servlet.multipart.max-request-size}

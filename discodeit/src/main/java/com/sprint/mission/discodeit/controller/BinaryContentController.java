@@ -1,0 +1,64 @@
+package com.sprint.mission.discodeit.controller;
+
+import com.sprint.mission.discodeit.dto.data.BinaryContentDto;
+import com.sprint.mission.discodeit.entity.BinaryContent;
+import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
+import com.sprint.mission.discodeit.service.BinaryContentService;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.UUID;
+import org.springframework.web.bind.annotation.RestController;
+
+@Slf4j
+@Tag(name = "Binary Content API")
+@RestController
+@RequestMapping("/api/binaryContents")
+@RequiredArgsConstructor
+public class BinaryContentController {
+
+  private final BinaryContentService binaryContentService;
+  private final BinaryContentStorage binaryContentStorage;
+
+  @Operation(summary = "다중 파일 출력")
+  @GetMapping("")
+  public ResponseEntity<List<BinaryContentDto>> findSome(
+      @Parameter(description = "다중 파일 ID 정보")
+      @Valid @RequestParam List<UUID> binaryContentId
+  ) {
+    List<BinaryContentDto> fileList = binaryContentService.findAllByIdIn(binaryContentId);
+    return ResponseEntity.ok(fileList);
+  }
+
+  @Operation(summary = "단일 파일 출력")
+  @GetMapping("/{binaryContentId}")
+  public ResponseEntity<BinaryContentDto> find(
+      @Parameter(description = "파일 ID")
+      @Valid @PathVariable UUID binaryContentId
+  ) {
+    BinaryContentDto file = binaryContentService.find(binaryContentId);
+    return ResponseEntity.ok(file);
+  }
+
+  @Operation(summary = "파일 다운로드")
+  @GetMapping("/{binaryContentId}/download")
+  public ResponseEntity<?> download(
+      @Parameter(description = "파일 ID")
+      @Valid @PathVariable UUID binaryContentId
+  ) {
+    log.info("파일 다운로드 요청 - 요청 파일 ID: {}", binaryContentId);
+    BinaryContentDto binaryContent = binaryContentService.find(binaryContentId);
+    return binaryContentStorage.download(binaryContent);
+  }
+}
