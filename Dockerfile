@@ -19,7 +19,8 @@ RUN ./gradlew clean build -x test --no-daemon
 FROM amazoncorretto:17-alpine
 
 WORKDIR /app
-
+ARG PROJECT_NAME
+ARG PROJECT_VERSION
 ENV PROJECT_NAME=${PROJECT_NAME}
 ENV PROJECT_VERSION=${PROJECT_VERSION}
 ENV JVM_OPTS=""
