@@ -66,7 +66,9 @@ class MessageControllerTest {
             """.formatted(channelId, authorId).getBytes()
     );
 
-    mockMvc.perform(multipart("/api/messages").file(messagePart))
+    mockMvc.perform(multipart("/api/messages")
+            .file(messagePart)
+            .file(new MockMultipartFile("attachments", new byte[0])))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(messageId.toString()))
         .andExpect(jsonPath("$.content").value("hello"))

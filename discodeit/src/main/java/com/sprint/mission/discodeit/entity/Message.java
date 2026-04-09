@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -51,6 +52,7 @@ public class Message extends BaseUpdatableEntity {
       joinColumns = @JoinColumn(name = "message_id"),
       inverseJoinColumns = @JoinColumn(name = "attachment_id")
   )
+  @Builder.Default
   private List<BinaryContent> attachments = new ArrayList<>();
 
   public void update(String newContent) {

@@ -84,6 +84,9 @@ public class MessageServiceTest {
         .id(authorId)
         .username("test").email("test@test.com").password("test").profile(profile).build();
     List<BinaryContentCreateRequest> fileRequests = List.of(fileRequest);
+    Message savedMessage = Message.builder().id(UUID.randomUUID()).content("안녕!").channel(channel)
+        .author(user).build();
+
     given(channelRepository.existsById(channelId)).willReturn(true);
     given(userRepository.existsById(authorId)).willReturn(true);
     BinaryContent mockFile = BinaryContent.builder().id(UUID.randomUUID()).build();
@@ -91,6 +94,7 @@ public class MessageServiceTest {
     given(channelRepository.findById(channelId)).willReturn(Optional.of(channel));
     given(userRepository.findById(authorId)).willReturn(Optional.of(user));
     given(binaryContentRepository.findAllByIdIn(any())).willReturn(List.of(mockFile));
+    given(messageRepository.save(any(Message.class))).willReturn(savedMessage);
     messageService.create(request, fileRequests);
     then(binaryContentRepository).should().save(any(BinaryContent.class));
     then(binaryContentStorage).should().put(eq(mockFile.getId()), any(byte[].class));
@@ -176,6 +180,9 @@ public class MessageServiceTest {
     given(messageRepository.findWithChannelAuthorAttachmentById(messageId)).willReturn(
         Optional.of(message));
     given(messageRepository.save(any(Message.class))).willReturn(message);
+    given(messageMapper.toDto(any(Message.class))).willReturn(
+        new MessageDto(messageId, Instant.now(), Instant.now(), "수정 내용", null, null, List.of())
+    );
     MessageDto result = messageService.update(messageId, request);
     MessageDto expect = messageMapper.toDto(updateMessage);
     assertEquals(result, expect);
