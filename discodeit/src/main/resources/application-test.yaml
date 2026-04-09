@@ -5,9 +5,6 @@ discodeit:
       root-path: ./test-storage
 
 spring:
-  config:
-    activate:
-      on-profile: test
   sql:
     init:
       mode: never

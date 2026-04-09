@@ -25,8 +25,6 @@ spring:
       client:
         instance:
           name: discodeit
-  profiles:
-    active: prod # 일단 dev yaml 설정으로 기본 실행되게 설정
 
   jpa:
     open-in-view: false
