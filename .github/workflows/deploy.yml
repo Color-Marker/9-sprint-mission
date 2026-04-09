@@ -40,6 +40,10 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           SHORT_SHA=$(echo $IMAGE_TAG | cut -c1-7)
-          docker build -t $REPOSITORY_URI:latest -t $REPOSITORY_URI:$SHORT_SHA .
+          docker build \
+            --build-arg PROJECT_NAME=${{ vars.PROJECT_NAME }} \
+            --build-arg PROJECT_VERSION=${{ vars.PROJECT_VERSION }} \
+            -t $REPOSITORY_URI:latest \
+            -t $REPOSITORY_URI:$SHORT_SHA .
           docker push $REPOSITORY_URI:latest
           docker push $REPOSITORY_URI:$SHORT_SHA
