@@ -3,6 +3,12 @@ discodeit:
     type: local
     local:
       root-path: ./test-storage
+    s3:
+      access-key: asdf
+      secret-key: asdf
+      region: ap-northeast-2
+      bucket: asdf
+      presigned-url-expiration: PT10M
 
 spring:
   sql:
