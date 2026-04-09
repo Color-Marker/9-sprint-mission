@@ -35,7 +35,7 @@ jobs:
       - name: Docker build
         env:
           REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          REGISTRY_ALIAS: ${{ vars.ECR_REPOSITORY_URI }}
+          REPOSITORY_URI: ${{ vars.ECR_REPOSITORY_URI }}
           REPOSITORY: discodeit
           IMAGE_TAG: ${{ github.sha }}
         run: |
