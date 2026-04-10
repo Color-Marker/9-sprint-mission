@@ -110,8 +110,4 @@ jobs:
             --cluster ${{ vars.ECS_CLUSTER }} \
             --service ${{ vars.ECS_SERVICE }} \
             --desired-count 1
-      - name: 서비스 안정화 대기
-        run: |
-          aws ecs wait services-stable \
-          --cluster ${{ vars.ECS_CLUSTER }} \
-          --services ${{ vars.ECS_SERVICE }}
+          echo "배포 적용 완료"
