@@ -102,6 +102,8 @@ jobs:
 
       - name: 새로운 task definition ecs 서비스에 deploy
         run: |
+          echo "Deploying with Task Def: ${{ steps.update-task-def.outputs.task-def-arn }}"
+          
           aws ecs update-service \
             --cluster ${{ vars.ECS_CLUSTER }} \
             --service ${{ vars.ECS_SERVICE }} \
