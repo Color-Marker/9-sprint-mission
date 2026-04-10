@@ -9,9 +9,6 @@ jobs:
     name: docker 이미지 빌드해서 ecr로 push
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -40,7 +37,9 @@ jobs:
           docker build \
             --build-arg PROJECT_NAME=${{ vars.PROJECT_NAME }} \
             --build-arg PROJECT_VERSION=${{ vars.PROJECT_VERSION }} \
+            -t $REPOSITORY_URI:latest .
             -t $REPOSITORY_URI:$SHORT_SHA .
+          docker push $REPOSITORY_URI:$latest
           docker push $REPOSITORY_URI:$SHORT_SHA
 
   deploy:
@@ -104,10 +103,13 @@ jobs:
           aws ecs update-service \
           --cluster ${{ vars.ECS_CLUSTER }} \
           --service ${{ vars.ECS_SERVICE }} \
-          --task-definition ${{ steps.update-task-def.outputs.task-def-arn }} \
-          --desired-count 1 \
-          --force-new-deployment
-
+          --task-definition ${{ steps.update-task-def.outputs.task-def-arn }}
+      - name: 서비스 다시 시작
+        run: |
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER }} \
+            --service ${{ vars.ECS_SERVICE }} \
+            --desired-count 1
       - name: 서비스 안정화 대기
         run: |
           aws ecs wait services-stable \
