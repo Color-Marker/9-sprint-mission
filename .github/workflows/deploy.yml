@@ -100,7 +100,7 @@ jobs:
 
           echo "task-def-arn=$NEW_TASK_DEF_ARN" >> $GITHUB_OUTPUT
 
-      - name: 새로운 task definition ecs 서비스에 deploy
+      - name: 새로운 task definition으로 교체 되도록 설정
         run: |
           echo "Deploying with Task Def: ${{ steps.update-task-def.outputs.task-def-arn }}"
           
@@ -108,9 +108,17 @@ jobs:
             --cluster ${{ vars.ECS_CLUSTER }} \
             --service ${{ vars.ECS_SERVICE }} \
             --task-definition ${{ steps.update-task-def.outputs.task-def-arn }} \
-            --desired-count 1 \
-            --force-new-deployment
+          
+          sleep 5
+
+      - name: 서비스 개수 올려서 배포 시작
+        run: |
           echo "Deploy 진행"
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER }} \
+            --service ${{ vars.ECS_SERVICE }} \
+            --desired-count 1
+          echo "안정화 확인"
           aws ecs wait services-stable \
             --cluster ${{ vars.ECS_CLUSTER }} \
             --services ${{ vars.ECS_SERVICE }}
