@@ -39,7 +39,7 @@ jobs:
             --build-arg PROJECT_VERSION=${{ vars.PROJECT_VERSION }} \
             -t $REPOSITORY_URI:latest \
             -t $REPOSITORY_URI:$SHORT_SHA .
-          docker push $REPOSITORY_URI:$latest
+          docker push $REPOSITORY_URI:latest
           docker push $REPOSITORY_URI:$SHORT_SHA
 
   deploy:
