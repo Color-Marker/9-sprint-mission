@@ -106,7 +106,7 @@ jobs:
             --cluster ${{ vars.ECS_CLUSTER }} \
             --service ${{ vars.ECS_SERVICE }} \
             --task-definition ${{ steps.update-task-def.outputs.task-def-arn }} \
-            --desired-count 1
+            --desired-count 1 \
             --force-new-deployment
           echo "Deploy 진행"
           aws ecs wait services-stable \
