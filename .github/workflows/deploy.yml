@@ -58,6 +58,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      - name: 작동 중인 ecs 정지
+        run: |
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER }} \
+            --service ${{ vars.ECS_SERVICE }} \
+            --desired-count 0
+          aws ecs wait services-stable \
+            --cluster ${{ vars.ECS_CLUSTER }} \
+            --services ${{ vars.ECS_SERVICE }}
+
       - name: ecs task 정의 업데이트
         id: update-task-def
         env:
@@ -84,18 +94,6 @@ jobs:
             --output text)
 
           echo "task-def-arn=$NEW_TASK_DEF_ARN" >> $GITHUB_OUTPUT
-
-      - name: 작동 중인 ecs 정지
-        run: |
-          aws ecs update-service \
-            --cluster ${{ vars.ECS_CLUSTER }} \
-            --service ${{ vars.ECS_SERVICE }} \
-            --desired-count 0
-          
-          aws ecs wait services-stable \
-            --cluster ${{ vars.ECS_CLUSTER }} \
-            --services ${{ vars.ECS_SERVICE }} \
-            --waiter-config '{"Delay": 15, "MaxAttempts": 120}'
 
       - name: 새로운 task definition ecs 서비스에 deploy
         run: |
