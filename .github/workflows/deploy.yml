@@ -64,9 +64,14 @@ jobs:
             --cluster ${{ vars.ECS_CLUSTER }} \
             --service ${{ vars.ECS_SERVICE }} \
             --desired-count 0
+          
+          echo "실행 중인 ecs 작동 정지 대기"
+          
           aws ecs wait services-stable \
             --cluster ${{ vars.ECS_CLUSTER }} \
             --services ${{ vars.ECS_SERVICE }}
+          
+          echo "ecs 작동 정지 완료"
 
       - name: ecs task 정의 업데이트
         id: update-task-def
@@ -102,4 +107,8 @@ jobs:
             --service ${{ vars.ECS_SERVICE }} \
             --task-definition ${{ steps.update-task-def.outputs.task-def-arn }} \
             --desired-count 1
-          echo "Deploy Complete"
+          echo "Deploy 진행"
+          aws ecs wait services-stable \
+            --cluster ${{ vars.ECS_CLUSTER }} \
+            --services ${{ vars.ECS_SERVICE }}
+          echo "최종 완료"
