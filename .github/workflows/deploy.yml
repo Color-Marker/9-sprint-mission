@@ -13,11 +13,9 @@ jobs:
       contents: read
 
     steps:
-      # 1) 소스 체크아웃
       - name: Checkout
         uses: actions/checkout@v3
 
-      # 2) AWS 자격 증명 설정 - public ecr인데.
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -25,14 +23,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: us-east-1
 
-      # 3) ECR 로그인 이긴 한데 public이라 단순화해도 될 듯
       - name: ECR Login
         id: login-ecr-public
         uses: aws-actions/amazon-ecr-login@v2
         with:
           registry-type: public
 
-      # 4) Docker 빌드
       - name: Docker build
         env:
           REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
@@ -69,24 +65,24 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           SHORT_SHA=$(echo $IMAGE_TAG | cut -c1-7)
-          
+
           TASK_DEFINITION=$(aws ecs describe-task-definition \
             --task-definition ${{ vars.ECS_TASK_DEFINITION }} \
             --query 'taskDefinition' \
             --output json)
-          
+
           NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq \
             --arg IMAGE "$REPOSITORY_URI:$SHORT_SHA" \
             '.containerDefinitions[0].image = $IMAGE
             | del(.taskDefinitionArn, .revision, .status,
                   .requiresAttributes, .compatibilities,
                   .registeredAt, .registeredBy)')
-          
+
           NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
             --cli-input-json "$NEW_TASK_DEFINITION" \
             --query 'taskDefinition.taskDefinitionArn' \
             --output text)
-          
+
           echo "task-def-arn=$NEW_TASK_DEF_ARN" >> $GITHUB_OUTPUT
 
       - name: 작동 중인 ecs 정지
@@ -96,7 +92,10 @@ jobs:
             --service ${{ vars.ECS_SERVICE }} \
             --desired-count 0
           
-            sleep 10
+          aws ecs wait services-stable \
+            --cluster ${{ vars.ECS_CLUSTER }} \
+            --services ${{ vars.ECS_SERVICE }} \
+            --waiter-config '{"Delay": 15, "MaxAttempts": 120}'
 
       - name: 새로운 task definition ecs 서비스에 deploy
         run: |
@@ -105,10 +104,4 @@ jobs:
             --service ${{ vars.ECS_SERVICE }} \
             --task-definition ${{ steps.update-task-def.outputs.task-def-arn }} \
             --desired-count 1
-          
-          aws ecs wait services-stable \
-            --cluster ${{ vars.ECS_CLUSTER }} \
-            --services ${{ vars.ECS_SERVICE }}
           echo "Deploy Complete"
-          
-          
