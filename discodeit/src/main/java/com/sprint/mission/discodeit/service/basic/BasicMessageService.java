@@ -93,7 +93,7 @@ public class BasicMessageService implements MessageService {
     );
     Message result = messageRepository.save(message);
     log.info("메시지 저장 완료 - 메시지: {}", result);
-    return messageMapper.toDto(message);
+    return messageMapper.toDto(result);
   }
 
   @Transactional(readOnly = true)

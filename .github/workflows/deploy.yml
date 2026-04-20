@@ -1,0 +1,113 @@
+name: discodeit-deploy
+
+on:
+  push:
+    branches: [ "release" ]
+
+jobs:
+  build-and-push:
+    name: docker 이미지 빌드해서 ecr로 push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1
+
+      - name: ECR Login
+        id: login-ecr-public
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: public
+
+      - name: Docker build
+        env:
+          REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
+          REPOSITORY_URI: ${{ vars.ECR_REPOSITORY_URI }}
+          REPOSITORY: discodeit
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          SHORT_SHA=$(echo $IMAGE_TAG | cut -c1-7)
+          docker build \
+            --build-arg PROJECT_NAME=${{ vars.PROJECT_NAME }} \
+            --build-arg PROJECT_VERSION=${{ vars.PROJECT_VERSION }} \
+            -t $REPOSITORY_URI:latest \
+            -t $REPOSITORY_URI:$SHORT_SHA .
+          docker push $REPOSITORY_URI:latest
+          docker push $REPOSITORY_URI:$SHORT_SHA
+
+  deploy:
+    name: ecs 업데이트
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: aws 인증
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: 작동 중인 기존 ecs 정지
+        run: |
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER }} \
+            --service ${{ vars.ECS_SERVICE }} \
+            --desired-count 0
+          
+          echo "실행 중인 ecs 작동 정지 대기"
+          
+          aws ecs wait services-stable \
+            --cluster ${{ vars.ECS_CLUSTER }} \
+            --services ${{ vars.ECS_SERVICE }}
+          
+          echo "ecs 작동 정지 완료"
+
+      - name: ecs task 정의 업데이트
+        id: update-task-def
+        env:
+          REPOSITORY_URI: ${{ vars.ECR_REPOSITORY_URI }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          SHORT_SHA=$(echo $IMAGE_TAG | cut -c1-7)
+
+          TASK_DEFINITION=$(aws ecs describe-task-definition \
+            --task-definition ${{ vars.ECS_TASK_DEFINITION }} \
+            --query 'taskDefinition' \
+            --output json)
+
+          NEW_TASK_DEFINITION=$(echo "$TASK_DEFINITION" | jq \
+            --arg IMAGE "$REPOSITORY_URI:$SHORT_SHA" \
+            '.containerDefinitions[0].image = $IMAGE
+            | del(.taskDefinitionArn, .revision, .status,
+                  .requiresAttributes, .compatibilities,
+                  .registeredAt, .registeredBy,
+                  .deregisteredAt, .deregisteredBy)')
+          
+          NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json "$NEW_TASK_DEFINITION" \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+
+          echo "task-def-arn=$NEW_TASK_DEF_ARN" >> $GITHUB_OUTPUT
+
+      - name: 새 태스크 정의로 서비스 업데이트
+        run: |
+          aws ecs update-service \
+          --cluster ${{ vars.ECS_CLUSTER }} \
+          --service ${{ vars.ECS_SERVICE }} \
+          --task-definition ${{ steps.update-task-def.outputs.task-def-arn }}
+      - name: 서비스 다시 시작
+        run: |
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER }} \
+            --service ${{ vars.ECS_SERVICE }} \
+            --desired-count 1
+          echo "배포 적용 완료"

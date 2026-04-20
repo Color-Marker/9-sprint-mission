@@ -27,11 +27,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(MessageController.class)
 @Import(GlobalExceptionHandler.class)
+@ActiveProfiles("test")
 class MessageControllerTest {
 
   @Autowired
@@ -64,7 +66,9 @@ class MessageControllerTest {
             """.formatted(channelId, authorId).getBytes()
     );
 
-    mockMvc.perform(multipart("/api/messages").file(messagePart))
+    mockMvc.perform(multipart("/api/messages")
+            .file(messagePart)
+            .file(new MockMultipartFile("attachments", new byte[0])))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(messageId.toString()))
         .andExpect(jsonPath("$.content").value("hello"))

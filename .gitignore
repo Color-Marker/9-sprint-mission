@@ -2,3 +2,7 @@
 **/.discodeit/
 **/.gradle/
 .idea
+.logs/
+*.log
+.env
+discodeit.env

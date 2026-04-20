@@ -3,11 +3,15 @@ discodeit:
     type: local
     local:
       root-path: ./test-storage
+aws:
+  credentials:
+    access-key: asdf
+    secret-key: asdf
+  s3:
+    region: ap-northeast-2
+    bucket: asdf
 
 spring:
-  config:
-    activate:
-      on-profile: test
   sql:
     init:
       mode: never

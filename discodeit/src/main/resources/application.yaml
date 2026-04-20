@@ -1,8 +1,17 @@
+server:
+  port: 80
+
 discodeit:
   storage:
-    type: local
+    type: ${STORAGE_TYPE:local}  # local | s3 (기본값: local)
     local:
-      root-path: ./storage
+      root-path: ${STORAGE_LOCAL_ROOT_PATH:.discodeit/storage}
+    s3:
+      access-key: ${AWS_S3_ACCESS_KEY}
+      secret-key: ${AWS_S3_SECRET_KEY}
+      region: ${AWS_S3_REGION}
+      bucket: ${AWS_S3_BUCKET}
+      presigned-url-expiration: ${AWS_S3_PRESIGNED_URL_EXPIRATION:PT10M} # (기본값: 10분)
   servlet:
     multipart:
       max-file-size: 10MB       # 개별 파일 당 최대 용량 임시 설정
@@ -16,8 +25,6 @@ spring:
       client:
         instance:
           name: discodeit
-  profiles:
-    active: dev # 일단 dev yaml 설정으로 기본 실행되게 설정
 
   jpa:
     open-in-view: false
