@@ -5,6 +5,7 @@ import com.sprint.mission.discodeit.handler.LoginSuccessHandler;
 import com.sprint.mission.discodeit.handler.SpaCsrfTokenRequestHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,7 +23,13 @@ public class SecurityConfig {
       throws Exception {
     http
         .authorizeHttpRequests(authz -> authz
-            .requestMatchers("/api/auth/**").permitAll()
+            // 프론트 코드 및 기본 페이지 허용
+            .requestMatchers("/", "/index.html", "/assets/**").permitAll()
+            // 기본 페이지 접근 시 /api/auth/me로 요청 보냄 -> 여기서 401로 쿠키 없으면 쳐내서
+            // 프론트 딴에서 로그인 페이지 작동되게 함.
+            .requestMatchers("/api/auth/me").permitAll()
+            // 회원 가입 요청 허용
+            .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
             .anyRequest().authenticated()
         )
         .csrf(csrf -> csrf
