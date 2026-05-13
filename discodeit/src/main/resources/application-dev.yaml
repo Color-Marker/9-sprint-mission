@@ -7,8 +7,7 @@ spring:
       path: /h2-console
   sql:
     init:
-      mode: always
-      schema-locations: classpath:schema.sql
+      mode: never
 
   datasource:
     url: jdbc:h2:mem:discodeit_db;MODE=PostgreSQL
@@ -17,9 +16,8 @@ spring:
     driver-class-name: org.h2.Driver
 
   jpa:
-    defer-datasource-initialization: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
