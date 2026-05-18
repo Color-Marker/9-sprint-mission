@@ -25,6 +25,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "users")
 @Getter
 @SuperBuilder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseUpdatableEntity {
 
@@ -37,6 +38,9 @@ public class User extends BaseUpdatableEntity {
   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   @JoinColumn(name = "profile_id", columnDefinition = "uuid")
   private BinaryContent profile;
+  @Setter(AccessLevel.PROTECTED)
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private UserStatus status;
   @Enumerated(EnumType.STRING)
   @Column(name = "role", nullable = false)
   private Role role;
