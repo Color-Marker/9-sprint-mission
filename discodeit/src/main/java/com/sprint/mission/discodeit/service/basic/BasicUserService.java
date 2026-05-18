@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class BasicUserService implements UserService {
 
   private final UserRepository userRepository;
@@ -40,7 +41,6 @@ public class BasicUserService implements UserService {
   private final BinaryContentStorage binaryContentStorage;
   private final PasswordEncoder passwordEncoder;
 
-  @Transactional
   @Override
   public UserDto create(UserCreateRequest userCreateRequest,
       Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
@@ -104,7 +104,6 @@ public class BasicUserService implements UserService {
         .toList();
   }
 
-  @Transactional
   @Override
   public UserDto update(UUID userId, UserUpdateRequest userUpdateRequest,
       Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
@@ -151,7 +150,6 @@ public class BasicUserService implements UserService {
     return userMapper.toDto(user);
   }
 
-  @Transactional
   @Override
   public void delete(UUID userId) {
     if (!userRepository.existsById(userId)) {
