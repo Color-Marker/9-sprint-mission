@@ -5,6 +5,7 @@ import com.sprint.mission.discodeit.dto.response.ErrorResponse;
 import com.sprint.mission.discodeit.handler.LoginFailureHandler;
 import com.sprint.mission.discodeit.handler.LoginSuccessHandler;
 import com.sprint.mission.discodeit.handler.SpaCsrfTokenRequestHandler;
+import com.sprint.mission.discodeit.service.basic.DiscodeitUserDetailsService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Instant;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http, SessionRegistry sessionRegistry,
       LoginSuccessHandler loginSuccessHandler,
-      LoginFailureHandler loginFailureHandler)
+      LoginFailureHandler loginFailureHandler, DiscodeitUserDetailsService userDetailsService)
       throws Exception {
     http
         .authorizeHttpRequests(authz -> authz
@@ -99,6 +100,10 @@ public class SecurityConfig {
                 .maximumSessions(1)
                 .sessionRegistry(sessionRegistry())
             ))
+        .rememberMe(re -> re
+            .rememberMeParameter("remember-me")
+            .userDetailsService(userDetailsService)
+        )
     ;
 
     return http.build();
