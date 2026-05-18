@@ -23,14 +23,12 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
   void deleteAllByChannelId(UUID channelId);
 
   @EntityGraph(attributePaths = {
-      "channel",
-      "author.status"
+      "channel"
   })
   Optional<Message> findWithChannelAuthorAttachmentById(UUID messageId);
 
   @EntityGraph(attributePaths = {
-      "channel",
-      "author.status"
+      "channel"
   })
   Slice<Message> findAllWithExtraByChannelId(UUID channelId, Pageable pageable);
 

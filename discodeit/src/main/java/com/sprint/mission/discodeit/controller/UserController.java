@@ -6,10 +6,7 @@ import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.dto.data.UserDto;
-import com.sprint.mission.discodeit.entity.UserStatus;
-import com.sprint.mission.discodeit.mapper.UserStatusMapper;
 import com.sprint.mission.discodeit.service.UserService;
-import com.sprint.mission.discodeit.service.UserStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +15,6 @@ import java.io.IOException;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +33,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class UserController {
 
   private final UserService userService;
-  private final UserStatusService userStatusService;
 
   @Operation(summary = "유저 생성")
   @PostMapping(
@@ -123,15 +118,5 @@ public class UserController {
     List<UserDto> allUsers = userService.findAll();
     return ResponseEntity.ok(allUsers);
   }
-
-  @Operation(summary = "유저 읽음 상태 업데이트")
-  @PatchMapping("/{userId}/userStatus")
-  public ResponseEntity<UserStatusDto> update(
-      @Parameter(description = "유저 ID")
-      @Valid @PathVariable UUID userId,
-      @Valid @RequestBody UserStatusUpdateRequest userStatusUpdateRequest
-  ) {
-    UserStatusDto userStatus = userStatusService.updateByUserId(userId, userStatusUpdateRequest);
-    return ResponseEntity.ok(userStatus);
-  }
+  
 }

@@ -21,13 +21,11 @@ public interface ReadStatusRepository extends JpaRepository<ReadStatus, UUID> {
   void deleteAllByChannelId(UUID channelId);
 
   @EntityGraph(attributePaths = {
-      "user.status",
       "channel"
   })
   Optional<ReadStatus> findWithExtraById(UUID readStatusId);
 
   @EntityGraph(attributePaths = {
-      "user.status",
       "channel"
   })
   List<ReadStatus> findAllWithExtraByUserId(UUID userId);

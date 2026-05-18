@@ -18,14 +18,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
   boolean existsByUsername(String username);
 
   @EntityGraph(attributePaths = {
-      "profile",
-      "status"
+      "profile"
   })
   List<User> findAllWithProfileAndStatusBy();
 
   @EntityGraph(attributePaths = {
-      "profile",
-      "status"
+      "profile"
   })
   Optional<User> findWithProfileAndStatusById(UUID userId);
 
