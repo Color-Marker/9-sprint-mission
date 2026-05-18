@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,6 +16,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
   @Bean
@@ -25,11 +27,14 @@ public class SecurityConfig {
         .authorizeHttpRequests(authz -> authz
             // 프론트 코드 및 기본 페이지 허용
             .requestMatchers("/", "/index.html", "/assets/**").permitAll()
-            // 기본 페이지 접근 시 /api/auth/me로 요청 보냄 -> 여기서 401로 쿠키 없으면 쳐내서
-            // 프론트 딴에서 로그인 페이지 작동되게 함.
-            .requestMatchers("/api/auth/me").permitAll()
+            .requestMatchers("/api/auth/role").hasRole("ADMIN")
+            .requestMatchers("/api/auth/**").permitAll()
             // 회원 가입 요청 허용
             .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+            // Swagger
+            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+            // Actuator
+            .requestMatchers("/actuator/**").permitAll()
             .anyRequest().authenticated()
         )
         .csrf(csrf -> csrf
@@ -46,6 +51,20 @@ public class SecurityConfig {
             .logoutUrl("/api/auth/logout")
             .logoutSuccessHandler(
                 new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT))
+        )
+        .exceptionHandling(ex -> ex
+            // 로그인 안 한 경우
+            .authenticationEntryPoint((request, response, authException) -> {
+              response.setStatus(HttpStatus.UNAUTHORIZED.value());
+              response.setContentType("application/json");
+              response.getWriter().write("{\"message\": \"인증이 필요합니다.\"}");
+            })
+            // 로그인은 했다 쳐도 권한이 안 되는 경우
+            .accessDeniedHandler((request, response, accessDeniedException) -> {
+              response.setStatus(HttpStatus.FORBIDDEN.value());
+              response.setContentType("application/json");
+              response.getWriter().write("{\"message\": \"접근 권한이 없습니다.\"}");
+            })
         );
 
     return http.build();

@@ -2,9 +2,11 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.request.UserRoleUpdateRequest;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
+import com.sprint.mission.discodeit.entity.Role;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.exception.user.DuplicateEmailException;
@@ -18,6 +20,7 @@ import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +75,9 @@ public class BasicUserService implements UserService {
         username,
         email,
         passwordEncoder.encode(password),
-        nullableProfile);
+        nullableProfile,
+        Role.USER
+    );
     Instant now = Instant.now();
     UserStatus userStatus = new UserStatus(user, now);
     User newUser = userRepository.save(user);
@@ -156,5 +161,14 @@ public class BasicUserService implements UserService {
 
     log.info("유저 삭제 진행 - 유저 ID: {}", userId);
     userRepository.deleteById(userId);
+  }
+
+  @Override
+  @PreAuthorize("hasRole('ADMIN')")
+  public UserDto updateRole(UserRoleUpdateRequest request) {
+    User user = userRepository.findById(request.userId())
+        .orElseThrow(() -> new UserNotFoundException(request.userId()));
+    user.updateRole(request.newRole());
+    return userMapper.toDto(user);
   }
 }
