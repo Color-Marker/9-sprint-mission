@@ -1,8 +1,13 @@
 package com.sprint.mission.discodeit.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sprint.mission.discodeit.dto.response.ErrorResponse;
 import com.sprint.mission.discodeit.handler.LoginFailureHandler;
 import com.sprint.mission.discodeit.handler.LoginSuccessHandler;
 import com.sprint.mission.discodeit.handler.SpaCsrfTokenRequestHandler;
+import java.time.Instant;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,7 +22,10 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+  private final ObjectMapper objectMapper;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http, LoginSuccessHandler loginSuccessHandler,
@@ -55,15 +63,30 @@ public class SecurityConfig {
         .exceptionHandling(ex -> ex
             // 로그인 안 한 경우
             .authenticationEntryPoint((request, response, authException) -> {
+              ErrorResponse errorResponse = new ErrorResponse(
+                  Instant.now(),
+                  "UNAUTHORIZED",
+                  "인증이 필요합니다.",
+                  Map.of("reason", authException.getMessage()),
+                  authException.getClass().getSimpleName(),
+                  HttpStatus.UNAUTHORIZED.value()
+              );
               response.setStatus(HttpStatus.UNAUTHORIZED.value());
-              response.setContentType("application/json");
-              response.getWriter().write("{\"message\": \"인증이 필요합니다.\"}");
+              response.setContentType("application/json;charset=UTF-8");
+              response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
             })
-            // 로그인은 했다 쳐도 권한이 안 되는 경우
             .accessDeniedHandler((request, response, accessDeniedException) -> {
+              ErrorResponse errorResponse = new ErrorResponse(
+                  Instant.now(),
+                  "FORBIDDEN",
+                  "접근 권한이 없습니다.",
+                  Map.of("reason", accessDeniedException.getMessage()),
+                  accessDeniedException.getClass().getSimpleName(),
+                  HttpStatus.FORBIDDEN.value()
+              );
               response.setStatus(HttpStatus.FORBIDDEN.value());
-              response.setContentType("application/json");
-              response.getWriter().write("{\"message\": \"접근 권한이 없습니다.\"}");
+              response.setContentType("application/json;charset=UTF-8");
+              response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
             })
         );
 
