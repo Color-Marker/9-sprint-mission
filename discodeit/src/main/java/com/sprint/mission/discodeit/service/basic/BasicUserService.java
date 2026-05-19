@@ -103,6 +103,7 @@ public class BasicUserService implements UserService {
         .toList();
   }
 
+  @PreAuthorize("#userId == authentication.principal.userDto.id or hasRole('ADMIN')")
   @Override
   public UserDto update(UUID userId, UserUpdateRequest userUpdateRequest,
       Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
@@ -149,6 +150,7 @@ public class BasicUserService implements UserService {
     return userMapper.toDto(user);
   }
 
+  @PreAuthorize("#userId == authentication.principal.userDto.id or hasRole('ADMIN')")
   @Override
   public void delete(UUID userId) {
     if (!userRepository.existsById(userId)) {
