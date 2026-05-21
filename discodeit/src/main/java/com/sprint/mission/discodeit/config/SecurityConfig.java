@@ -2,6 +2,8 @@ package com.sprint.mission.discodeit.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.dto.response.ErrorResponse;
+import com.sprint.mission.discodeit.handler.JwtLoginSuccessHandler;
+import com.sprint.mission.discodeit.handler.JwtLogoutHandler;
 import com.sprint.mission.discodeit.handler.LoginFailureHandler;
 import com.sprint.mission.discodeit.handler.LoginSuccessHandler;
 import com.sprint.mission.discodeit.handler.SpaCsrfTokenRequestHandler;
@@ -17,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.SecurityFilterChain;
@@ -34,7 +37,7 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http, SessionRegistry sessionRegistry,
-      LoginSuccessHandler loginSuccessHandler,
+      JwtLoginSuccessHandler jwtLoginSuccessHandler, JwtLogoutHandler jwtLogoutHandler,
       LoginFailureHandler loginFailureHandler, DiscodeitUserDetailsService userDetailsService)
       throws Exception {
     http
@@ -58,14 +61,14 @@ public class SecurityConfig {
         //.formLogin(Customizer.withDefaults());
         .formLogin(login -> login
             .loginProcessingUrl("/api/auth/login")
-            .successHandler(loginSuccessHandler)
+            .successHandler(jwtLoginSuccessHandler)
             .failureHandler(loginFailureHandler)
         )
         .logout(logout -> logout
             .logoutUrl("/api/auth/logout")
+            .addLogoutHandler(jwtLogoutHandler)
             .logoutSuccessHandler(
-                new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT))
-        )
+                new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT)))
         .exceptionHandling(ex -> ex
             // 로그인 안 한 경우
             .authenticationEntryPoint((request, response, authException) -> {
@@ -96,13 +99,7 @@ public class SecurityConfig {
             })
         )
         .sessionManagement(management -> management
-            .sessionConcurrency(concurrency -> concurrency
-                .maximumSessions(1)
-                .sessionRegistry(sessionRegistry())
-            ))
-        .rememberMe(re -> re
-            .rememberMeParameter("remember-me")
-            .userDetailsService(userDetailsService)
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         )
     ;
 
