@@ -23,6 +23,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -38,7 +39,8 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http, SessionRegistry sessionRegistry,
       JwtLoginSuccessHandler jwtLoginSuccessHandler, JwtLogoutHandler jwtLogoutHandler,
-      LoginFailureHandler loginFailureHandler, DiscodeitUserDetailsService userDetailsService)
+      LoginFailureHandler loginFailureHandler, DiscodeitUserDetailsService userDetailsService,
+      JwtAuthenticationFilter jwtAuthenticationFilter)
       throws Exception {
     http
         .authorizeHttpRequests(authz -> authz
@@ -101,6 +103,7 @@ public class SecurityConfig {
         .sessionManagement(management -> management
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         )
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
     ;
 
     return http.build();
