@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.mapper;
 import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.entity.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.registry.JwtRegistry;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,18 +13,13 @@ import org.springframework.security.core.session.SessionRegistry;
 public abstract class UserMapper {
 
   @Autowired
-  private SessionRegistry sessionRegistry;
+  private JwtRegistry jwtRegistry;
 
   @Autowired
   private BinaryContentMapper binaryContentMapper;
 
   public UserDto toDto(User user) {
-    boolean online = sessionRegistry.getAllPrincipals().stream()
-        .filter(p -> p instanceof DiscodeitUserDetails)
-        .map(p -> (DiscodeitUserDetails) p)
-        .filter(d -> d.getUsername().equals(user.getUsername()))
-        .flatMap(d -> sessionRegistry.getAllSessions(d, false).stream())
-        .anyMatch(s -> !s.isExpired());
+    boolean online = jwtRegistry.hasActiveJwtInformationByUserId(user.getId());
 
     return new UserDto(
         user.getId(),

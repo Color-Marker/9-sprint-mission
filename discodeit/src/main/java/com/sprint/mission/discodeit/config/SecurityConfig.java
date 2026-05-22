@@ -37,7 +37,7 @@ public class SecurityConfig {
   private final ObjectMapper objectMapper;
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http, SessionRegistry sessionRegistry,
+  public SecurityFilterChain filterChain(HttpSecurity http,
       JwtLoginSuccessHandler jwtLoginSuccessHandler, JwtLogoutHandler jwtLogoutHandler,
       LoginFailureHandler loginFailureHandler, DiscodeitUserDetailsService userDetailsService,
       JwtAuthenticationFilter jwtAuthenticationFilter)
@@ -107,15 +107,5 @@ public class SecurityConfig {
     ;
 
     return http.build();
-  }
-
-  @Bean
-  public SessionRegistry sessionRegistry() {
-    return new SessionRegistryImpl();
-  }
-
-  @Bean
-  public HttpSessionEventPublisher httpSessionEventPublisher() {
-    return new HttpSessionEventPublisher();
   }
 }

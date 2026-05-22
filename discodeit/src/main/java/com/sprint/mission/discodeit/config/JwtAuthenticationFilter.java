@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.config;
 
 
+import com.sprint.mission.discodeit.registry.JwtRegistry;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 
@@ -39,80 +40,41 @@ public class JwtAuthenticationFilter
 
   private final UserDetailsService
       userDetailsService;
+  private final JwtRegistry jwtRegistry;
 
   @Override
-  protected void doFilterInternal(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      FilterChain filterChain
-  ) throws ServletException, IOException {
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
 
-    String token =
-        resolveToken(request);
+    String token = resolveToken(request);
 
-    if (token != null
-        && jwtTokenProvider.validateToken(
-        token
-    )) {
+    if (token != null && jwtTokenProvider.validateToken(token)) {
 
-      String username =
-          jwtTokenProvider.getUsername(
-              token
-          );
+      // 레지스트리에 존재하는 유효한 토큰인지 확인 (로그아웃·강제 무효화 토큰 차단)
+      if (!jwtRegistry.hasActiveJwtInformationByAccessToken(token)) {
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has been invalidated");
+        return;
+      }
 
-      UserDetails userDetails =
-          userDetailsService
-              .loadUserByUsername(
-                  username
-              );
+      String username = jwtTokenProvider.getUsername(token);
+      UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-      UsernamePasswordAuthenticationToken
-          authentication =
-          new UsernamePasswordAuthenticationToken(
-              userDetails,
-              null,
-              userDetails.getAuthorities()
-          );
+      UsernamePasswordAuthenticationToken authentication =
+          new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+      authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-      authentication.setDetails(
-          new WebAuthenticationDetailsSource()
-              .buildDetails(request)
-      );
-
-      SecurityContextHolder
-          .getContext()
-          .setAuthentication(authentication);
-
-      log.info(
-          "JWT Authentication Success: {}",
-          username
-      );
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+      log.info("JWT Authentication Success: {}", username);
     }
 
-    filterChain.doFilter(
-        request,
-        response
-    );
+    filterChain.doFilter(request, response);
   }
 
-  private String resolveToken(
-      HttpServletRequest request
-  ) {
-
-    String bearerToken =
-        request.getHeader(
-            "Authorization"
-        );
-
-    if (StringUtils.hasText(
-        bearerToken
-    ) && bearerToken.startsWith(
-        "Bearer "
-    )) {
-
+  private String resolveToken(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization");
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
       return bearerToken.substring(7);
     }
-
     return null;
   }
 }

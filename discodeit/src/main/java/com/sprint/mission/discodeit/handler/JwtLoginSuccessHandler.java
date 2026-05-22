@@ -8,6 +8,8 @@ import com.sprint.mission.discodeit.config.RefreshTokenStore;
 import com.sprint.mission.discodeit.dto.data.JwtDto;
 import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.entity.DiscodeitUserDetails;
+import com.sprint.mission.discodeit.registry.JwtInformation;
+import com.sprint.mission.discodeit.registry.JwtRegistry;
 import jakarta.servlet.ServletException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,74 +41,40 @@ public class JwtLoginSuccessHandler
 
   private final ObjectMapper
       objectMapper;
-  private final RefreshTokenStore refreshTokenStore;
+  private final JwtRegistry jwtRegistry;
 
   @Override
-  public void onAuthenticationSuccess(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      Authentication authentication
-  ) throws IOException, ServletException {
+  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+      Authentication authentication) throws IOException, ServletException {
 
-    DiscodeitUserDetails userDetails =
-        (DiscodeitUserDetails)
-            authentication.getPrincipal();
+    DiscodeitUserDetails userDetails = (DiscodeitUserDetails) authentication.getPrincipal();
     UserDto userDto = userDetails.getUserDto();
 
-    String accessToken =
-        jwtTokenProvider.generateAccessToken(
-            userDetails
-        );
-    String refreshToken =
-        jwtTokenProvider.generateRefreshToken();
+    String accessToken = jwtTokenProvider.generateAccessToken(userDetails);
+    String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails);
 
-    refreshTokenStore.save(
-        refreshToken,
-        userDetails.getUsername()
-    );
+    // JwtRegistry에 등록 (동시 로그인 제한도 여기서 자동 처리)
+    JwtInformation jwtInformation = new JwtInformation(userDto, accessToken, refreshToken);
+    jwtRegistry.registerJwtInformation(jwtInformation);
 
-    jakarta.servlet.http.Cookie refreshCookie =
-        new jakarta.servlet.http.Cookie(
-            "REFRESH_TOKEN",
-            refreshToken
-        );
-
+    jakarta.servlet.http.Cookie refreshCookie = new jakarta.servlet.http.Cookie("REFRESH_TOKEN",
+        refreshToken);
     refreshCookie.setHttpOnly(true);
     refreshCookie.setSecure(false);
     refreshCookie.setPath("/api/auth");
     refreshCookie.setMaxAge(7 * 24 * 60 * 60);
-
     response.addCookie(refreshCookie);
 
-    JwtDto responseBody =
-        JwtDto.builder()
+    JwtDto responseBody = JwtDto.builder()
+        .userDto(userDto)
+        .accessToken(accessToken)
+        .build();
 
-            .userDto(userDto)
+    response.setStatus(HttpServletResponse.SC_OK);
+    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    response.setCharacterEncoding("UTF-8");
+    objectMapper.writeValue(response.getWriter(), responseBody);
 
-            .accessToken(accessToken)
-
-            .build();
-
-    response.setStatus(
-        HttpServletResponse.SC_OK
-    );
-
-    response.setContentType(
-        MediaType.APPLICATION_JSON_VALUE
-    );
-
-    response.setCharacterEncoding(
-        "UTF-8"
-    );
-
-    objectMapper.writeValue(
-        response.getWriter(),
-        responseBody
-    );
-
-    log.info(
-        "JWT login success: {}",
-        userDetails.getUsername()
-    );
+    log.info("JWT login success: {}", userDetails.getUsername());
   }
 }

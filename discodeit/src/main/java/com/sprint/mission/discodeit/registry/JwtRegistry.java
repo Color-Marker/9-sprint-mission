@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.registry;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface JwtRegistry {
@@ -8,13 +9,15 @@ public interface JwtRegistry {
 
   void invalidateJwtInformationByUserId(UUID userId);
 
-  void hasActiveJwtInformationByUserId(UUID userId);
+  boolean hasActiveJwtInformationByUserId(UUID userId);
 
-  void hasActiveJwtInformationByAccessToken(String accessToken);
+  boolean hasActiveJwtInformationByAccessToken(String accessToken);
 
-  void hasActiveJwtInformationByRefreshToken(String refreshToken);
+  boolean hasActiveJwtInformationByRefreshToken(String refreshToken);
 
-  void rotateJwtInformation(String refreshToken, String newJwtInformation);
+  void rotateJwtInformation(String refreshToken, JwtInformation newJwtInformation);
 
   void clearExpiredJwtInformation();
+
+  Optional<UUID> findUserIdByRefreshToken(String refreshToken);
 }

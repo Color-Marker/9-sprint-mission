@@ -13,6 +13,7 @@ import com.sprint.mission.discodeit.exception.user.DuplicateEmailException;
 import com.sprint.mission.discodeit.exception.user.DuplicateNameException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.UserMapper;
+import com.sprint.mission.discodeit.registry.JwtRegistry;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.UserService;
@@ -40,7 +41,7 @@ public class BasicUserService implements UserService {
   private final BinaryContentRepository binaryContentRepository;
   private final BinaryContentStorage binaryContentStorage;
   private final PasswordEncoder passwordEncoder;
-  private final SessionRegistry sessionRegistry;
+  private final JwtRegistry jwtRegistry;
 
   @Override
   public UserDto create(UserCreateRequest userCreateRequest,
@@ -167,14 +168,14 @@ public class BasicUserService implements UserService {
   public UserDto updateRole(UserRoleUpdateRequest request) {
     User user = userRepository.findById(request.userId())
         .orElseThrow(() -> new UserNotFoundException(request.userId()));
+
     user.updateRole(request.newRole());
-    // 세션 무효화
-    sessionRegistry.getAllPrincipals().stream()
-        .filter(principal -> principal instanceof DiscodeitUserDetails)
-        .map(principal -> (DiscodeitUserDetails) principal)
-        .filter(details -> details.getUsername().equals(user.getUsername()))
-        .flatMap(details -> sessionRegistry.getAllSessions(details, false).stream())
-        .forEach(SessionInformation::expireNow);
+
+    // 로그인 상태라면 강제 로그아웃
+    if (jwtRegistry.hasActiveJwtInformationByUserId(user.getId())) {
+      jwtRegistry.invalidateJwtInformationByUserId(user.getId());
+      log.info("권한 변경으로 인한 강제 로그아웃 - 유저 ID: {}", user.getId());
+    }
 
     return userMapper.toDto(user);
   }

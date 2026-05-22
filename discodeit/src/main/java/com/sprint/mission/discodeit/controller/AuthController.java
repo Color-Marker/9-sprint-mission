@@ -6,11 +6,14 @@ import com.sprint.mission.discodeit.dto.data.JwtDto;
 import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.dto.request.UserRoleUpdateRequest;
 import com.sprint.mission.discodeit.entity.DiscodeitUserDetails;
+import com.sprint.mission.discodeit.registry.JwtInformation;
+import com.sprint.mission.discodeit.registry.JwtRegistry;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.basic.DiscodeitUserDetailsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +43,7 @@ public class AuthController {
 
   private final UserService userService;
   private final JwtTokenProvider jwtTokenProvider;
-  private final RefreshTokenStore refreshTokenStore;
+  private final JwtRegistry jwtRegistry;
   private final UserDetailsService userDetailsService;
 
   @GetMapping("csrf-token")
@@ -59,41 +62,36 @@ public class AuthController {
     return ResponseEntity.ok(data);
   }
 
-  @PostMapping("/api/auth/refresh")
-  public ResponseEntity<?> refresh(
-      HttpServletRequest request
-  ) {
+  @PostMapping("refresh")
+  public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response) {
 
-    String refreshToken =
-        getRefreshTokenFromCookie(request);
+    String refreshToken = getRefreshTokenFromCookie(request);
 
     if (refreshToken == null) {
-      return ResponseEntity
-          .status(401)
-          .body("Refresh Token이 없습니다.");
+      return ResponseEntity.status(401).body("Refresh Token이 없습니다.");
     }
 
-    String username =
-        refreshTokenStore.findUsername(refreshToken)
-            .orElse(null);
-
-    if (username == null) {
-      return ResponseEntity
-          .status(401)
-          .body("유효하지 않은 Refresh Token입니다.");
+    if (!jwtRegistry.hasActiveJwtInformationByRefreshToken(refreshToken)) {
+      return ResponseEntity.status(401).body("유효하지 않은 Refresh Token입니다.");
     }
 
-    UserDetails userDetails =
-        userDetailsService.loadUserByUsername(
-            username
-        );
-    DiscodeitUserDetails discodeitUserDetails = (DiscodeitUserDetails) userDetails;
-    UserDto userDto = discodeitUserDetails.getUserDto();
+    String username = jwtTokenProvider.getUsername(refreshToken);
+    DiscodeitUserDetails userDetails = (DiscodeitUserDetails) userDetailsService.loadUserByUsername(
+        username);
+    UserDto userDto = userDetails.getUserDto();
 
-    String newAccessToken =
-        jwtTokenProvider.generateAccessToken(
-            userDetails
-        );
+    String newAccessToken = jwtTokenProvider.generateAccessToken(userDetails);
+    String newRefreshToken = jwtTokenProvider.generateRefreshToken(userDetails);
+
+    JwtInformation newJwtInformation = new JwtInformation(userDto, newAccessToken, newRefreshToken);
+    jwtRegistry.rotateJwtInformation(refreshToken, newJwtInformation);
+
+    Cookie refreshCookie = new Cookie("REFRESH_TOKEN", newRefreshToken);
+    refreshCookie.setHttpOnly(true);
+    refreshCookie.setSecure(false);
+    refreshCookie.setPath("/api/auth");
+    refreshCookie.setMaxAge(7 * 24 * 60 * 60);
+    response.addCookie(refreshCookie);
 
     return ResponseEntity.ok(
         JwtDto.builder()
