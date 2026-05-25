@@ -4567,8 +4567,8 @@ CREATE TABLE binary_contents ( id uuid PRIMARY KEY, created_at timestamp with ti
 26-03-31 11:51:26.263 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
 26-03-31 11:51:26.267 [Test worker] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 3 ms
 26-03-31 11:51:26.417 [Test worker] INFO  c.s.m.d.C.UserControllerTest - Started UserControllerTest in 10.982 seconds (process running for 14.292)
-26-03-31 11:51:27.598 [Test worker] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Failure in @ExceptionHandler com.sprint.mission.discodeit.controller.GlobalExceptionHandler#handleUserNotFoundException(DuplicateNameException)
-java.lang.IllegalStateException: Could not resolve parameter [0] in public org.springframework.http.ResponseEntity<com.sprint.mission.discodeit.dto.response.ErrorResponse> com.sprint.mission.discodeit.controller.GlobalExceptionHandler.handleUserNotFoundException(com.sprint.mission.discodeit.exception.user.DuplicateNameException): No suitable resolver
+26-03-31 11:51:27.598 [Test worker] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Failure in @ExceptionHandler com.sprint.mission.discodeit.handler.GlobalExceptionHandler#handleUserNotFoundException(DuplicateNameException)
+java.lang.IllegalStateException: Could not resolve parameter [0] in public org.springframework.http.ResponseEntity<com.sprint.mission.discodeit.dto.response.ErrorResponse> com.sprint.mission.discodeit.handler.GlobalExceptionHandler.handleUserNotFoundException(com.sprint.mission.discodeit.exception.user.DuplicateNameException): No suitable resolver
 	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:224)
 	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:181)
 	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
@@ -4691,8 +4691,8 @@ java.lang.IllegalStateException: Could not resolve parameter [0] in public org.s
 	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:72)
 	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
 	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
-26-03-31 11:51:28.168 [Test worker] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Failure in @ExceptionHandler com.sprint.mission.discodeit.controller.GlobalExceptionHandler#handleUserNotFoundException(DuplicateNameException)
-java.lang.IllegalStateException: Could not resolve parameter [0] in public org.springframework.http.ResponseEntity<com.sprint.mission.discodeit.dto.response.ErrorResponse> com.sprint.mission.discodeit.controller.GlobalExceptionHandler.handleUserNotFoundException(com.sprint.mission.discodeit.exception.user.DuplicateNameException): No suitable resolver
+26-03-31 11:51:28.168 [Test worker] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Failure in @ExceptionHandler com.sprint.mission.discodeit.handler.GlobalExceptionHandler#handleUserNotFoundException(DuplicateNameException)
+java.lang.IllegalStateException: Could not resolve parameter [0] in public org.springframework.http.ResponseEntity<com.sprint.mission.discodeit.dto.response.ErrorResponse> com.sprint.mission.discodeit.handler.GlobalExceptionHandler.handleUserNotFoundException(com.sprint.mission.discodeit.exception.user.DuplicateNameException): No suitable resolver
 	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:224)
 	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:181)
 	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)

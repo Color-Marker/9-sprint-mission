@@ -18,15 +18,14 @@ import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
+import com.sprint.mission.discodeit.entity.Role;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.exception.user.DuplicateEmailException;
 import com.sprint.mission.discodeit.exception.user.DuplicateNameException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
-import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.basic.BasicUserService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 
@@ -46,8 +45,6 @@ public class UserServiceTest {
   private BasicUserService userService;
   @Mock
   private UserRepository userRepository;
-  @Mock
-  private UserStatusRepository userStatusRepository;
   @Mock
   private UserMapper userMapper;
   @Mock
@@ -82,7 +79,8 @@ public class UserServiceTest {
 
     BinaryContentDto binaryContentDto = new BinaryContentDto(contentId, "test.png",
         (long) "test".getBytes().length, "image/png");
-    UserDto expectedDto = new UserDto(userId, "test", "test@test.com", binaryContentDto, true);
+    UserDto expectedDto = new UserDto(userId, "test", "test@test.com", binaryContentDto, true,
+        Role.USER);
 
     given(userRepository.existsByEmail(anyString())).willReturn(false);
     given(userRepository.existsByUsername(anyString())).willReturn(false);
@@ -95,7 +93,6 @@ public class UserServiceTest {
     assertEquals(expectedDto, response);
 
     then(userRepository).should(times(1)).save(any(User.class));
-    then(userStatusRepository).should(times(1)).save(any(UserStatus.class));
     then(binaryContentStorage).should().put(eq(contentId), any(byte[].class));
   }
 
@@ -167,7 +164,8 @@ public class UserServiceTest {
 
     BinaryContentDto binaryContentDto = new BinaryContentDto(contentId, "test.png",
         (long) "test".getBytes().length, "image/png");
-    UserDto expectedDto = new UserDto(userId, "test", "test@test.com", binaryContentDto, true);
+    UserDto expectedDto = new UserDto(userId, "test", "test@test.com", binaryContentDto, true,
+        Role.USER);
 
     given(userRepository.findById(userId)).willReturn(Optional.ofNullable(beforeUser));
     given(userRepository.existsByEmail(anyString())).willReturn(false);
@@ -277,7 +275,7 @@ public class UserServiceTest {
     User user = User.builder()
         .id(userId)
         .username("test").email("test@test.com").password("test").build();
-    UserDto expectedDto = new UserDto(userId, "test", "test@test.com", null, true);
+    UserDto expectedDto = new UserDto(userId, "test", "test@test.com", null, true, Role.USER);
     given(userRepository.findWithProfileAndStatusById(userId)).willReturn(Optional.of(user));
     given(userMapper.toDto(user)).willReturn(expectedDto);
     UserDto result = userService.find(userId);

@@ -28,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -123,6 +124,7 @@ public class BasicMessageService implements MessageService {
 
   @Transactional
   @Override
+  @PreAuthorize("@securityService.isMessageOwner(#messageId) or hasRole('ADMIN')")
   public MessageDto update(UUID messageId, MessageUpdateRequest request) {
     String newContent = request.newContent();
     Message message = messageRepository.findWithChannelAuthorAttachmentById(messageId)
@@ -138,6 +140,7 @@ public class BasicMessageService implements MessageService {
 
   @Transactional
   @Override
+  @PreAuthorize("@securityService.isMessageOwner(#messageId) or hasRole('ADMIN')")
   public void delete(UUID messageId) {
     if (!messageRepository.existsById(messageId)) {
       log.warn("메시지 검색 실패 - 메시지 ID: {}", messageId);

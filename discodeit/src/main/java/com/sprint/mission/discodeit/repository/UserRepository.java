@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.repository;
 
+import com.sprint.mission.discodeit.entity.Role;
 import com.sprint.mission.discodeit.entity.User;
 
 import java.util.List;
@@ -17,14 +18,14 @@ public interface UserRepository extends JpaRepository<User, UUID> {
   boolean existsByUsername(String username);
 
   @EntityGraph(attributePaths = {
-      "profile",
-      "status"
+      "profile"
   })
   List<User> findAllWithProfileAndStatusBy();
 
   @EntityGraph(attributePaths = {
-      "profile",
-      "status"
+      "profile"
   })
   Optional<User> findWithProfileAndStatusById(UUID userId);
+
+  boolean existsByRole(Role role);
 }
