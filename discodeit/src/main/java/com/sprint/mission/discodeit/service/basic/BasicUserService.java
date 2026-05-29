@@ -122,7 +122,7 @@ public class BasicUserService implements UserService {
         throw new DuplicateEmailException(newEmail);
       }
     }
-    if (newUsername != null & !newUsername.equals(user.getUsername())) {
+    if (newUsername != null && !newUsername.equals(user.getUsername())) {
       if (userRepository.existsByUsername(newUsername)) {
         log.warn("유저 업데이트 실패 - 중복된 이름: {}", newUsername);
         throw new DuplicateNameException(newUsername);
