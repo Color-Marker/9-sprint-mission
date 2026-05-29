@@ -9,6 +9,7 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.entity.Role;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.event.BinaryContentCreatedEvent;
 import com.sprint.mission.discodeit.exception.user.DuplicateEmailException;
 import com.sprint.mission.discodeit.exception.user.DuplicateNameException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
@@ -20,6 +21,7 @@ import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
@@ -39,9 +41,9 @@ public class BasicUserService implements UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final BinaryContentRepository binaryContentRepository;
-  private final BinaryContentStorage binaryContentStorage;
   private final PasswordEncoder passwordEncoder;
   private final JwtRegistry jwtRegistry;
+  private final ApplicationEventPublisher eventPublisher;
 
   @Override
   public UserDto create(UserCreateRequest userCreateRequest,
@@ -67,7 +69,9 @@ public class BasicUserService implements UserService {
               contentType);
           BinaryContent content = binaryContentRepository.save(binaryContent);
           log.debug("프로필 사진 저장 - 파일 상세: {}", content);
-          binaryContentStorage.put(content.getId(), bytes);
+          eventPublisher.publishEvent(
+              new BinaryContentCreatedEvent(binaryContent.getId(), bytes)
+          );
           return content;
         })
         .orElse(null);
@@ -139,7 +143,9 @@ public class BasicUserService implements UserService {
               contentType);
           BinaryContent content = binaryContentRepository.save(binaryContent);
           log.debug("프로필 사진 저장 - 파일 상세: {}", content);
-          binaryContentStorage.put(content.getId(), bytes);
+          eventPublisher.publishEvent(
+              new BinaryContentCreatedEvent(binaryContent.getId(), bytes)
+          );
           return content;
         })
         .orElse(null);

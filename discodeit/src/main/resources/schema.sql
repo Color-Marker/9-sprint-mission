@@ -2,9 +2,12 @@ CREATE TABLE binary_contents
 (
     id           uuid PRIMARY KEY,
     created_at   timestamp with time zone NOT NULL,
+    updated_at   timestamp with time zone,
     file_name    varchar(255)             NOT NULL,
     size         bigint                   NOT NULL,
-    content_type varchar(100)             NOT NULL
+    content_type varchar(100)             NOT NULL,
+    status       varchar(20)              NOT NULL,
+    CONSTRAINT check_status_type CHECK (status IN ('PROCESSING', 'SUCCESS', 'FAIL'))
 );
 
 CREATE TABLE channels
@@ -28,6 +31,7 @@ CREATE TABLE users
     password   varchar(60)              NOT NULL,
     profile_id uuid UNIQUE,
     role       varchar(20)              NOT NULL,
+    CONSTRAINT check_role_type CHECK (role IN ('ADMIN', 'CHANNEL_MANAGER', 'USER')),
     CONSTRAINT fk_profile FOREIGN KEY (profile_id) REFERENCES binary_contents (id) ON DELETE SET NULL
 );
 
