@@ -13,6 +13,7 @@ import com.sprint.mission.discodeit.service.NotificationService;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,9 @@ public class BasicNotificationService implements NotificationService {
     String title = message.getAuthor().getUsername() + " (#" + message.getChannel().getName() + ")";
     String content = message.getContent();
     List<ReadStatus> readStatuses = readStatusRepository.findAllByChannel(message.getChannel());
-    List<User> users = readStatuses.stream().map(ReadStatus::getUser).toList();
+    List<ReadStatus> targets = readStatuses.stream().filter(ReadStatus::isNotificationEnabled)
+        .toList();
+    List<User> users = targets.stream().map(ReadStatus::getUser).toList();
     for (User u : users) {
       if (u.getId().equals(message.getAuthor().getId())) {
         continue;
@@ -53,7 +56,7 @@ public class BasicNotificationService implements NotificationService {
 
   @Override
   public List<NotificationDto> get(UUID userId) {
-    List<Notification> notifications = notificationRepository.findAllByUserId(userId);
+    List<Notification> notifications = notificationRepository.findAllByReceiverId(userId);
     List<NotificationDto> dtos = notifications.stream()
         .map(n -> {
           NotificationDto dto = new NotificationDto(
