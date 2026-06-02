@@ -7,8 +7,10 @@ import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.Role;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.exception.notification.NotificationNotFoundException;
+import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.repository.NotificationRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
+import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.NotificationService;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -27,6 +29,7 @@ public class BasicNotificationService implements NotificationService {
 
   private final ReadStatusRepository readStatusRepository;
   private final NotificationRepository notificationRepository;
+  private final UserRepository userRepository;
 
   @Override
   public void createByMessage(Message message) {
@@ -52,6 +55,15 @@ public class BasicNotificationService implements NotificationService {
     String content = pastRole.toString() + " -> " + newRole.toString();
     Notification notification = new Notification(user.getId(), title, content);
     notificationRepository.save(notification);
+  }
+
+  @Override
+  public void createByError(String errorMessage) {
+    List<User> admin = userRepository.findByRole(Role.ADMIN);
+    for (User a : admin) {
+      Notification notification = new Notification(a.getId(), "S3 파일 업로드 실패", errorMessage);
+      notificationRepository.save(notification);
+    }
   }
 
   @Override

@@ -13,6 +13,8 @@ public interface NotificationService {
 
   void createByRole(User user, Role pastRole, Role newRole);
 
+  void createByError(String errorMessage);
+
   List<NotificationDto> get(UUID userId);
 
   void delete(UUID notificationId);

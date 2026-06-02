@@ -7,6 +7,7 @@ import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -40,6 +41,7 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
   private final S3Client s3Client;
   private final S3Presigner s3Presigner;
   private final Duration expiration;
+
 
   public S3BinaryContentStorage(
       BinaryContentRepository binaryContentRepository,
