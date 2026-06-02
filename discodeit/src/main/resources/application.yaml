@@ -37,6 +37,13 @@ spring:
           name: discodeit
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
+  cache:
+    type: caffeine
+  caffeine:
+    spec: >
+      maximumSize=100,
+      expireAfterAccess=600s,
+      recordStats
 
   jpa:
     open-in-view: false

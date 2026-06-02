@@ -22,6 +22,8 @@ import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.session.SessionInformation;
@@ -46,6 +48,7 @@ public class BasicUserService implements UserService {
   private final JwtRegistry jwtRegistry;
   private final ApplicationEventPublisher eventPublisher;
 
+  @CacheEvict(value = "UserList", key = "'all_users'")
   @Override
   public UserDto create(UserCreateRequest userCreateRequest,
       Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
@@ -100,7 +103,9 @@ public class BasicUserService implements UserService {
         .orElseThrow(() -> new UserNotFoundException(userId));
   }
 
+
   @Transactional(readOnly = true)
+  @Cacheable(value = "UserList", key = "'all_users'")
   @Override
   public List<UserDto> findAll() {
     return userRepository.findAllWithProfileAndStatusBy()
@@ -110,6 +115,7 @@ public class BasicUserService implements UserService {
   }
 
   @PreAuthorize("#userId == authentication.principal.userDto.id or hasRole('ADMIN')")
+  @CacheEvict(value = "UserList", key = "'all_users'")
   @Override
   public UserDto update(UUID userId, UserUpdateRequest userUpdateRequest,
       Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
@@ -159,6 +165,7 @@ public class BasicUserService implements UserService {
   }
 
   @PreAuthorize("#userId == authentication.principal.userDto.id or hasRole('ADMIN')")
+  @CacheEvict(value = "UserList", key = "'all_users'")
   @Override
   public void delete(UUID userId) {
     if (!userRepository.existsById(userId)) {
@@ -172,6 +179,7 @@ public class BasicUserService implements UserService {
 
   @Override
   @PreAuthorize("hasRole('ADMIN')")
+  @CacheEvict(value = "UserList", key = "'all_users'")
   public UserDto updateRole(UserRoleUpdateRequest request) {
     User user = userRepository.findById(request.userId())
         .orElseThrow(() -> new UserNotFoundException(request.userId()));

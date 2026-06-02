@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 
 import org.springframework.security.core.Authentication;
@@ -43,6 +44,7 @@ public class JwtLoginSuccessHandler
       objectMapper;
   private final JwtRegistry jwtRegistry;
 
+  @CacheEvict(value = "UserList", key = "'all_users'")
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
       Authentication authentication) throws IOException, ServletException {

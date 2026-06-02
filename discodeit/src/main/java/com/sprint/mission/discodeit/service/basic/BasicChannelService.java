@@ -15,6 +15,8 @@ import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +34,8 @@ public class BasicChannelService implements ChannelService {
   private final MessageRepository messageRepository;
   private final UserRepository userRepository;
   private final ChannelMapper channelMapper;
+  private final CacheManager cacheManager;
+
 
   @Transactional
   @Override
@@ -42,10 +46,17 @@ public class BasicChannelService implements ChannelService {
     Channel channel = new Channel(ChannelType.PUBLIC, name, description);
     Channel saved = channelRepository.save(channel);
     log.info("public 채널 생성 완료 - 채널: {}", saved);
+
+    var cache = cacheManager.getCache("ChannelList");
+
     List<User> allUsers = userRepository.findAll();
     allUsers.stream()
         .map(user -> {
           ReadStatus newStatus = new ReadStatus(user, saved, saved.getCreatedAt(), false);
+          if (cache != null) {
+            String cacheKey = "channels_" + user.getId();
+            cache.evict(cacheKey);
+          }
           return newStatus;
         })
         .forEach(readStatusRepository::save);
@@ -61,6 +72,8 @@ public class BasicChannelService implements ChannelService {
     Channel channel = new Channel(ChannelType.PRIVATE, name, description);
     Channel createdChannel = channelRepository.save(channel);
     log.info("private 채널 생성 완료 - 채널: {}", createdChannel);
+    var cache = cacheManager.getCache("ChannelList");
+
     request.participantIds().stream()
         .map(userId -> {
           ReadStatus newStatus = new ReadStatus(
@@ -69,6 +82,10 @@ public class BasicChannelService implements ChannelService {
               channel.getCreatedAt(),
               true
           );
+          if (cache != null) {
+            String cacheKey = "channels_" + userId;
+            cache.evict(cacheKey);
+          }
           log.debug("참가자별 채널 읽음 상태 생성 - 일음 상태: {}", newStatus);
           return newStatus;
         })
@@ -86,6 +103,7 @@ public class BasicChannelService implements ChannelService {
   }
 
   @Transactional(readOnly = true)
+  @Cacheable(value = "ChannelList", key = "'channels_' + #userId")
   @Override
   public List<ChannelDto> findAllByUserId(UUID userId) {
     if (!userRepository.existsById(userId)) {
@@ -113,6 +131,8 @@ public class BasicChannelService implements ChannelService {
   public Channel update(UUID channelId, PublicChannelCreateRequest request) {
     String newName = request.name();
     String newDescription = request.description();
+    var cache = cacheManager.getCache("ChannelList");
+
     Channel channel = channelRepository.findById(channelId)
         .orElseThrow(() ->
         {
@@ -123,7 +143,15 @@ public class BasicChannelService implements ChannelService {
       log.warn("채널 수정 실패 - 채널 ID: {}", channelId);
       throw new PrivateChannelUpdateException(channelId);
     }
+
     channel.update(newName, newDescription);
+    List<ReadStatus> readStatuses = readStatusRepository.findAllByChannel(channel);
+    for (ReadStatus r : readStatuses) {
+      if (cache != null) {
+        String cacheKey = "notifications_" + r.getUser().getId();
+        cache.evict(cacheKey);
+      }
+    }
     return channelRepository.save(channel);
   }
 
@@ -137,7 +165,14 @@ public class BasicChannelService implements ChannelService {
               log.warn("채널 검색 실패 - 채널 ID: {}", channelId);
               return new ChannelNotFoundException(channelId);
             });
-
+    var cache = cacheManager.getCache("ChannelList");
+    List<ReadStatus> readStatuses = readStatusRepository.findAllByChannel(channel);
+    for (ReadStatus r : readStatuses) {
+      if (cache != null) {
+        String cacheKey = "notifications_" + r.getUser().getId();
+        cache.evict(cacheKey);
+      }
+    }
     messageRepository.deleteAllByChannelId(channel.getId());
     readStatusRepository.deleteAllByChannelId(channel.getId());
 
