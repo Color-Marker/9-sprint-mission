@@ -1,9 +1,11 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.data.NotificationDto;
 import com.sprint.mission.discodeit.dto.data.ReadStatusDto;
 import com.sprint.mission.discodeit.dto.request.ReadStatusCreateRequest;
 import com.sprint.mission.discodeit.dto.request.ReadStatusUpdateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
@@ -49,13 +51,14 @@ public class BasicReadStatusService implements ReadStatusService {
     if (!channelRepository.existsById(channelId)) {
       throw new ChannelNotFoundException(channelId);
     }
-    if (readStatusRepository.findAllWithExtraByUserId(userId).stream()
+    if (readStatusRepository.findAllByUserId(userId).stream()
         .anyMatch(readStatus -> readStatus.getChannel().equals(channel))) {
       throw new ReadStatusAlreadyExistException(userId, channelId);
     }
 
     Instant lastReadAt = request.lastReadAt();
-    ReadStatus readStatus = new ReadStatus(user, channel, lastReadAt);
+    boolean notificationEnabled = channel.getType().equals(ChannelType.PRIVATE) ? true : false;
+    ReadStatus readStatus = new ReadStatus(user, channel, lastReadAt, notificationEnabled);
     readStatusRepository.save(readStatus);
     return readStatusMapper.toDto(readStatus);
   }
@@ -63,7 +66,7 @@ public class BasicReadStatusService implements ReadStatusService {
   @Transactional(readOnly = true)
   @Override
   public ReadStatusDto find(UUID readStatusId) {
-    ReadStatus readStatus = readStatusRepository.findWithExtraById(readStatusId)
+    ReadStatus readStatus = readStatusRepository.findById(readStatusId)
         .orElseThrow(() -> new ReadStatusNotFoundException(readStatusId));
     return readStatusMapper.toDto(readStatus);
   }
@@ -71,7 +74,7 @@ public class BasicReadStatusService implements ReadStatusService {
   @Transactional(readOnly = true)
   @Override
   public List<ReadStatusDto> findAllByUserId(UUID userId) {
-    List<ReadStatus> statusList = readStatusRepository.findAllWithExtraByUserId(userId).stream()
+    List<ReadStatus> statusList = readStatusRepository.findAllByUserId(userId).stream()
         .toList();
     return statusList.stream()
         .map(readStatusMapper::toDto)
@@ -82,10 +85,10 @@ public class BasicReadStatusService implements ReadStatusService {
   @Override
   public ReadStatusDto update(UUID readStatusId, ReadStatusUpdateRequest request) {
     Instant newLastReadAt = request.newLastReadAt();
-    ReadStatus readStatus = readStatusRepository.findWithExtraById(readStatusId)
+    ReadStatus readStatus = readStatusRepository.findById(readStatusId)
         .orElseThrow(
             () -> new ReadStatusNotFoundException(readStatusId));
-    readStatus.update(newLastReadAt);
+    readStatus.update(newLastReadAt, request.newNotificationEnabled());
     readStatusRepository.save(readStatus);
     return readStatusMapper.toDto(readStatus);
   }
@@ -98,6 +101,4 @@ public class BasicReadStatusService implements ReadStatusService {
     }
     readStatusRepository.deleteById(readStatusId);
   }
-
-
 }

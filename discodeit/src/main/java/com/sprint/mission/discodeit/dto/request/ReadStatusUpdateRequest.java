@@ -8,7 +8,8 @@ import java.time.Instant;
 
 public record ReadStatusUpdateRequest(
     @Schema(description = "최근 읽음 상태 업데이트 시간")
-    Instant newLastReadAt
+    Instant newLastReadAt,
+    boolean newNotificationEnabled
 ) {
 
 }

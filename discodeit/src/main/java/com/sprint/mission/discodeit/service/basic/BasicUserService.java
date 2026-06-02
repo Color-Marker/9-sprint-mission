@@ -10,6 +10,7 @@ import com.sprint.mission.discodeit.entity.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.entity.Role;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.event.BinaryContentCreatedEvent;
+import com.sprint.mission.discodeit.event.RoleUpdatedEvent;
 import com.sprint.mission.discodeit.exception.user.DuplicateEmailException;
 import com.sprint.mission.discodeit.exception.user.DuplicateNameException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
@@ -174,8 +175,12 @@ public class BasicUserService implements UserService {
   public UserDto updateRole(UserRoleUpdateRequest request) {
     User user = userRepository.findById(request.userId())
         .orElseThrow(() -> new UserNotFoundException(request.userId()));
-
-    user.updateRole(request.newRole());
+    Role pastRole = user.getRole();
+    Role newRole = request.newRole();
+    user.updateRole(newRole);
+    eventPublisher.publishEvent(
+        new RoleUpdatedEvent(user, pastRole, newRole)
+    );
 
     // 로그인 상태라면 강제 로그아웃
     if (jwtRegistry.hasActiveJwtInformationByUserId(user.getId())) {

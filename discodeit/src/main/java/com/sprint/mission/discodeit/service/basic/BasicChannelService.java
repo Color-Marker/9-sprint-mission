@@ -42,6 +42,14 @@ public class BasicChannelService implements ChannelService {
     Channel channel = new Channel(ChannelType.PUBLIC, name, description);
     Channel saved = channelRepository.save(channel);
     log.info("public 채널 생성 완료 - 채널: {}", saved);
+    List<User> allUsers = userRepository.findAll();
+    allUsers.stream()
+        .map(user -> {
+          ReadStatus newStatus = new ReadStatus(user, saved, saved.getCreatedAt(), false);
+          return newStatus;
+        })
+        .forEach(readStatusRepository::save);
+    log.debug("public 채널 유저별 읽음 상태 생성 완료");
     return saved;
   }
 
@@ -55,9 +63,12 @@ public class BasicChannelService implements ChannelService {
     log.info("private 채널 생성 완료 - 채널: {}", createdChannel);
     request.participantIds().stream()
         .map(userId -> {
-          ReadStatus newStatus = new ReadStatus(userRepository.findById(userId).orElse(null),
+          ReadStatus newStatus = new ReadStatus(
+              userRepository.findById(userId).orElse(null),
               createdChannel,
-              channel.getCreatedAt());
+              channel.getCreatedAt(),
+              true
+          );
           log.debug("참가자별 채널 읽음 상태 생성 - 일음 상태: {}", newStatus);
           return newStatus;
         })

@@ -21,7 +21,7 @@ public class BinaryContentEventListener {
   @TransactionalEventListener(
       phase = TransactionPhase.AFTER_COMMIT
   )
-  public void binaryContentCreated(
+  public void on(
       BinaryContentCreatedEvent event
   ) {
     try {

@@ -8,6 +8,7 @@ import com.sprint.mission.discodeit.exception.binaryContent.FileWriteException;
 import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
 import com.sprint.mission.discodeit.exception.channel.PrivateChannelUpdateException;
 import com.sprint.mission.discodeit.exception.message.MessageNotFoundException;
+import com.sprint.mission.discodeit.exception.notification.NotificationNotFoundException;
 import com.sprint.mission.discodeit.exception.readStatus.ReadStatusAlreadyExistException;
 import com.sprint.mission.discodeit.exception.readStatus.ReadStatusNotFoundException;
 import com.sprint.mission.discodeit.exception.user.DuplicateEmailException;
@@ -18,6 +19,7 @@ import com.sprint.mission.discodeit.exception.userStatus.UserStatusNotFoundExcep
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -249,6 +251,23 @@ public class GlobalExceptionHandler {
             HttpStatus.BAD_REQUEST.value()
         ));
   }
+
+  @ExceptionHandler(NotificationNotFoundException.class)
+  public ResponseEntity<ErrorResponse> notificationNotFoundException(
+      NotificationNotFoundException e) {
+    return ResponseEntity
+        .status(HttpStatus.NOT_FOUND.value())
+        .body(new ErrorResponse(
+            e.getTimestamp(),
+            e.getErrorCode().toString(),
+            e.getMessage(),
+            e.getDetails(),
+            e.getClass().getSimpleName(),
+            HttpStatus.NOT_FOUND.value()
+        ));
+  }
+
+
 }
 
 
