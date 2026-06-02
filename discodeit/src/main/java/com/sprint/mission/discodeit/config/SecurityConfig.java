@@ -48,7 +48,6 @@ public class SecurityConfig {
             .requestMatchers("/", "/index.html", "/assets/**").permitAll()
             .requestMatchers("/api/auth/role").hasRole("ADMIN")
             .requestMatchers("/api/auth/**").permitAll()
-            .requestMatchers("/api/binary-contents/**").permitAll()
             // 회원 가입 요청 허용
             .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
             // Swagger
