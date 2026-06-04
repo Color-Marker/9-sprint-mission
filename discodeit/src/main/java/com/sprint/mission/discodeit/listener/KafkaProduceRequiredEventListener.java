@@ -35,7 +35,7 @@ public class KafkaProduceRequiredEventListener {
     kafkaTemplate.send("discodeit.RoleUpdatedEvent", payload);
   }
 
-  @Async("eventTaskExecutor")
+  @Async("eventExecutor")
   @EventListener
   public void on(S3UploadFailedEvent event) throws JsonProcessingException {
     String payload = objectMapper.writeValueAsString(event);

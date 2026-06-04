@@ -38,13 +38,23 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
   cache:
-    type: caffeine
-  caffeine:
-    spec: >
-      maximumSize=100,
-      expireAfterAccess=600s,
-      recordStats
-  kafak:
+    type: redis # caffeine | redis
+    caffeine:
+      spec: >
+        maximumSize=100,
+        expireAfterAccess=600s,
+        recordStats
+    cache-names:
+      - channels
+      - notifications
+      - users
+    redis:
+      enable-statistics: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  kafka:
     bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
