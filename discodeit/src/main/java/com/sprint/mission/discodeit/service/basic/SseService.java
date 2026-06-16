@@ -17,12 +17,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class SseService {
 
-  private static final Long DEFAULT_TIMEOUT = 60L * 1000L;
   private final SseEmitterRepository sseEmitterRepository;
   private final SseMessageRepository sseMessageRepository;
 
   public SseEmitter connect(UUID receiverId, UUID lastEventId) {
-    SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
+    SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
     sseEmitterRepository.save(receiverId, emitter);
 
     emitter.onCompletion(() -> {

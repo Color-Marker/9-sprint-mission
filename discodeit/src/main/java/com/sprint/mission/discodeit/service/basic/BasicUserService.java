@@ -164,7 +164,7 @@ public class BasicUserService implements UserService {
 
     String newPassword = userUpdateRequest.newPassword();
     log.debug("유저 업데이트 실행 - 유저: {}", user);
-    user.update(newUsername, newEmail, newPassword, nullableProfile);
+    user.update(newUsername, newEmail, passwordEncoder.encode(newPassword), nullableProfile);
     log.info("유저 업데이트 완료 - 유저: {}", user);
 
     UserDto dto = userMapper.toDto(user);
@@ -179,6 +179,7 @@ public class BasicUserService implements UserService {
   public void delete(UUID userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(userId));
+
     UserDto dto = userMapper.toDto(user);
     eventPublisher.publishEvent(new UserUpdatedEvent("deleted", dto));
 
@@ -196,6 +197,7 @@ public class BasicUserService implements UserService {
     Role pastRole = user.getRole();
     Role newRole = request.newRole();
     user.updateRole(newRole);
+
     eventPublisher.publishEvent(
         new RoleUpdatedEvent(user, pastRole, newRole)
     );
@@ -206,6 +208,9 @@ public class BasicUserService implements UserService {
       log.info("권한 변경으로 인한 강제 로그아웃 - 유저 ID: {}", user.getId());
     }
 
-    return userMapper.toDto(user);
+    UserDto dto = userMapper.toDto(user);
+    eventPublisher.publishEvent(new UserUpdatedEvent("updated", dto));
+
+    return dto;
   }
 }
