@@ -114,7 +114,6 @@ public class BasicChannelService implements ChannelService {
   }
 
   @Transactional(readOnly = true)
-  @Cacheable(value = "ChannelList", key = "'channels_' + #userId")
   @Override
   public List<ChannelDto> findAllByUserId(UUID userId) {
     if (!userRepository.existsById(userId)) {
