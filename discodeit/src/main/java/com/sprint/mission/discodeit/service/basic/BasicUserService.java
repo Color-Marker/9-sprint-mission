@@ -11,6 +11,7 @@ import com.sprint.mission.discodeit.entity.Role;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.event.BinaryContentCreatedEvent;
 import com.sprint.mission.discodeit.event.RoleUpdatedEvent;
+import com.sprint.mission.discodeit.event.UserUpdatedEvent;
 import com.sprint.mission.discodeit.exception.user.DuplicateEmailException;
 import com.sprint.mission.discodeit.exception.user.DuplicateNameException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
@@ -90,9 +91,13 @@ public class BasicUserService implements UserService {
     );
     Instant now = Instant.now();
     User newUser = userRepository.save(user);
+
     log.info("유저 생성 및 저장 완료 - 유저: {}", newUser);
 
-    return userMapper.toDto(user);
+    UserDto dto = userMapper.toDto(user);
+    eventPublisher.publishEvent(new UserUpdatedEvent("created", dto));
+
+    return dto;
   }
 
   @Transactional(readOnly = true)
@@ -161,19 +166,24 @@ public class BasicUserService implements UserService {
     log.debug("유저 업데이트 실행 - 유저: {}", user);
     user.update(newUsername, newEmail, newPassword, nullableProfile);
     log.info("유저 업데이트 완료 - 유저: {}", user);
-    return userMapper.toDto(user);
+
+    UserDto dto = userMapper.toDto(user);
+    eventPublisher.publishEvent(new UserUpdatedEvent("updated", dto));
+
+    return dto;
   }
 
   @PreAuthorize("#userId == authentication.principal.userDto.id or hasRole('ADMIN')")
   @CacheEvict(value = "UserList", key = "'all_users'")
   @Override
   public void delete(UUID userId) {
-    if (!userRepository.existsById(userId)) {
-      log.warn("유저 검색 실패 - 유저 ID: {}", userId);
-      throw new UserNotFoundException(userId);
-    }
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new UserNotFoundException(userId));
+    UserDto dto = userMapper.toDto(user);
+    eventPublisher.publishEvent(new UserUpdatedEvent("deleted", dto));
 
     log.info("유저 삭제 진행 - 유저 ID: {}", userId);
+
     userRepository.deleteById(userId);
   }
 
