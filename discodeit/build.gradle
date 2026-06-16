@@ -54,6 +54,7 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'com.github.ben-manes.caffeine:caffeine'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
