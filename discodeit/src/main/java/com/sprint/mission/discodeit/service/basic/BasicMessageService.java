@@ -9,6 +9,8 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.event.BinaryContentCreatedEvent;
+import com.sprint.mission.discodeit.event.MessageCreatedEvent;
 import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
 import com.sprint.mission.discodeit.exception.message.MessageNotFoundException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
@@ -24,6 +26,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 
 import lombok.RequiredArgsConstructor;
@@ -46,9 +49,10 @@ public class BasicMessageService implements MessageService {
   private final ChannelRepository channelRepository;
   private final UserRepository userRepository;
   private final BinaryContentRepository binaryContentRepository;
-  private final BinaryContentStorage binaryContentStorage;
   private final PageResponseMapper pageResponseMapper;
   private final MessageMapper messageMapper;
+  private final ApplicationEventPublisher eventPublisher;
+
 
   @Transactional
   @Override
@@ -77,7 +81,9 @@ public class BasicMessageService implements MessageService {
                 contentType);
             BinaryContent createdBinaryContent = binaryContentRepository.save(binaryContent);
             log.debug("메시지 내 파일 저장 시도 - 파일 정보: {}", createdBinaryContent);
-            binaryContentStorage.put(createdBinaryContent.getId(), attachmentRequest.bytes());
+            eventPublisher.publishEvent(
+                new BinaryContentCreatedEvent(binaryContent.getId(), bytes)
+            );
             return createdBinaryContent.getId();
           })
           .toList();
@@ -94,6 +100,9 @@ public class BasicMessageService implements MessageService {
     );
     Message result = messageRepository.save(message);
     log.info("메시지 저장 완료 - 메시지: {}", result);
+    eventPublisher.publishEvent(
+        new MessageCreatedEvent(result)
+    );
     return messageMapper.toDto(result);
   }
 

@@ -2,9 +2,12 @@ CREATE TABLE binary_contents
 (
     id           uuid PRIMARY KEY,
     created_at   timestamp with time zone NOT NULL,
+    updated_at   timestamp with time zone,
     file_name    varchar(255)             NOT NULL,
     size         bigint                   NOT NULL,
-    content_type varchar(100)             NOT NULL
+    content_type varchar(100)             NOT NULL,
+    status       varchar(20)              NOT NULL,
+    CONSTRAINT check_status_type CHECK (status IN ('PROCESSING', 'SUCCESS', 'FAIL'))
 );
 
 CREATE TABLE channels
@@ -28,17 +31,19 @@ CREATE TABLE users
     password   varchar(60)              NOT NULL,
     profile_id uuid UNIQUE,
     role       varchar(20)              NOT NULL,
+    CONSTRAINT check_role_type CHECK (role IN ('ADMIN', 'CHANNEL_MANAGER', 'USER')),
     CONSTRAINT fk_profile FOREIGN KEY (profile_id) REFERENCES binary_contents (id) ON DELETE SET NULL
 );
 
 CREATE TABLE read_statuses
 (
-    id           uuid PRIMARY KEY,
-    created_at   timestamp with time zone NOT NULL,
-    updated_at   timestamp with time zone,
-    user_id      uuid                     NOT NULL,
-    channel_id   uuid                     NOT NULL,
-    last_read_at timestamp with time zone NOT NULL,
+    id                   uuid PRIMARY KEY,
+    created_at           timestamp with time zone NOT NULL,
+    updated_at           timestamp with time zone,
+    user_id              uuid                     NOT NULL,
+    channel_id           uuid                     NOT NULL,
+    last_read_at         timestamp with time zone NOT NULL,
+    notification_enabled boolean                  NOT NULL,
     CONSTRAINT fk_read_status_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     CONSTRAINT fk_read_status_channel FOREIGN KEY (channel_id) REFERENCES channels (id) ON DELETE CASCADE,
     CONSTRAINT uk_user_channel UNIQUE (user_id, channel_id)
@@ -62,5 +67,14 @@ CREATE TABLE message_attachments
     attachment_id uuid NOT NULL,
     CONSTRAINT fk_message FOREIGN KEY (message_id) REFERENCES messages (id) ON DELETE CASCADE,
     CONSTRAINT fk_attachment FOREIGN KEY (attachment_id) REFERENCES binary_contents (id) ON DELETE CASCADE
+);
+
+CREATE TABLE notifications
+(
+    id          uuid PRIMARY KEY,
+    created_at  timestamp with time zone NOT NULL,
+    receiver_id uuid                     NOT NULL,
+    title       varchar(100)             NOT NULL,
+    content     text
 );
 

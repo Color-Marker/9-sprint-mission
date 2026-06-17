@@ -9,6 +9,8 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.entity.Role;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.event.BinaryContentCreatedEvent;
+import com.sprint.mission.discodeit.event.RoleUpdatedEvent;
 import com.sprint.mission.discodeit.exception.user.DuplicateEmailException;
 import com.sprint.mission.discodeit.exception.user.DuplicateNameException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
@@ -20,6 +22,9 @@ import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
@@ -39,10 +44,11 @@ public class BasicUserService implements UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final BinaryContentRepository binaryContentRepository;
-  private final BinaryContentStorage binaryContentStorage;
   private final PasswordEncoder passwordEncoder;
   private final JwtRegistry jwtRegistry;
+  private final ApplicationEventPublisher eventPublisher;
 
+  @CacheEvict(value = "UserList", key = "'all_users'")
   @Override
   public UserDto create(UserCreateRequest userCreateRequest,
       Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
@@ -67,7 +73,9 @@ public class BasicUserService implements UserService {
               contentType);
           BinaryContent content = binaryContentRepository.save(binaryContent);
           log.debug("프로필 사진 저장 - 파일 상세: {}", content);
-          binaryContentStorage.put(content.getId(), bytes);
+          eventPublisher.publishEvent(
+              new BinaryContentCreatedEvent(binaryContent.getId(), bytes)
+          );
           return content;
         })
         .orElse(null);
@@ -95,7 +103,9 @@ public class BasicUserService implements UserService {
         .orElseThrow(() -> new UserNotFoundException(userId));
   }
 
+
   @Transactional(readOnly = true)
+  @Cacheable(value = "UserList", key = "'all_users'")
   @Override
   public List<UserDto> findAll() {
     return userRepository.findAllWithProfileAndStatusBy()
@@ -105,6 +115,7 @@ public class BasicUserService implements UserService {
   }
 
   @PreAuthorize("#userId == authentication.principal.userDto.id or hasRole('ADMIN')")
+  @CacheEvict(value = "UserList", key = "'all_users'")
   @Override
   public UserDto update(UUID userId, UserUpdateRequest userUpdateRequest,
       Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
@@ -122,7 +133,7 @@ public class BasicUserService implements UserService {
         throw new DuplicateEmailException(newEmail);
       }
     }
-    if (newUsername != null & !newUsername.equals(user.getUsername())) {
+    if (newUsername != null && !newUsername.equals(user.getUsername())) {
       if (userRepository.existsByUsername(newUsername)) {
         log.warn("유저 업데이트 실패 - 중복된 이름: {}", newUsername);
         throw new DuplicateNameException(newUsername);
@@ -139,7 +150,9 @@ public class BasicUserService implements UserService {
               contentType);
           BinaryContent content = binaryContentRepository.save(binaryContent);
           log.debug("프로필 사진 저장 - 파일 상세: {}", content);
-          binaryContentStorage.put(content.getId(), bytes);
+          eventPublisher.publishEvent(
+              new BinaryContentCreatedEvent(binaryContent.getId(), bytes)
+          );
           return content;
         })
         .orElse(null);
@@ -152,6 +165,7 @@ public class BasicUserService implements UserService {
   }
 
   @PreAuthorize("#userId == authentication.principal.userDto.id or hasRole('ADMIN')")
+  @CacheEvict(value = "UserList", key = "'all_users'")
   @Override
   public void delete(UUID userId) {
     if (!userRepository.existsById(userId)) {
@@ -165,11 +179,16 @@ public class BasicUserService implements UserService {
 
   @Override
   @PreAuthorize("hasRole('ADMIN')")
+  @CacheEvict(value = "UserList", key = "'all_users'")
   public UserDto updateRole(UserRoleUpdateRequest request) {
     User user = userRepository.findById(request.userId())
         .orElseThrow(() -> new UserNotFoundException(request.userId()));
-
-    user.updateRole(request.newRole());
+    Role pastRole = user.getRole();
+    Role newRole = request.newRole();
+    user.updateRole(newRole);
+    eventPublisher.publishEvent(
+        new RoleUpdatedEvent(user, pastRole, newRole)
+    );
 
     // 로그인 상태라면 강제 로그아웃
     if (jwtRegistry.hasActiveJwtInformationByUserId(user.getId())) {

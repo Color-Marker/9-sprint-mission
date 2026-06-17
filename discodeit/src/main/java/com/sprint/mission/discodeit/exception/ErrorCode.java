@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.exception;
 
+import com.sprint.mission.discodeit.exception.notification.NotificationNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -19,7 +20,7 @@ public enum ErrorCode {
   READSTATUS_NOT_FOUND("읽음 상태를 찾을 수 없습니다."),
   READSTATUS_ALREADY_EXIST("읽음 상태가 이미 존재합니다."),
   USERSTATUS_NOT_FOUND("유저 상태를 찾을 수 없습니다."),
-  USERSTATUS_ALREADY_EXIST("유저 상태가 이미 존재합니다.");
-
+  USERSTATUS_ALREADY_EXIST("유저 상태가 이미 존재합니다."),
+  NOTIFICATION_NOT_FOUND("알림을 찾을 수 없습니다.");
   private String message;
 }

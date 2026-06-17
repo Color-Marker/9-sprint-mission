@@ -35,10 +35,15 @@ public class ReadStatus extends BaseUpdatableEntity {
   private Channel channel;
   @Column(nullable = false)
   private Instant lastReadAt;
+  @Column(nullable = false)
+  private boolean notificationEnabled;
 
-  public void update(Instant newLastReadAt) {
+  public void update(Instant newLastReadAt, boolean notificationEnabled) {
     if (newLastReadAt != null && !newLastReadAt.equals(this.lastReadAt)) {
       this.lastReadAt = newLastReadAt;
+    }
+    if (notificationEnabled) {
+      this.notificationEnabled = !this.notificationEnabled;
     }
   }
 }
