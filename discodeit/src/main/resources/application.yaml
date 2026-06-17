@@ -109,7 +109,7 @@ info:
     jpa:
       ddl-auto: ${spring.jpa.hibernate.ddl-auto}
     storage:
-      type: ${discodeit.storage.type}
+      type: ${discodeit.storage.type:local}
       path: ${discodeit.storage.local.root-path}
     multipart:
       max-file-size: ${discodeit.servlet.multipart.max-file-size}

@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -8,6 +9,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
@@ -22,4 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         .setAllowedOriginPatterns("*")
         .withSockJS();
   }
+
+  // 웹소켓 인증/인가 처리
+
 }
