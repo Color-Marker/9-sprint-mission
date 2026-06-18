@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.data.MessageDto;
 import com.sprint.mission.discodeit.dto.data.NotificationDto;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.Notification;
@@ -7,9 +8,11 @@ import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.Role;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.event.NotificationCreatedEvent;
+import com.sprint.mission.discodeit.exception.message.MessageNotFoundException;
 import com.sprint.mission.discodeit.exception.notification.NotificationNotFoundException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.NotificationMapper;
+import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.NotificationRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
@@ -37,13 +40,16 @@ public class BasicNotificationService implements NotificationService {
   private final ReadStatusRepository readStatusRepository;
   private final NotificationRepository notificationRepository;
   private final UserRepository userRepository;
+  private final MessageRepository messageRepository;
   private final NotificationMapper notificationMapper;
   private final CacheManager cacheManager;
   private final ApplicationEventPublisher eventPublisher;
 
 
   @Override
-  public void createByMessage(Message message) {
+  public void createByMessage(MessageDto messageDto) {
+    Message message = messageRepository.findById(messageDto.id())
+        .orElseThrow(() -> new MessageNotFoundException(messageDto.id()));
     String title = message.getAuthor().getUsername() + " (#" + message.getChannel().getName() + ")";
     String content = message.getContent();
     List<ReadStatus> readStatuses = readStatusRepository.findAllByChannel(message.getChannel());
@@ -110,7 +116,6 @@ public class BasicNotificationService implements NotificationService {
   }
 
   @Override
-  @Cacheable(value = "NotificationList", key = "'notifications_' + #userId")
   public List<NotificationDto> get(UUID userId) {
     List<Notification> notifications = notificationRepository.findAllByReceiverId(userId);
     List<NotificationDto> dtos = notifications.stream()
@@ -128,7 +133,6 @@ public class BasicNotificationService implements NotificationService {
     return dtos;
   }
 
-  @CacheEvict(value = "NotificationList", key = "'notifications_' + #result")
   @Override
   public UUID delete(UUID notificationId) {
     Notification notification = notificationRepository.findById(notificationId)

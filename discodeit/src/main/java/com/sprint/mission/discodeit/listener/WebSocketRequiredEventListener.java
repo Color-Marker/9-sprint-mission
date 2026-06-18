@@ -11,18 +11,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class WebSocketRequiredEventListener {
 
   private final SimpMessagingTemplate messagingTemplate;
-  private final MessageMapper messageMapper;
 
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
   public void handleMessage(MessageCreatedEvent event) {
-    Message message = event.message();
-    MessageDto messageDto = messageMapper.toDto(message);
-    UUID channelId = message.getChannel().getId();
+    MessageDto messageDto = event.messageDto();
+    UUID channelId = messageDto.channelId();
 
     messagingTemplate.convertAndSend(
         "/sub/channels." + channelId + ".messages",

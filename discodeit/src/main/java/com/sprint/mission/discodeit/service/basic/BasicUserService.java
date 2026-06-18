@@ -199,10 +199,6 @@ public class BasicUserService implements UserService {
     Role newRole = request.newRole();
     user.updateRole(newRole);
 
-    eventPublisher.publishEvent(
-        new RoleUpdatedEvent(user, pastRole, newRole)
-    );
-
     // 로그인 상태라면 강제 로그아웃
     if (jwtRegistry.hasActiveJwtInformationByUserId(user.getId())) {
       jwtRegistry.invalidateJwtInformationByUserId(user.getId());
@@ -210,8 +206,10 @@ public class BasicUserService implements UserService {
     }
 
     UserDto dto = userMapper.toDto(user);
-    eventPublisher.publishEvent(new UserUpdatedEvent("updated", dto));
-
+    eventPublisher.publishEvent(
+        new RoleUpdatedEvent(user, pastRole, newRole)
+    );
+    log.info("권한 변경 진행 - 유저 ID: {}", user.getId());
     return dto;
   }
 }

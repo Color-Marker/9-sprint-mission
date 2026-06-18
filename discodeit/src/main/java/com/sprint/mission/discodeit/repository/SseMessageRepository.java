@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public class SseMessageRepository {
+// @Repository
+public class SseMessageRepository implements SseRepository {
 
   private static final int MAX_SIZE = 100;  // 최대 저장 개수
 
